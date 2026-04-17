@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - A&A</title>
+
+<style>
+body{font-family:Arial;background:#0A0A0A;color:white;margin:0;}
+.container{display:flex}
+
+/* SIDEBAR */
+.sidebar{
+width:230px;
+background:#111;
+height:100vh;
+padding:20px;
+}
+.sidebar a{
+display:block;
+color:#aaa;
+text-decoration:none;
+padding:10px;
+margin:5px 0;
+}
+.sidebar a:hover{color:#C9A84C}
+
+/* MAIN */
+.main{flex:1;padding:30px}
+
+/* FORM */
+input,textarea{
+width:100%;
+padding:10px;
+margin:5px 0;
+background:#111;
+border:1px solid #333;
+color:white;
+}
+
+button{
+padding:10px;
+background:#C9A84C;
+border:none;
+cursor:pointer;
+}
+
+/* PRODUCTS */
+.product{
+background:#111;
+padding:15px;
+margin-top:10px;
+border:1px solid #222;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+<h2>A&A</h2>
+<a href="#">Dashboard</a>
+<a href="#" onclick="logout()">Logout</a>
+</div>
+
+<div class="main">
+
+<h2>Dashboard</h2>
+<p id="userEmail"></p>
+
+<h3>Add Product</h3>
+
+<input id="name" placeholder="Product Name">
+<textarea id="desc" placeholder="Description"></textarea>
+<input id="price" placeholder="Price">
+
+<button onclick="addProduct()">Add Product</button>
+
+<h3>Your Products</h3>
+<div id="products"></div>
+
+</div>
+</div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "aanda-web.firebaseapp.com",
+  projectId: "aanda-web"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* USER CONTROL */
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    document.getElementById("userEmail").innerText = user.email;
+    loadProducts(user.uid);
+  } else {
+    window.location.href = "index.html";
+  }
+});
+
+/* ADD PRODUCT */
+window.addProduct = async function () {
+  const user = auth.currentUser;
+
+  const name = document.getElementById("name").value;
+  const desc = document.getElementById("desc").value;
+  const price = document.getElementById("price").value;
+
+  await addDoc(collection(db, "products"), {
+    uid: user.uid,
+    name,
+    desc,
+    price
+  });
+
+  alert("Product Added ✅");
+  location.reload();
+};
+
+/* LOAD PRODUCTS */
+async function loadProducts(uid) {
+  const q = query(collection(db, "products"), where("uid", "==", uid));
+  const querySnapshot = await getDocs(q);
+
+  const container = document.getElementById("products");
+  container.innerHTML = "";
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+
+    container.innerHTML += `
+      <div class="product">
+        <h4>${data.name}</h4>
+        <p>${data.desc}</p>
+        <strong>${data.price}</strong>
+      </div>
+    `;
+  });
+}
+
+/* LOGOUT */
+window.logout = function () {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  });
+};
+</script>
+
+</body>
+</html>

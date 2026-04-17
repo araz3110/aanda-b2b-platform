@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Complete Profile</title>
+<style>
+body{
+  background:#0A0A0A;
+  color:#fff;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box{
+  width:400px;
+  background:#111;
+  padding:20px;
+  border:1px solid #333;
+}
+input, select, textarea{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  background:#000;
+  color:#fff;
+  border:1px solid #333;
+}
+button{
+  width:100%;
+  padding:12px;
+  background:#C9A84C;
+  border:none;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Firma Bilgilerini Tamamla</h2>
+
+  <input id="companyName" placeholder="Firma Adı">
+  
+  <select id="activityField">
+    <option>Faaliyet Alanı Seç</option>
+    <option>Textile</option>
+    <option>Food & Agriculture</option>
+    <option>Automotive</option>
+    <option>Electronics</option>
+    <option>Industrial</option>
+  </select>
+
+  <select id="companyType">
+    <option>Firma Türü</option>
+    <option>Manufacturer</option>
+    <option>Exporter</option>
+    <option>Buyer</option>
+  </select>
+
+  <input id="country" placeholder="Ülke">
+  <input id="city" placeholder="Şehir">
+  <input id="address" placeholder="Adres">
+  <input id="phone" placeholder="Telefon">
+  <input id="contactPerson" placeholder="Yetkili Kişi">
+  <input id="taxNumber" placeholder="Vergi No (opsiyonel)">
+  <input id="website" placeholder="Website">
+
+  <textarea id="description" placeholder="Firma Açıklaması"></textarea>
+
+  <button onclick="saveProfile()">Kaydet</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCj1JKJIk9CvIIgwowusAMfDdDi5L9NY4k",
+  authDomain: "aanda-web.firebaseapp.com",
+  projectId: "aanda-web",
+  storageBucket: "aanda-web.firebasestorage.app",
+  messagingSenderId: "454700153826",
+  appId: "1:454700153826:web:793107ea88e01d6eee97bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.saveProfile = async function(){
+
+  const user = auth.currentUser;
+
+  if(!user){
+    alert("Önce login olmalısın");
+    return;
+  }
+
+  await setDoc(doc(db, "companies", user.uid), {
+    companyName: document.getElementById("companyName").value,
+    activityField: document.getElementById("activityField").value,
+    companyType: document.getElementById("companyType").value,
+    country: document.getElementById("country").value,
+    city: document.getElementById("city").value,
+    address: document.getElementById("address").value,
+    phone: document.getElementById("phone").value,
+    contactPerson: document.getElementById("contactPerson").value,
+    taxNumber: document.getElementById("taxNumber").value,
+    website: document.getElementById("website").value,
+    description: document.getElementById("description").value,
+    verified: false
+  });
+
+  alert("Profil kaydedildi. Onay bekleniyor.");
+  window.location.href = "index.html";
+};
+</script>
+
+</body>
+</html>
