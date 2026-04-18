@@ -2,77 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Complete Profile</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
 <style>
 body{
   background:#0A0A0A;
-  color:#fff;
-  font-family:Arial;
+  color:white;
+  font-family:Montserrat;
   display:flex;
   justify-content:center;
   align-items:center;
   height:100vh;
 }
-.box{
+
+.container{
   width:400px;
   background:#111;
-  padding:20px;
-  border:1px solid #333;
+  padding:30px;
+  border:1px solid #C9A84C;
 }
-input, select, textarea{
+
+h2{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+input, select{
   width:100%;
   padding:10px;
   margin:6px 0;
   background:#000;
-  color:#fff;
   border:1px solid #333;
+  color:white;
 }
+
 button{
   width:100%;
   padding:12px;
   background:#C9A84C;
   border:none;
-  cursor:pointer;
+  margin-top:10px;
+  font-weight:bold;
 }
 </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h2>Firma Bilgilerini Tamamla</h2>
+<div class="container">
+  <h2>Company Verification</h2>
 
-  <input id="companyName" placeholder="Firma Adı">
-  
-  <select id="activityField">
-    <option>Faaliyet Alanı Seç</option>
-    <option>Textile</option>
-    <option>Food & Agriculture</option>
-    <option>Automotive</option>
-    <option>Electronics</option>
-    <option>Industrial</option>
-  </select>
+  <input id="companyName" placeholder="Company Name">
+  <input id="sector" placeholder="Business Sector">
+  <input id="country" placeholder="Country">
+  <input id="phone" placeholder="Phone Number">
+  <input id="taxNumber" placeholder="Tax Number">
 
-  <select id="companyType">
-    <option>Firma Türü</option>
-    <option>Manufacturer</option>
-    <option>Exporter</option>
-    <option>Buyer</option>
-  </select>
-
-  <input id="country" placeholder="Ülke">
-  <input id="city" placeholder="Şehir">
-  <input id="address" placeholder="Adres">
-  <input id="phone" placeholder="Telefon">
-  <input id="contactPerson" placeholder="Yetkili Kişi">
-  <input id="taxNumber" placeholder="Vergi No (opsiyonel)">
-  <input id="website" placeholder="Website">
-
-  <textarea id="description" placeholder="Firma Açıklaması"></textarea>
-
-  <button onclick="saveProfile()">Kaydet</button>
+  <button onclick="saveProfile()">Submit for Approval</button>
 </div>
 
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -90,33 +83,32 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// SAVE PROFILE
 window.saveProfile = async function(){
 
   const user = auth.currentUser;
 
   if(!user){
-    alert("Önce login olmalısın");
+    alert("Giriş yapman gerekiyor");
     return;
   }
 
-  await setDoc(doc(db, "companies", user.uid), {
+  const data = {
+    email: user.email,
     companyName: document.getElementById("companyName").value,
-    activityField: document.getElementById("activityField").value,
-    companyType: document.getElementById("companyType").value,
+    sector: document.getElementById("sector").value,
     country: document.getElementById("country").value,
-    city: document.getElementById("city").value,
-    address: document.getElementById("address").value,
     phone: document.getElementById("phone").value,
-    contactPerson: document.getElementById("contactPerson").value,
     taxNumber: document.getElementById("taxNumber").value,
-    website: document.getElementById("website").value,
-    description: document.getElementById("description").value,
-    verified: false
-  });
+    status: "pending",
+    createdAt: new Date()
+  };
 
-  alert("Profil kaydedildi. Onay bekleniyor.");
-  window.location.href = "index.html";
+  await setDoc(doc(db, "companies", user.uid), data);
+
+  alert("Başvurun alındı. Onay bekleniyor.");
 };
+
 </script>
 
 </body>

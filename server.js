@@ -5,5 +5,5 @@ const PORT = 3000;
 app.use(express.static(__dirname));
 
 app.listen(PORT, () => {
-  console.log(`Server çalışıyor: http://localhost:${PORT}`);
+  console.log("REGISTER CLICKED");
 });
