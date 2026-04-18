@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Panel</title>
+
+<style>
+body{
+  background:#0A0A0A;
+  color:white;
+  font-family:Arial;
+  padding:20px;
+}
+
+.card{
+  border:1px solid #C9A84C;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+button{
+  margin-right:10px;
+  padding:8px 15px;
+  border:none;
+  cursor:pointer;
+}
+
+.approve{background:green;color:white;}
+.reject{background:red;color:white;}
+</style>
+</head>
+
+<body>
+
+<h2>Pending Companies</h2>
+<div id="list"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCj1JKJIk9CvIIgwowusAMfDdDi5L9NY4k",
+  authDomain: "aanda-web.firebaseapp.com",
+  projectId: "aanda-web",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const list = document.getElementById("list");
+
+// VERİLERİ ÇEK
+const snapshot = await getDocs(collection(db, "companies"));
+
+snapshot.forEach(docSnap => {
+
+  const data = docSnap.data();
+
+  if(data.status !== "pending") return;
+
+  const div = document.createElement("div");
+  div.className = "card";
+
+  div.innerHTML = `
+    <b>${data.companyName}</b><br>
+    Sector: ${data.sector}<br>
+    Country: ${data.country}<br>
+    Phone: ${data.phone}<br>
+    Tax: ${data.taxNumber}<br><br>
+
+    <button class="approve">Approve</button>
+    <button class="reject">Reject</button>
+  `;
+
+  const approveBtn = div.querySelector(".approve");
+  const rejectBtn = div.querySelector(".reject");
+
+  approveBtn.onclick = async () => {
+    await updateDoc(doc(db, "companies", docSnap.id), {
+      status: "approved"
+    });
+    alert("Onaylandı");
+    location.reload();
+  };
+
+  rejectBtn.onclick = async () => {
+    await updateDoc(doc(db, "companies", docSnap.id), {
+      status: "rejected"
+    });
+    alert("Reddedildi");
+    location.reload();
+  };
+
+  list.appendChild(div);
+});
+
+</script>
+
+</body>
+</html>
