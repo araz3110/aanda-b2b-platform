@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - A&A</title>
-
-<style>
+<title>Dashboard - A&A</title><style>
 body{font-family:Arial;background:#0A0A0A;color:white;margin:0;}
 .container{display:flex}
 
@@ -22,6 +19,7 @@ color:#aaa;
 text-decoration:none;
 padding:10px;
 margin:5px 0;
+cursor:pointer;
 }
 .sidebar a:hover{color:#C9A84C}
 
@@ -52,43 +50,25 @@ padding:15px;
 margin-top:10px;
 border:1px solid #222;
 }
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<div class="sidebar">
+</style></head><body><div class="container"><div class="sidebar">
 <h2>A&A</h2>
-<a href="#">Dashboard</a>
-<a href="#" onclick="logout()">Logout</a>
-</div>
-
-<div class="main">
-
-<h2>Dashboard</h2>
-<p id="userEmail"></p>
-
-<h3>Add Product</h3>
-
-<input id="name" placeholder="Product Name">
+<a onclick="goRoom()">Enter Room</a>
+<a onclick="logout()">Logout</a>
+</div><div class="main">
+<h2>Dashboard</h2><p id="userEmail"></p>
+<p id="userRole"></p>
+<p id="userRoom"></p><!-- 🔥 SADECE PRODUCER GÖRÜR --><div id="producerPanel" style="display:none;">
+<h3>Add Product</h3><input id="name" placeholder="Product Name">
 <textarea id="desc" placeholder="Description"></textarea>
-<input id="price" placeholder="Price">
+<input id="price" placeholder="Price"><button onclick="addProduct()">Add Product</button>
 
-<button onclick="addProduct()">Add Product</button>
+</div><h3>Your Products</h3>
+<div id="products"></div></div>
+</div><script type="module">
 
-<h3>Your Products</h3>
-<div id="products"></div>
-
-</div>
-</div>
-
-<!-- FIREBASE -->
-<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSy...",
@@ -100,29 +80,56 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* USER CONTROL */
+let currentUserData = null;
+
+/* USER LOAD */
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    document.getElementById("userEmail").innerText = user.email;
-    loadProducts(user.uid);
-  } else {
+
+  if (!user) {
     window.location.href = "index.html";
+    return;
   }
+
+  document.getElementById("userEmail").innerText = "Email: " + user.email;
+
+  // 🔥 kullanıcı bilgisini çek
+  const docSnap = await getDoc(doc(db, "companies", user.uid));
+  const data = docSnap.data();
+
+  currentUserData = data;
+
+  document.getElementById("userRole").innerText = "Role: " + data.role;
+  document.getElementById("userRoom").innerText = "Room: " + (data.room || "-");
+
+  // 🔥 PRODUCER ise ürün ekleme aç
+  if(data.role === "producer"){
+    document.getElementById("producerPanel").style.display = "block";
+  }
+
+  loadProducts(user.uid);
 });
 
 /* ADD PRODUCT */
 window.addProduct = async function () {
+
   const user = auth.currentUser;
 
   const name = document.getElementById("name").value;
   const desc = document.getElementById("desc").value;
   const price = document.getElementById("price").value;
 
+  if(!name || !price){
+    alert("Please fill fields");
+    return;
+  }
+
   await addDoc(collection(db, "products"), {
     uid: user.uid,
     name,
     desc,
-    price
+    price,
+    room: currentUserData.room,
+    createdAt: new Date()
   });
 
   alert("Product Added ✅");
@@ -131,7 +138,9 @@ window.addProduct = async function () {
 
 /* LOAD PRODUCTS */
 async function loadProducts(uid) {
+
   const q = query(collection(db, "products"), where("uid", "==", uid));
+
   const querySnapshot = await getDocs(q);
 
   const container = document.getElementById("products");
@@ -144,11 +153,17 @@ async function loadProducts(uid) {
       <div class="product">
         <h4>${data.name}</h4>
         <p>${data.desc}</p>
-        <strong>${data.price}</strong>
+        <strong>$${data.price}</strong>
+        <br><small>Room: ${data.room || "-"}</small>
       </div>
     `;
   });
 }
+
+/* ROOM PAGE */
+window.goRoom = function(){
+  window.location.href = "room.html";
+};
 
 /* LOGOUT */
 window.logout = function () {
@@ -156,7 +171,6 @@ window.logout = function () {
     window.location.href = "index.html";
   });
 };
-</script>
 
-</body>
+</script></body>
 </html>

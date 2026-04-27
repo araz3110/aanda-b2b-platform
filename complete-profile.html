@@ -1,115 +1,115 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Complete Profile</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-
-<style>
+<title>Complete Your Profile</title><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet"><style>
 body{
   background:#0A0A0A;
   color:white;
-  font-family:Montserrat;
+  font-family:'Montserrat',sans-serif;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   height:100vh;
 }
-
-.container{
-  width:400px;
+.box{
   background:#111;
   padding:30px;
-  border:1px solid #C9A84C;
+  width:340px;
+  border:1px solid #333;
 }
-
-h2{
-  text-align:center;
-  margin-bottom:20px;
-}
-
 input, select{
   width:100%;
-  padding:10px;
-  margin:6px 0;
+  padding:12px;
+  margin:8px 0;
   background:#000;
-  border:1px solid #333;
+  border:1px solid #222;
   color:white;
 }
-
 button{
   width:100%;
   padding:12px;
   background:#C9A84C;
   border:none;
   margin-top:10px;
-  font-weight:bold;
+  cursor:pointer;
 }
-</style>
-</head>
+small{color:#888;}
+</style></head><body><div class="box">
+  <h2>Complete Your Profile</h2>  <input id="company" placeholder="Company Name">
+  <input id="country" placeholder="Country">  <!-- 🔥 ROLE EKLEDİK -->  <select id="role">
+    <option value="">Select Role</option>
+    <option value="producer">Producer</option>
+    <option value="buyer">Buyer</option>
+    <option value="exporter">Exporter</option>
+    <option value="importer">Importer</option>
+  </select>  <select id="room">
+    <option value="">Select Industry</option>
+    <option value="rice">Rice</option>
+    <option value="wheat">Wheat</option>
+    <option value="oil">Oil</option>
+    <option value="sugar">Sugar</option>
+    <option value="coffee">Coffee</option>
+  </select><small>Your account will be reviewed after submission</small>
 
-<body>
+<button onclick="saveProfile()">Submit for Approval</button>
 
-<div class="container">
-  <h2>Company Verification</h2>
-
-  <input id="companyName" placeholder="Company Name">
-  <input id="sector" placeholder="Business Sector">
-  <input id="country" placeholder="Country">
-  <input id="phone" placeholder="Phone Number">
-  <input id="taxNumber" placeholder="Tax Number">
-
-  <button onclick="saveProfile()">Submit for Approval</button>
-</div>
-
-<script type="module">
+</div><script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCj1JKJIk9CvIIgwowusAMfDdDi5L9NY4k",
+  apiKey: "AIzaSy...",
   authDomain: "aanda-web.firebaseapp.com",
-  projectId: "aanda-web",
-  storageBucket: "aanda-web.firebasestorage.app",
-  messagingSenderId: "454700153826",
-  appId: "1:454700153826:web:793107ea88e01d6eee97bb"
+  projectId: "aanda-web"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// SAVE PROFILE
-window.saveProfile = async function(){
+window.saveProfile = async function () {
 
   const user = auth.currentUser;
 
-  if(!user){
-    alert("Giriş yapman gerekiyor");
+  if (!user) {
+    alert("Please login again");
     return;
   }
 
-  const data = {
-    email: user.email,
-    companyName: document.getElementById("companyName").value,
-    sector: document.getElementById("sector").value,
-    country: document.getElementById("country").value,
-    phone: document.getElementById("phone").value,
-    taxNumber: document.getElementById("taxNumber").value,
-    status: "pending",
-    createdAt: new Date()
-  };
+  const company = document.getElementById("company").value;
+  const country = document.getElementById("country").value;
+  const role = document.getElementById("role").value;
+  const room = document.getElementById("room").value;
 
-  await setDoc(doc(db, "companies", user.uid), data);
+  if(!company || !country || !role || !room){
+    alert("Please fill all fields");
+    return;
+  }
 
-  alert("Başvurun alındı. Onay bekleniyor.");
+  try{
+
+    // 🔥 BURASI KRİTİK (OLUŞTURUYOR)
+    await setDoc(doc(db, "companies", user.uid), {
+      email: user.email,
+      company,
+      country,
+      role,
+      room,
+      status: "pending",
+      premium: false,
+      createdAt: new Date()
+    });
+
+    alert("Application submitted");
+    window.location.href = "index.html";
+
+  }catch(err){
+    alert("Error: " + err.message);
+  }
 };
 
-</script>
-
-</body>
+</script></body>
 </html>

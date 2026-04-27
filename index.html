@@ -1,56 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A&A Global B2B Platform</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-<style>
+<title>A&A Global B2B Platform</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"><style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --gold:#C9A84C;
   --dark:#0A0A0A;
-  --dark2:#111;
   --white:#F8F5EF;
-  --muted:#8A8A8A;
 }
 body{
   background:var(--dark);
   color:var(--white);
   font-family:'Montserrat',sans-serif;
 }
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:24px 60px;
-  position:fixed;
-  width:100%;
-  background:rgba(10,10,10,0.85);
-  backdrop-filter:blur(10px);
-}
-.logo{
-  font-family:'Cormorant Garamond',serif;
-  font-size:2rem;
-}
-.logo span{color:var(--gold);}
 .hero{
   height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  background:linear-gradient(120deg,#050505,#0A0A0A,#0f0f0f);
 }
 .login-box{
   margin-top:40px;
   background:rgba(0,0,0,0.6);
   padding:30px;
   border:1px solid rgba(201,168,76,0.2);
+  width:300px;
 }
-input{
+input, select{
   width:100%;
   padding:12px;
   margin:6px 0;
@@ -74,29 +52,29 @@ input{
   color:var(--gold);
   padding:12px;
 }
-</style>
-</head>
-
-<body>
-
-<section class="hero">
+</style></head><body><section class="hero">
   <div>
-    <div class="logo">A<span>&</span>A</div>
-    <h1>Global Trade Platform</h1>
+    <h1>A&A Global Trade Platform</h1><div class="login-box">
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
-    <div class="login-box">
-      <input id="email" placeholder="Email">
-      <input id="password" type="password" placeholder="Password">
+  <!-- ROLE SELECTION -->
+  <select id="role">
+    <option value="">Select Role</option>
+    <option value="producer">Producer</option>
+    <option value="buyer">Buyer</option>
+    <option value="exporter">Exporter</option>
+    <option value="importer">Importer</option>
+  </select>
 
-      <div class="login-buttons">
-        <button class="btn-register" onclick="register()">Register</button>
-        <button class="btn-login" onclick="login()">Login</button>
-      </div>
-    </div>
+  <div class="login-buttons">
+    <button class="btn-register" onclick="register()">Register</button>
+    <button class="btn-login" onclick="login()">Login</button>
   </div>
-</section>
+</div>
 
-<script type="module">
+  </div>
+</section><script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
@@ -109,7 +87,8 @@ import {
 import {
   getFirestore,
   doc,
-  getDoc
+  getDoc,
+  setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -125,31 +104,44 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+//////////////////////////
 // REGISTER
+//////////////////////////
 window.register = async function () {
-
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value;
 
-  if(!email || !password){
-    alert("Email ve şifre gir");
+  if(!email || !password || !role){
+    alert("Please fill all fields");
     return;
   }
 
   try{
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await sendEmailVerification(userCredential.user);
+    const user = userCredential.user;
 
-    alert("📩 Email doğrulama gönderildi");
+    // Save basic info (room will be selected later)
+    await setDoc(doc(db, "companies", user.uid), {
+      email,
+      role,
+      status: "incomplete",
+      createdAt: new Date()
+    });
+
+    await sendEmailVerification(user);
+
+    alert("Registration received. Please verify your email.");
 
   }catch(err){
     alert(err.message);
   }
 };
 
+//////////////////////////
 // LOGIN
+//////////////////////////
 window.login = async function () {
-
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
@@ -158,11 +150,10 @@ window.login = async function () {
     const user = userCredential.user;
 
     if (!user.emailVerified) {
-      alert("Email doğrula");
+      alert("Please verify your email");
       return;
     }
 
-    // 🔥 FIRESTORE KONTROL
     const docRef = doc(db, "companies", user.uid);
     const docSnap = await getDoc(docRef);
 
@@ -173,13 +164,18 @@ window.login = async function () {
 
     const data = docSnap.data();
 
+    if (data.status === "incomplete") {
+      window.location.href = "complete-profile.html";
+      return;
+    }
+
     if (data.status === "pending") {
-      alert("⏳ Onay bekleniyor");
+      alert("Your account is pending approval");
       return;
     }
 
     if (data.status === "rejected") {
-      alert("❌ Reddedildi");
+      alert("Your account was rejected");
       return;
     }
 
@@ -188,11 +184,9 @@ window.login = async function () {
     }
 
   }catch(err){
-    alert("Hata: " + err.message);
+    alert("Error: " + err.message);
   }
 };
 
-</script>
-
-</body>
+</script></body>
 </html>

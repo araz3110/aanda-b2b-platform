@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Private Chat</title><style>
+body{background:#0A0A0A;color:white;font-family:Arial;margin:0}
+.wrap{max-width:700px;margin:auto;padding:20px}
+.header{display:flex;justify-content:space-between;align-items:center}
+.msg{
+  background:#111;
+  padding:10px;
+  margin:6px 0;
+  border:1px solid #333;
+}
+.mine{border-color:#C9A84C}
+input{
+  width:100%;
+  padding:12px;
+  background:#111;
+  border:1px solid #333;
+  color:white;
+}
+button{
+  margin-top:6px;
+  padding:10px 12px;
+  background:#C9A84C;
+  border:none;
+  cursor:pointer;
+}
+.small{font-size:12px;color:#aaa}
+</style></head><body>
+<div class="wrap">  <div class="header">
+    <h2>Private Deal Chat</h2>
+    <button onclick="back()">Back</button>
+  </div>  <div id="chat"></div>  <input id="message" placeholder="Type message...">
+  <button onclick="sendMessage()">Send</button></div><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  where,
+  onSnapshot,
+  doc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "aanda-web.firebaseapp.com",
+  projectId: "aanda-web"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const urlParams = new URLSearchParams(window.location.search);
+const offerId = urlParams.get("offerId");
+
+let currentUser = null;
+
+/* LOAD USER */
+auth.onAuthStateChanged(async (user)=>{
+  if(!user){
+    location.href="index.html";
+    return;
+  }
+  currentUser = user;
+  loadMessages();
+});
+
+/* SEND MESSAGE */
+window.sendMessage = async function(){
+  const text = document.getElementById("message").value;
+  if(!text) return;
+
+  await addDoc(collection(db, "privateMessages"), {
+    offerId,
+    text,
+    sender: currentUser.uid,
+    createdAt: new Date()
+  });
+
+  document.getElementById("message").value="";
+};
+
+/* LOAD MESSAGES */
+function loadMessages(){
+  const q = query(collection(db, "privateMessages"), where("offerId","==",offerId));
+
+  onSnapshot(q, (snapshot)=>{
+    const container = document.getElementById("chat");
+    container.innerHTML = "";
+
+    snapshot.forEach(doc=>{
+      const m = doc.data();
+      const isMine = m.sender === currentUser.uid;
+
+      container.innerHTML += `
+        <div class="msg ${isMine ? 'mine' : ''}">
+          ${m.text}
+          <div class="small">${isMine ? 'You' : 'Partner'}</div>
+        </div>
+      `;
+    });
+  });
+}
+
+window.back = function(){
+  window.location.href = "room.html";
+};
+
+</script></body>
+</html>

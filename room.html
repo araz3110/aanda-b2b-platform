@@ -1,0 +1,233 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room</title><style>
+body{background:#0A0A0A;color:white;font-family:Arial;padding:20px;}
+.box{max-width:700px;margin:auto;}
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  background:#111;
+  border:1px solid #333;
+  color:white;
+}
+button{
+  padding:8px 12px;
+  background:#C9A84C;
+  border:none;
+  cursor:pointer;
+  margin-top:5px;
+}
+.product{
+  border:1px solid #333;
+  padding:15px;
+  margin-top:15px;
+}
+.offer{
+  background:#1a1a1a;
+  padding:8px;
+  margin-top:5px;
+  border:1px solid #444;
+}
+</style></head>
+<body><div class="box"><h2 id="roomTitle"></h2><!-- PRODUCER PANEL --><div id="producerPanel" style="display:none;">
+  <h3>Add Product</h3>
+  <input id="name" placeholder="Product Name">
+  <textarea id="desc" placeholder="Description"></textarea>
+  <input id="price" placeholder="Base Price">
+  <button onclick="addProduct()">Add</button>
+</div><hr><h3>Products</h3>
+<div id="products"></div></div><script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  onSnapshot,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...",
+  authDomain: "aanda-web.firebaseapp.com",
+  projectId: "aanda-web"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUserData = null;
+
+/* USER LOAD */
+auth.onAuthStateChanged(async (user) => {
+
+  if(!user){
+    location.href = "index.html";
+    return;
+  }
+
+  const docSnap = await getDoc(doc(db, "companies", user.uid));
+  currentUserData = docSnap.data();
+
+  document.getElementById("roomTitle").innerText =
+    currentUserData.room.toUpperCase() + " ROOM";
+
+  if(currentUserData.role === "producer"){
+    document.getElementById("producerPanel").style.display = "block";
+  }
+
+  loadProducts(currentUserData.room);
+});
+
+
+/* ADD PRODUCT */
+window.addProduct = async function(){
+
+  const name = document.getElementById("name").value;
+  const desc = document.getElementById("desc").value;
+  const price = document.getElementById("price").value;
+
+  if(!name || !price){
+    alert("Fill fields");
+    return;
+  }
+
+  await addDoc(collection(db, "products"), {
+    name,
+    desc,
+    price,
+    room: currentUserData.room,
+    owner: auth.currentUser.uid,
+    createdAt: new Date()
+  });
+
+  alert("Product added");
+};
+
+
+/* LOAD PRODUCTS */
+function loadProducts(room){
+
+  const q = query(collection(db, "products"), where("room","==",room));
+
+  onSnapshot(q, (snapshot)=>{
+    const container = document.getElementById("products");
+    container.innerHTML = "";
+
+    snapshot.forEach(docItem=>{
+      const p = docItem.data();
+      const productId = docItem.id;
+
+      container.innerHTML += `
+        <div class="product">
+          <b>${p.name}</b><br>
+          ${p.desc}<br>
+          💲 ${p.price}
+
+          <input id="offer-${productId}" placeholder="Your offer price">
+          <button onclick="sendOffer('${productId}')">Make Offer</button>
+
+          <div id="offers-${productId}"></div>
+        </div>
+      `;
+
+      loadOffers(productId, p.owner);
+    });
+  });
+}
+
+
+/* SEND OFFER */
+window.sendOffer = async function(productId){
+
+  const input = document.getElementById("offer-" + productId);
+  const price = input.value;
+
+  if(!price) return;
+
+  await addDoc(collection(db, "offers"), {
+    productId,
+    price,
+    buyer: auth.currentUser.uid,
+    room: currentUserData.room,
+    status: "pending",
+    createdAt: new Date()
+  });
+
+  input.value = "";
+};
+
+
+/* LOAD OFFERS */
+function loadOffers(productId, ownerId){
+
+  const q = query(collection(db, "offers"), where("productId","==",productId));
+
+  onSnapshot(q, (snapshot)=>{
+
+    const container = document.getElementById("offers-" + productId);
+    container.innerHTML = "";
+
+    snapshot.forEach(docItem=>{
+      const o = docItem.data();
+      const id = docItem.id;
+
+      let actions = "";
+
+      // OWNER controls
+      if(auth.currentUser.uid === ownerId && o.status === "pending"){
+        actions += `
+          <button onclick="acceptOffer('${id}')">Accept</button>
+          <button onclick="rejectOffer('${id}')">Reject</button>
+        `;
+      }
+
+      // 🔥 CHAT BUTTON (accepted olunca herkese)
+      if(o.status === "accepted"){
+        actions += `
+          <button onclick="openChat('${id}')">Open Chat</button>
+        `;
+      }
+
+      container.innerHTML += `
+        <div class="offer">
+          💰 ${o.price} - ${o.status}
+          ${actions}
+        </div>
+      `;
+    });
+
+  });
+}
+
+
+/* ACCEPT */
+window.acceptOffer = async function(id){
+  await updateDoc(doc(db, "offers", id), {
+    status: "accepted"
+  });
+};
+
+/* REJECT */
+window.rejectOffer = async function(id){
+  await updateDoc(doc(db, "offers", id), {
+    status: "rejected"
+  });
+};
+
+/* OPEN CHAT */
+window.openChat = function(offerId){
+  window.location.href = "chat.html?offerId=" + offerId;
+};
+
+</script></body>
+</html>
