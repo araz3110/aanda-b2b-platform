@@ -1,117 +1,413 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Private Chat</title><style>
-body{background:#0A0A0A;color:white;font-family:Arial;margin:0}
-.wrap{max-width:700px;margin:auto;padding:20px}
-.header{display:flex;justify-content:space-between;align-items:center}
-.msg{
-  background:#111;
-  padding:10px;
-  margin:6px 0;
-  border:1px solid #333;
+<title>Private Deal Chat - A&A</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --gold:#C9A84C;
+  --dark:#0A0A0A;
+  --card:#111;
+  --line:#252525;
+  --white:#F8F5EF;
+  --muted:#8A8A8A;
+  --green:#4aa36f;
 }
-.mine{border-color:#C9A84C}
-input{
-  width:100%;
+
+body{
+  background:var(--dark);
+  color:var(--white);
+  font-family:'Montserrat',sans-serif;
+  min-height:100vh;
+}
+
+header{
+  padding:22px 30px;
+  border-bottom:1px solid var(--line);
+  background:#080808;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;
+}
+
+.logo span{color:var(--gold);}
+
+.wrapper{
+  max-width:850px;
+  margin:auto;
+  padding:28px;
+}
+
+.deal-box{
+  background:linear-gradient(120deg,#111,#050505);
+  border:1px solid rgba(201,168,76,0.25);
+  padding:20px;
+  margin-bottom:20px;
+}
+
+.deal-box h2{
+  margin-bottom:8px;
+  font-weight:500;
+}
+
+.small{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
+.chat-box{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:18px;
+  min-height:380px;
+  max-height:520px;
+  overflow-y:auto;
+  margin-bottom:15px;
+}
+
+.message{
   padding:12px;
-  background:#111;
-  border:1px solid #333;
-  color:white;
+  margin-bottom:10px;
+  background:#0b0b0b;
+  border:1px solid #222;
+  max-width:80%;
 }
-button{
+
+.mine{
+  margin-left:auto;
+  border-color:var(--gold);
+}
+
+.partner{
+  margin-right:auto;
+}
+
+.message-text{
+  line-height:1.5;
+}
+
+.message-meta{
   margin-top:6px;
-  padding:10px 12px;
-  background:#C9A84C;
+  font-size:11px;
+  color:var(--muted);
+}
+
+.input-box{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:15px;
+}
+
+textarea{
+  width:100%;
+  min-height:80px;
+  resize:vertical;
+  padding:12px;
+  background:#000;
+  border:1px solid #222;
+  color:white;
+  font-family:'Montserrat',sans-serif;
+}
+
+button{
+  padding:10px 14px;
+  background:var(--gold);
+  color:#000;
   border:none;
   cursor:pointer;
+  font-weight:600;
+  margin-top:8px;
 }
-.small{font-size:12px;color:#aaa}
-</style></head><body>
-<div class="wrap">  <div class="header">
-    <h2>Private Deal Chat</h2>
-    <button onclick="back()">Back</button>
-  </div>  <div id="chat"></div>  <input id="message" placeholder="Type message...">
-  <button onclick="sendMessage()">Send</button></div><script type="module">
+
+.btn-dark{
+  background:#222;
+  color:white;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border:1px solid var(--green);
+  color:var(--green);
+  font-size:12px;
+  margin-top:8px;
+}
+
+.warning{
+  background:#1b1510;
+  border:1px solid rgba(201,168,76,0.35);
+  padding:15px;
+  color:#ddd;
+  margin-bottom:15px;
+}
+
+@media(max-width:600px){
+  header{padding:18px;}
+  .wrapper{padding:18px;}
+  .message{max-width:100%;}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">A<span>&</span>A Chat</div>
+  <div>
+    <button class="btn-dark" onclick="goRoom()">Room</button>
+    <button class="btn-dark" onclick="goDashboard()">Dashboard</button>
+  </div>
+</header>
+
+<div class="wrapper">
+
+  <div id="warningBox"></div>
+
+  <div class="deal-box">
+    <h2 id="dealTitle">Private Deal Chat</h2>
+    <div class="small" id="dealInfo">Loading deal information...</div>
+    <span class="badge" id="dealStatus">Deal Chat</span>
+  </div>
+
+  <div class="chat-box" id="chatBox"></div>
+
+  <div class="input-box">
+    <textarea id="messageText" placeholder="Write your message..."></textarea>
+    <button onclick="sendMessage()">Send Message</button>
+  </div>
+
+</div>
+
+<script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 import {
   getFirestore,
+  doc,
+  getDoc,
   collection,
   addDoc,
   query,
   where,
-  onSnapshot,
-  doc,
-  getDoc
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyCj1JKJIk9CvIIgwowusAMfDdDi5L9NY4k",
   authDomain: "aanda-web.firebaseapp.com",
-  projectId: "aanda-web"
+  projectId: "aanda-web",
+  storageBucket: "aanda-web.firebasestorage.app",
+  messagingSenderId: "454700153826",
+  appId: "1:454700153826:web:793107ea88e01d6eee97bb"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const urlParams = new URLSearchParams(window.location.search);
-const offerId = urlParams.get("offerId");
+const params = new URLSearchParams(window.location.search);
+const offerId = params.get("offerId");
 
 let currentUser = null;
+let currentUserData = null;
+let currentOffer = null;
 
-/* LOAD USER */
-auth.onAuthStateChanged(async (user)=>{
-  if(!user){
-    location.href="index.html";
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
     return;
   }
+
   currentUser = user;
-  loadMessages();
+
+  if (!offerId) {
+    showWarning("Offer ID was not found.");
+    return;
+  }
+
+  const companySnap = await getDoc(doc(db, "companies", user.uid));
+
+  if (!companySnap.exists()) {
+    window.location.href = "complete-profile.html";
+    return;
+  }
+
+  currentUserData = companySnap.data();
+
+  if (currentUserData.status !== "approved" || currentUserData.suspended) {
+    alert("Your account must be approved before using private chat.");
+    window.location.href = "dashboard.html";
+    return;
+  }
+
+  await loadOffer();
 });
 
-/* SEND MESSAGE */
+function safe(value){
+  if(value === undefined || value === null || value === ""){
+    return "-";
+  }
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function showWarning(text){
+  document.getElementById("warningBox").innerHTML = `
+    <div class="warning">${safe(text)}</div>
+  `;
+}
+
+async function loadOffer(){
+  const offerRef = doc(db, "offers", offerId);
+  const offerSnap = await getDoc(offerRef);
+
+  if (!offerSnap.exists()) {
+    showWarning("This offer was not found.");
+    return;
+  }
+
+  currentOffer = offerSnap.data();
+
+  const isOwner = currentOffer.owner === currentUser.uid;
+  const isBuyer = currentOffer.buyer === currentUser.uid;
+
+  if (!isOwner && !isBuyer) {
+    showWarning("You do not have permission to access this private chat.");
+    return;
+  }
+
+  if (currentOffer.status !== "accepted") {
+    showWarning("Private chat opens only after the offer is accepted.");
+    return;
+  }
+
+  renderDealInfo();
+  loadMessages();
+}
+
+function renderDealInfo(){
+  document.getElementById("dealTitle").innerText =
+    currentOffer.productName || "Private Deal Chat";
+
+  document.getElementById("dealInfo").innerHTML = `
+    Product: ${safe(currentOffer.productName)}<br>
+    Offer Price: ${safe(currentOffer.price)}<br>
+    Buyer: ${safe(currentOffer.buyerCompany)} • ${safe(currentOffer.buyerCountry)}<br>
+    Status: ${safe(currentOffer.status)}
+  `;
+
+  document.getElementById("dealStatus").innerText = "Accepted Offer";
+}
+
 window.sendMessage = async function(){
-  const text = document.getElementById("message").value;
-  if(!text) return;
+  if (!currentUser || !currentOffer) {
+    alert("Chat is not ready yet.");
+    return;
+  }
+
+  if (currentOffer.status !== "accepted") {
+    alert("This chat is not active.");
+    return;
+  }
+
+  const text = document.getElementById("messageText").value.trim();
+
+  if (!text) {
+    alert("Please write a message");
+    return;
+  }
 
   await addDoc(collection(db, "privateMessages"), {
-    offerId,
-    text,
+    offerId: offerId,
     sender: currentUser.uid,
+    senderEmail: currentUser.email,
+    senderCompany: currentUserData.company || "",
+    senderRole: currentUserData.role || "",
+    text: text,
     createdAt: new Date()
   });
 
-  document.getElementById("message").value="";
+  document.getElementById("messageText").value = "";
 };
 
-/* LOAD MESSAGES */
 function loadMessages(){
-  const q = query(collection(db, "privateMessages"), where("offerId","==",offerId));
+  const q = query(
+    collection(db, "privateMessages"),
+    where("offerId", "==", offerId)
+  );
 
-  onSnapshot(q, (snapshot)=>{
-    const container = document.getElementById("chat");
-    container.innerHTML = "";
+  onSnapshot(q, (snapshot) => {
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = "";
 
-    snapshot.forEach(doc=>{
-      const m = doc.data();
-      const isMine = m.sender === currentUser.uid;
+    if (snapshot.empty) {
+      chatBox.innerHTML = `
+        <div class="small">No messages yet. Start the conversation.</div>
+      `;
+      return;
+    }
 
-      container.innerHTML += `
-        <div class="msg ${isMine ? 'mine' : ''}">
-          ${m.text}
-          <div class="small">${isMine ? 'You' : 'Partner'}</div>
+    let messages = [];
+
+    snapshot.forEach((docItem) => {
+      messages.push(docItem.data());
+    });
+
+    messages.sort((a, b) => {
+      const aTime = a.createdAt?.seconds || 0;
+      const bTime = b.createdAt?.seconds || 0;
+      return aTime - bTime;
+    });
+
+    messages.forEach((msg) => {
+      const mine = msg.sender === currentUser.uid;
+
+      chatBox.innerHTML += `
+        <div class="message ${mine ? "mine" : "partner"}">
+          <div class="message-text">${safe(msg.text)}</div>
+          <div class="message-meta">
+            ${mine ? "You" : safe(msg.senderCompany)} • ${safe(msg.senderRole)}
+          </div>
         </div>
       `;
     });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
   });
 }
 
-window.back = function(){
+window.goRoom = function(){
   window.location.href = "room.html";
 };
 
-</script></body>
+window.goDashboard = function(){
+  window.location.href = "dashboard.html";
+};
+
+</script>
+
+</body>
 </html>

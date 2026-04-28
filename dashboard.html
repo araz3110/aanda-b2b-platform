@@ -1,176 +1,514 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - A&A</title><style>
-body{font-family:Arial;background:#0A0A0A;color:white;margin:0;}
-.container{display:flex}
+<title>Dashboard - A&A Global B2B Platform</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --gold:#C9A84C;
+  --dark:#0A0A0A;
+  --card:#111;
+  --line:#252525;
+  --white:#F8F5EF;
+  --muted:#8A8A8A;
+  --red:#b84a4a;
+  --green:#4aa36f;
+}
+
+body{
+  background:var(--dark);
+  color:var(--white);
+  font-family:'Montserrat',sans-serif;
+  min-height:100vh;
+}
+
+.container{
+  display:flex;
+  min-height:100vh;
+}
 
 /* SIDEBAR */
 .sidebar{
-width:230px;
-background:#111;
-height:100vh;
-padding:20px;
+  width:260px;
+  background:#080808;
+  border-right:1px solid var(--line);
+  padding:24px;
 }
+
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;
+  margin-bottom:30px;
+}
+
+.logo span{
+  color:var(--gold);
+}
+
 .sidebar a{
-display:block;
-color:#aaa;
-text-decoration:none;
-padding:10px;
-margin:5px 0;
-cursor:pointer;
+  display:block;
+  color:#aaa;
+  text-decoration:none;
+  padding:12px 0;
+  cursor:pointer;
+  border-bottom:1px solid #151515;
 }
-.sidebar a:hover{color:#C9A84C}
+
+.sidebar a:hover{
+  color:var(--gold);
+}
 
 /* MAIN */
-.main{flex:1;padding:30px}
+.main{
+  flex:1;
+  padding:30px;
+}
 
-/* FORM */
-input,textarea{
-width:100%;
-padding:10px;
-margin:5px 0;
-background:#111;
-border:1px solid #333;
-color:white;
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+h1{
+  font-size:28px;
+  font-weight:500;
+}
+
+.status-box{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:18px;
+  margin-bottom:20px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:25px;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:18px;
+}
+
+.card h3{
+  font-size:14px;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.card strong{
+  color:var(--gold);
+  font-size:22px;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  margin:5px 5px 5px 0;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  font-size:12px;
+}
+
+.badge-green{
+  border-color:var(--green);
+  color:var(--green);
+}
+
+.form-box{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:20px;
+  margin-bottom:25px;
+  display:none;
+}
+
+input, textarea{
+  width:100%;
+  padding:12px;
+  margin:7px 0;
+  background:#000;
+  border:1px solid #222;
+  color:white;
+  font-family:'Montserrat',sans-serif;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
 }
 
 button{
-padding:10px;
-background:#C9A84C;
-border:none;
-cursor:pointer;
+  padding:11px 14px;
+  background:var(--gold);
+  color:#000;
+  border:none;
+  cursor:pointer;
+  font-weight:600;
+  margin-top:8px;
 }
 
-/* PRODUCTS */
+.btn-dark{
+  background:#222;
+  color:white;
+}
+
 .product{
-background:#111;
-padding:15px;
-margin-top:10px;
-border:1px solid #222;
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:16px;
+  margin-bottom:12px;
 }
-</style></head><body><div class="container"><div class="sidebar">
-<h2>A&A</h2>
-<a onclick="goRoom()">Enter Room</a>
-<a onclick="logout()">Logout</a>
-</div><div class="main">
-<h2>Dashboard</h2><p id="userEmail"></p>
-<p id="userRole"></p>
-<p id="userRoom"></p><!-- 🔥 SADECE PRODUCER GÖRÜR --><div id="producerPanel" style="display:none;">
-<h3>Add Product</h3><input id="name" placeholder="Product Name">
-<textarea id="desc" placeholder="Description"></textarea>
-<input id="price" placeholder="Price"><button onclick="addProduct()">Add Product</button>
 
-</div><h3>Your Products</h3>
-<div id="products"></div></div>
-</div><script type="module">
+.product h3{
+  margin-bottom:8px;
+}
+
+.product p{
+  color:#bbb;
+  margin-bottom:8px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.warning{
+  background:#1b1510;
+  border:1px solid rgba(201,168,76,0.35);
+  padding:15px;
+  margin-bottom:20px;
+  color:#ddd;
+}
+
+@media(max-width:900px){
+  .container{display:block;}
+  .sidebar{width:100%;height:auto;}
+  .grid{grid-template-columns:1fr 1fr;}
+}
+
+@media(max-width:550px){
+  .main{padding:18px;}
+  .grid{grid-template-columns:1fr;}
+  .top{display:block;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <div class="logo">A<span>&</span>A</div>
+    <a onclick="goRoom()">Enter Industry Room</a>
+    <a onclick="goAdmin()">Admin Panel</a>
+    <a onclick="logout()">Logout</a>
+  </div>
+
+  <div class="main">
+
+    <div class="top">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="small" id="userEmail">Loading...</p>
+      </div>
+      <button onclick="goRoom()">Enter Room</button>
+    </div>
+
+    <div id="approvalWarning"></div>
+
+    <div class="status-box">
+      <h2 id="companyName">Company</h2>
+      <div id="badges"></div>
+      <p class="small" id="companyInfo"></p>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Role</h3>
+        <strong id="roleBox">-</strong>
+      </div>
+      <div class="card">
+        <h3>Room</h3>
+        <strong id="roomBox">-</strong>
+      </div>
+      <div class="card">
+        <h3>Premium</h3>
+        <strong id="premiumBox">-</strong>
+      </div>
+      <div class="card">
+        <h3>Verified</h3>
+        <strong id="verifiedBox">-</strong>
+      </div>
+    </div>
+
+    <div id="producerPanel" class="form-box">
+      <h2>Add Product</h2>
+      <input id="name" placeholder="Product Name">
+      <textarea id="desc" placeholder="Product Description"></textarea>
+      <input id="price" placeholder="Base Price / Request Price">
+      <input id="quantity" placeholder="Available Quantity / Capacity">
+      <button onclick="addProduct()">Add Product</button>
+    </div>
+
+    <h2>My Products</h2>
+    <div id="products"></div>
+
+  </div>
+
+</div>
+
+<script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyCj1JKJIk9CvIIgwowusAMfDdDi5L9NY4k",
   authDomain: "aanda-web.firebaseapp.com",
-  projectId: "aanda-web"
+  projectId: "aanda-web",
+  storageBucket: "aanda-web.firebasestorage.app",
+  messagingSenderId: "454700153826",
+  appId: "1:454700153826:web:793107ea88e01d6eee97bb"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
+
+let currentUser = null;
 let currentUserData = null;
 
-/* USER LOAD */
 onAuthStateChanged(auth, async (user) => {
-
   if (!user) {
     window.location.href = "index.html";
     return;
   }
 
-  document.getElementById("userEmail").innerText = "Email: " + user.email;
+  currentUser = user;
+  document.getElementById("userEmail").innerText = user.email;
 
-  // 🔥 kullanıcı bilgisini çek
-  const docSnap = await getDoc(doc(db, "companies", user.uid));
-  const data = docSnap.data();
+  const companyRef = doc(db, "companies", user.uid);
+  const companySnap = await getDoc(companyRef);
 
+  if (!companySnap.exists()) {
+    window.location.href = "complete-profile.html";
+    return;
+  }
+
+  const data = companySnap.data();
   currentUserData = data;
 
-  document.getElementById("userRole").innerText = "Role: " + data.role;
-  document.getElementById("userRoom").innerText = "Room: " + (data.room || "-");
+  if (data.status === "incomplete") {
+    window.location.href = "complete-profile.html";
+    return;
+  }
 
-  // 🔥 PRODUCER ise ürün ekleme aç
-  if(data.role === "producer"){
+  if (data.status === "pending") {
+    document.getElementById("approvalWarning").innerHTML = `
+      <div class="warning">
+        Your application is pending approval. You can view this page, but full access will be available after admin approval.
+      </div>
+    `;
+  }
+
+  if (data.status === "rejected") {
+    document.getElementById("approvalWarning").innerHTML = `
+      <div class="warning">
+        Your application was rejected. Please contact the platform admin.
+      </div>
+    `;
+  }
+
+  if (data.suspended) {
+    document.getElementById("approvalWarning").innerHTML = `
+      <div class="warning">
+        Your account is suspended. Please contact the platform admin.
+      </div>
+    `;
+  }
+
+  renderCompany(data);
+
+  if (data.role === "producer" && data.status === "approved" && !data.suspended) {
     document.getElementById("producerPanel").style.display = "block";
   }
 
-  loadProducts(user.uid);
+  loadMyProducts(user.uid);
 });
 
-/* ADD PRODUCT */
-window.addProduct = async function () {
+function renderCompany(data){
+  document.getElementById("companyName").innerText = data.company || "Company";
+  document.getElementById("roleBox").innerText = data.role || "-";
+  document.getElementById("roomBox").innerText = data.room || "-";
+  document.getElementById("premiumBox").innerText = data.premium ? "Active" : "Free";
+  document.getElementById("verifiedBox").innerText = data.verified ? "Verified" : "Not Verified";
 
-  const user = auth.currentUser;
+  document.getElementById("companyInfo").innerText =
+    `${data.country || "-"} • ${data.whatsapp || "-"} • ${data.capacity || "-"}`;
 
-  const name = document.getElementById("name").value;
-  const desc = document.getElementById("desc").value;
-  const price = document.getElementById("price").value;
+  let badges = "";
 
-  if(!name || !price){
-    alert("Please fill fields");
+  if (data.premium) {
+    badges += `<span class="badge">Premium</span>`;
+  }
+
+  if (data.verified) {
+    badges += `<span class="badge badge-green">Verified Company</span>`;
+  }
+
+  if (data.status) {
+    badges += `<span class="badge">Status: ${data.status}</span>`;
+  }
+
+  document.getElementById("badges").innerHTML = badges;
+}
+
+window.addProduct = async function(){
+  if (!currentUser || !currentUserData) {
+    alert("Please login again");
+    return;
+  }
+
+  if (currentUserData.role !== "producer") {
+    alert("Only producers can add products.");
+    return;
+  }
+
+  if (currentUserData.status !== "approved") {
+    alert("Your account must be approved before adding products.");
+    return;
+  }
+
+  const name = document.getElementById("name").value.trim();
+  const desc = document.getElementById("desc").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const quantity = document.getElementById("quantity").value.trim();
+
+  if (!name || !desc || !price || !quantity) {
+    alert("Please fill all product fields");
     return;
   }
 
   await addDoc(collection(db, "products"), {
-    uid: user.uid,
+    owner: currentUser.uid,
+    ownerEmail: currentUser.email,
+    ownerCompany: currentUserData.company || "",
+    ownerCountry: currentUserData.country || "",
+    ownerPremium: currentUserData.premium || false,
+    ownerVerified: currentUserData.verified || false,
+    room: currentUserData.room,
     name,
     desc,
     price,
-    room: currentUserData.room,
+    quantity,
     createdAt: new Date()
   });
 
-  alert("Product Added ✅");
-  location.reload();
+  document.getElementById("name").value = "";
+  document.getElementById("desc").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("quantity").value = "";
+
+  alert("Product added successfully");
 };
 
-/* LOAD PRODUCTS */
-async function loadProducts(uid) {
+function loadMyProducts(uid){
+  const q = query(collection(db, "products"), where("owner", "==", uid));
 
-  const q = query(collection(db, "products"), where("uid", "==", uid));
+  onSnapshot(q, (snapshot) => {
+    const container = document.getElementById("products");
+    container.innerHTML = "";
 
-  const querySnapshot = await getDocs(q);
+    if (snapshot.empty) {
+      container.innerHTML = `<div class="warning">No products yet.</div>`;
+      return;
+    }
 
-  const container = document.getElementById("products");
-  container.innerHTML = "";
+    snapshot.forEach((docItem) => {
+      const p = docItem.data();
 
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-
-    container.innerHTML += `
-      <div class="product">
-        <h4>${data.name}</h4>
-        <p>${data.desc}</p>
-        <strong>$${data.price}</strong>
-        <br><small>Room: ${data.room || "-"}</small>
-      </div>
-    `;
+      container.innerHTML += `
+        <div class="product">
+          <h3>${p.name || "-"}</h3>
+          <p>${p.desc || "-"}</p>
+          <div class="small">Price: ${p.price || "-"}</div>
+          <div class="small">Quantity: ${p.quantity || "-"}</div>
+          <div class="small">Room: ${p.room || "-"}</div>
+        </div>
+      `;
+    });
   });
 }
 
-/* ROOM PAGE */
 window.goRoom = function(){
+  if (!currentUserData) {
+    alert("Profile is loading. Please wait.");
+    return;
+  }
+
+  if (currentUserData.status !== "approved") {
+    alert("Your account must be approved before entering the room.");
+    return;
+  }
+
+  if (currentUserData.suspended) {
+    alert("Your account is suspended.");
+    return;
+  }
+
   window.location.href = "room.html";
 };
 
-/* LOGOUT */
-window.logout = function () {
+window.goAdmin = function(){
+  if (!currentUser) return;
+
+  if (currentUser.email === ADMIN_EMAIL) {
+    window.location.href = "admin.html";
+  } else {
+    alert("Admin access only.");
+  }
+};
+
+window.logout = function(){
   signOut(auth).then(() => {
     window.location.href = "index.html";
   });
 };
 
-</script></body>
+</script>
+
+</body>
 </html>

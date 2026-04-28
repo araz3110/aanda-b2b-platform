@@ -1,115 +1,243 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Complete Your Profile</title><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet"><style>
+<title>Complete Your Profile - A&A</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --gold:#C9A84C;
+  --dark:#0A0A0A;
+  --card:#111;
+  --white:#F8F5EF;
+  --muted:#8A8A8A;
+}
+
 body{
-  background:#0A0A0A;
-  color:white;
+  background:var(--dark);
+  color:var(--white);
   font-family:'Montserrat',sans-serif;
+  min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  height:100vh;
+  padding:20px;
 }
+
 .box{
-  background:#111;
-  padding:30px;
-  width:340px;
-  border:1px solid #333;
-}
-input, select{
   width:100%;
-  padding:12px;
+  max-width:520px;
+  background:rgba(17,17,17,0.95);
+  border:1px solid rgba(201,168,76,0.25);
+  padding:32px;
+}
+
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;
+  margin-bottom:10px;
+}
+
+.logo span{
+  color:var(--gold);
+}
+
+h2{
+  margin-bottom:8px;
+  font-weight:500;
+}
+
+p{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:22px;
+  line-height:1.5;
+}
+
+input, select, textarea{
+  width:100%;
+  padding:13px;
   margin:8px 0;
   background:#000;
   border:1px solid #222;
   color:white;
+  font-family:'Montserrat',sans-serif;
 }
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
 button{
   width:100%;
-  padding:12px;
-  background:#C9A84C;
+  padding:13px;
+  background:var(--gold);
   border:none;
-  margin-top:10px;
+  color:#000;
+  font-weight:600;
   cursor:pointer;
+  margin-top:12px;
 }
-small{color:#888;}
-</style></head><body><div class="box">
-  <h2>Complete Your Profile</h2>  <input id="company" placeholder="Company Name">
-  <input id="country" placeholder="Country">  <!-- 🔥 ROLE EKLEDİK -->  <select id="role">
-    <option value="">Select Role</option>
-    <option value="producer">Producer</option>
-    <option value="buyer">Buyer</option>
-    <option value="exporter">Exporter</option>
-    <option value="importer">Importer</option>
-  </select>  <select id="room">
-    <option value="">Select Industry</option>
+
+button:hover{
+  opacity:0.9;
+}
+
+.small{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <div class="logo">A<span>&</span>A</div>
+
+  <h2>Complete Your Profile</h2>
+  <p>
+    Please complete your company profile. Your application will be reviewed before access is approved.
+  </p>
+
+  <input id="company" placeholder="Company Name">
+  <input id="country" placeholder="Country">
+  <input id="whatsapp" placeholder="WhatsApp / Phone Number">
+  <input id="website" placeholder="Website (Optional)">
+
+  <select id="room">
+    <option value="">Select Industry Room</option>
     <option value="rice">Rice</option>
     <option value="wheat">Wheat</option>
     <option value="oil">Oil</option>
     <option value="sugar">Sugar</option>
     <option value="coffee">Coffee</option>
-  </select><small>Your account will be reviewed after submission</small>
+    <option value="pulses">Pulses</option>
+    <option value="textiles">Textiles</option>
+    <option value="machinery">Machinery</option>
+    <option value="packaging">Packaging</option>
+    <option value="chemicals">Chemicals</option>
+    <option value="metals">Metals</option>
+    <option value="agriculture">Agriculture</option>
+  </select>
 
-<button onclick="saveProfile()">Submit for Approval</button>
+  <textarea id="description" placeholder="Company Description"></textarea>
+  <input id="capacity" placeholder="Monthly Capacity / Trade Volume">
 
-</div><script type="module">
+  <button onclick="saveProfile()">Submit Application</button>
+
+  <div class="small">
+    After submission, your account status will be set to pending until admin approval.
+  </div>
+</div>
+
+<script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyCj1JKJIk9CvIIgwowusAMfDdDi5L9NY4k",
   authDomain: "aanda-web.firebaseapp.com",
-  projectId: "aanda-web"
+  projectId: "aanda-web",
+  storageBucket: "aanda-web.firebasestorage.app",
+  messagingSenderId: "454700153826",
+  appId: "1:454700153826:web:793107ea88e01d6eee97bb"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-window.saveProfile = async function () {
+let currentUser = null;
+let currentRole = null;
 
-  const user = auth.currentUser;
-
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  currentUser = user;
+
+  const companyRef = doc(db, "companies", user.uid);
+  const companySnap = await getDoc(companyRef);
+
+  if (companySnap.exists()) {
+    const data = companySnap.data();
+    currentRole = data.role || null;
+  }
+
+  if (!currentRole) {
+    alert("Role information was not found. Please register again from the home page.");
+    window.location.href = "index.html";
+  }
+});
+
+window.saveProfile = async function () {
+  if (!currentUser) {
     alert("Please login again");
     return;
   }
 
-  const company = document.getElementById("company").value;
-  const country = document.getElementById("country").value;
-  const role = document.getElementById("role").value;
+  const company = document.getElementById("company").value.trim();
+  const country = document.getElementById("country").value.trim();
+  const whatsapp = document.getElementById("whatsapp").value.trim();
+  const website = document.getElementById("website").value.trim();
   const room = document.getElementById("room").value;
+  const description = document.getElementById("description").value.trim();
+  const capacity = document.getElementById("capacity").value.trim();
 
-  if(!company || !country || !role || !room){
-    alert("Please fill all fields");
+  if (!company || !country || !whatsapp || !room || !description || !capacity) {
+    alert("Please fill all required fields");
     return;
   }
 
-  try{
-
-    // 🔥 BURASI KRİTİK (OLUŞTURUYOR)
-    await setDoc(doc(db, "companies", user.uid), {
-      email: user.email,
-      company,
-      country,
-      role,
-      room,
+  try {
+    await setDoc(doc(db, "companies", currentUser.uid), {
+      email: currentUser.email,
+      role: currentRole,
+      company: company,
+      country: country,
+      whatsapp: whatsapp,
+      website: website,
+      room: room,
+      description: description,
+      capacity: capacity,
       status: "pending",
       premium: false,
-      createdAt: new Date()
-    });
+      verified: false,
+      suspended: false,
+      updatedAt: new Date()
+    }, { merge: true });
 
-    alert("Application submitted");
+    alert("Application submitted. Your account is pending approval.");
     window.location.href = "index.html";
 
-  }catch(err){
-    alert("Error: " + err.message);
+  } catch (error) {
+    alert("Error: " + error.message);
   }
 };
 
-</script></body>
+</script>
+
+</body>
 </html>
