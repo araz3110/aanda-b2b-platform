@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Industry Room - A&A Global B2B Platform</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -80,6 +81,11 @@ button{
 
 button:hover{
   opacity:0.9;
+}
+
+button:disabled{
+  opacity:0.55;
+  cursor:not-allowed;
 }
 
 .btn-dark{
@@ -276,6 +282,11 @@ input, textarea, select{
   font-family:'Montserrat',sans-serif;
 }
 
+input:focus, textarea:focus, select:focus{
+  outline:none;
+  border-color:var(--gold);
+}
+
 textarea{
   min-height:90px;
   resize:vertical;
@@ -296,17 +307,9 @@ textarea{
 
 .offer-box{
   margin-top:14px;
-  padding-top:14px;
   border-top:1px solid #222;
   background:#0d0d0d;
   padding:14px;
-}
-
-.offer-item{
-  background:#0b0b0b;
-  border:1px solid #222;
-  padding:13px;
-  margin-top:10px;
 }
 
 .empty{
@@ -404,6 +407,7 @@ textarea{
 
 <header>
   <div class="logo">A<span>&</span>A Room</div>
+
   <div class="header-actions">
     <button class="btn-dark" onclick="goDashboard()">Dashboard</button>
     <button class="btn-dark" onclick="logout()">Logout</button>
@@ -427,14 +431,17 @@ textarea{
       <span>Products</span>
       <strong id="statProducts">0</strong>
     </div>
+
     <div class="stat">
       <span>Buyer Requests</span>
       <strong id="statRequests">0</strong>
     </div>
+
     <div class="stat">
       <span>Active Offers</span>
       <strong id="statOffers">0</strong>
     </div>
+
     <div class="stat">
       <span>Verified Companies</span>
       <strong id="statCompanies">0</strong>
@@ -466,12 +473,10 @@ textarea{
 
   <!-- PRODUCTS -->
   <div id="products" class="section active">
-
     <div id="producerPanel" class="card" style="display:none;">
       <h2 class="section-title">Add Product Listing</h2>
 
       <input id="productName" placeholder="Product Name">
-
       <textarea id="productDesc" placeholder="Product Description, quality, origin, packaging..."></textarea>
 
       <div class="form-grid">
@@ -479,7 +484,7 @@ textarea{
         <input id="productQuantity" placeholder="Available Quantity / Capacity">
       </div>
 
-      <button onclick="addProduct()">Add Product</button>
+      <button id="addProductBtn" onclick="addProduct()">Add Product</button>
     </div>
 
     <div class="search-box">
@@ -491,17 +496,14 @@ textarea{
 
   <!-- BUYER REQUESTS -->
   <div id="requests" class="section">
-
-    <div class="card">
+    <div id="requestFormCard" class="card" style="display:none;">
       <h2 class="section-title">Post Buyer Request</h2>
 
       <input id="requestTitle" placeholder="What are you looking for?">
-
       <textarea id="requestDetails" placeholder="Details, target price, quality, packaging, delivery terms..."></textarea>
-
       <input id="requestQuantity" placeholder="Required Quantity">
 
-      <button onclick="addBuyerRequest()">Post Request</button>
+      <button id="addRequestBtn" onclick="addBuyerRequest()">Post Request</button>
     </div>
 
     <div id="requestsList"></div>
@@ -515,13 +517,10 @@ textarea{
 
   <!-- DISCUSSIONS -->
   <div id="discussions" class="section">
-
     <div class="card">
       <h2 class="section-title">Room Discussion</h2>
-
       <textarea id="discussionText" placeholder="Share market information, stock updates, shipping notes or business questions..."></textarea>
-
-      <button onclick="addDiscussion()">Post Discussion</button>
+      <button id="discussionBtn" onclick="addDiscussion()">Post Discussion</button>
     </div>
 
     <div id="discussionList"></div>
@@ -570,15 +569,22 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
+
 let currentUser = null;
 let currentUserData = null;
-
 let allProducts = [];
 let productCache = {};
+let myProductCount = 0;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "index.html";
+    return;
+  }
+
+  if (user.email === ADMIN_EMAIL) {
+    window.location.href = "admin.html";
     return;
   }
 
@@ -600,15 +606,13 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   renderRoomHeader();
+  renderRoleBasedAccess();
+
   loadProducts();
   loadBuyerRequests();
   loadOffers();
   loadDiscussions();
   loadVerifiedCompanies();
-
-  if (currentUserData.role === "producer") {
-    document.getElementById("producerPanel").style.display = "block";
-  }
 });
 
 function safe(value){
@@ -664,6 +668,17 @@ function renderRoomHeader(){
   document.getElementById("accessInfo").innerText = accessText;
 }
 
+function renderRoleBasedAccess(){
+  document.getElementById("producerPanel").style.display = "none";
+  document.getElementById("requestFormCard").style.display = "none";
+
+  if (currentUserData.role === "producer") {
+    document.getElementById("producerPanel").style.display = "block";
+  } else {
+    document.getElementById("requestFormCard").style.display = "block";
+  }
+}
+
 window.showTab = function(tabId, button){
   document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
   document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
@@ -679,42 +694,62 @@ window.addProduct = async function(){
     return;
   }
 
+  if (!currentUserData.premium && myProductCount >= 3) {
+    alert("Free producer accounts can add up to 3 products. Upgrade to Premium for more visibility and more listings.");
+    return;
+  }
+
   const name = document.getElementById("productName").value.trim();
   const desc = document.getElementById("productDesc").value.trim();
   const price = document.getElementById("productPrice").value.trim();
   const quantity = document.getElementById("productQuantity").value.trim();
 
   if (!name || !desc || !price || !quantity) {
-    alert("Please fill all product fields");
+    alert("Please fill all product fields.");
     return;
   }
 
-  await addDoc(collection(db, "products"), {
-    owner: currentUser.uid,
-    ownerEmail: currentUser.email,
-    ownerCompany: currentUserData.company || "",
-    ownerCountry: currentUserData.country || "",
-    ownerPremium: currentUserData.premium || false,
-    ownerVerified: currentUserData.verified || false,
-    room: currentUserData.room,
-    name,
-    desc,
-    price,
-    quantity,
-    createdAt: new Date()
-  });
+  const btn = document.getElementById("addProductBtn");
+  btn.disabled = true;
+  btn.innerText = "Adding...";
 
-  document.getElementById("productName").value = "";
-  document.getElementById("productDesc").value = "";
-  document.getElementById("productPrice").value = "";
-  document.getElementById("productQuantity").value = "";
+  try {
+    await addDoc(collection(db, "products"), {
+      owner: currentUser.uid,
+      ownerEmail: currentUser.email,
+      ownerCompany: currentUserData.company || "",
+      ownerCountry: currentUserData.country || "",
+      ownerPremium: currentUserData.premium || false,
+      ownerVerified: currentUserData.verified || false,
+      room: currentUserData.room,
+      name,
+      desc,
+      price,
+      quantity,
+      createdAt: new Date()
+    });
 
-  alert("Product added");
+    document.getElementById("productName").value = "";
+    document.getElementById("productDesc").value = "";
+    document.getElementById("productPrice").value = "";
+    document.getElementById("productQuantity").value = "";
+
+    alert("Product added successfully.");
+
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+
+  btn.disabled = false;
+  btn.innerText = "Add Product";
 };
 
 /* LOAD PRODUCTS */
 function loadProducts(){
-  const q = query(collection(db, "products"), where("room", "==", currentUserData.room));
+  const q = query(
+    collection(db, "products"),
+    where("room", "==", currentUserData.room)
+  );
 
   onSnapshot(q, (snapshot) => {
     allProducts = [];
@@ -730,6 +765,8 @@ function loadProducts(){
       productCache[product.id] = product;
     });
 
+    myProductCount = allProducts.filter((p) => p.owner === currentUser.uid).length;
+
     document.getElementById("statProducts").innerText = allProducts.length;
 
     allProducts.sort((a, b) => {
@@ -737,8 +774,10 @@ function loadProducts(){
       const bp = b.ownerPremium ? 1 : 0;
       const av = a.ownerVerified ? 1 : 0;
       const bv = b.ownerVerified ? 1 : 0;
+
       const aScore = ap + av;
       const bScore = bp + bv;
+
       return bScore - aScore;
     });
 
@@ -774,8 +813,14 @@ window.renderProducts = function(){
     const isOwner = p.owner === currentUser.uid;
 
     let badges = "";
-    if (p.ownerPremium) badges += `<span class="badge">Premium Supplier</span>`;
-    if (p.ownerVerified) badges += `<span class="badge badge-green">Verified Supplier</span>`;
+
+    if (p.ownerPremium) {
+      badges += `<span class="badge">Premium Supplier</span>`;
+    }
+
+    if (p.ownerVerified) {
+      badges += `<span class="badge badge-green">Verified Supplier</span>`;
+    }
 
     let offerArea = "";
 
@@ -820,7 +865,12 @@ window.sendOffer = async function(productId){
   const product = productCache[productId];
 
   if (!product) {
-    alert("Product not found");
+    alert("Product not found.");
+    return;
+  }
+
+  if (product.owner === currentUser.uid) {
+    alert("You cannot make an offer on your own product.");
     return;
   }
 
@@ -828,7 +878,7 @@ window.sendOffer = async function(productId){
   const note = document.getElementById("offerNote-" + productId).value.trim();
 
   if (!price || !note) {
-    alert("Please enter offer price and note");
+    alert("Please enter offer price and note.");
     return;
   }
 
@@ -851,42 +901,62 @@ window.sendOffer = async function(productId){
   document.getElementById("offer-" + productId).value = "";
   document.getElementById("offerNote-" + productId).value = "";
 
-  alert("Offer sent");
+  alert("Offer sent successfully.");
 };
 
 /* BUYER REQUESTS */
 window.addBuyerRequest = async function(){
+  if (currentUserData.role === "producer") {
+    alert("Producer accounts cannot post buyer requests.");
+    return;
+  }
+
   const title = document.getElementById("requestTitle").value.trim();
   const details = document.getElementById("requestDetails").value.trim();
   const quantity = document.getElementById("requestQuantity").value.trim();
 
   if (!title || !details || !quantity) {
-    alert("Please fill all request fields");
+    alert("Please fill all request fields.");
     return;
   }
 
-  await addDoc(collection(db, "buyerRequests"), {
-    room: currentUserData.room,
-    requester: currentUser.uid,
-    requesterEmail: currentUser.email,
-    requesterCompany: currentUserData.company || "",
-    requesterCountry: currentUserData.country || "",
-    requesterRole: currentUserData.role || "",
-    title,
-    details,
-    quantity,
-    createdAt: new Date()
-  });
+  const btn = document.getElementById("addRequestBtn");
+  btn.disabled = true;
+  btn.innerText = "Posting...";
 
-  document.getElementById("requestTitle").value = "";
-  document.getElementById("requestDetails").value = "";
-  document.getElementById("requestQuantity").value = "";
+  try {
+    await addDoc(collection(db, "buyerRequests"), {
+      room: currentUserData.room,
+      requester: currentUser.uid,
+      requesterEmail: currentUser.email,
+      requesterCompany: currentUserData.company || "",
+      requesterCountry: currentUserData.country || "",
+      requesterRole: currentUserData.role || "",
+      title,
+      details,
+      quantity,
+      createdAt: new Date()
+    });
 
-  alert("Buyer request posted");
+    document.getElementById("requestTitle").value = "";
+    document.getElementById("requestDetails").value = "";
+    document.getElementById("requestQuantity").value = "";
+
+    alert("Buyer request posted successfully.");
+
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+
+  btn.disabled = false;
+  btn.innerText = "Post Request";
 };
 
 function loadBuyerRequests(){
-  const q = query(collection(db, "buyerRequests"), where("room", "==", currentUserData.room));
+  const q = query(
+    collection(db, "buyerRequests"),
+    where("room", "==", currentUserData.room)
+  );
 
   onSnapshot(q, (snapshot) => {
     const container = document.getElementById("requestsList");
@@ -906,6 +976,7 @@ function loadBuyerRequests(){
         <div class="card">
           <h3>${safe(r.title)}</h3>
           <p>${safe(r.details)}</p>
+
           <div class="meta"><strong>Quantity:</strong> ${safe(r.quantity)}</div>
           <div class="meta"><strong>Company:</strong> ${safe(r.requesterCompany)} • ${safe(r.requesterCountry)} • ${safe(r.requesterRole)}</div>
         </div>
@@ -916,7 +987,10 @@ function loadBuyerRequests(){
 
 /* OFFERS */
 function loadOffers(){
-  const q = query(collection(db, "offers"), where("room", "==", currentUserData.room));
+  const q = query(
+    collection(db, "offers"),
+    where("room", "==", currentUserData.room)
+  );
 
   onSnapshot(q, (snapshot) => {
     const container = document.getElementById("offersList");
@@ -938,7 +1012,9 @@ function loadOffers(){
       const isOwner = offer.owner === currentUser.uid;
       const isBuyer = offer.buyer === currentUser.uid;
 
-      if (!isOwner && !isBuyer) return;
+      if (!isOwner && !isBuyer) {
+        return;
+      }
 
       count++;
 
@@ -1000,25 +1076,40 @@ window.addDiscussion = async function(){
   const text = document.getElementById("discussionText").value.trim();
 
   if (!text) {
-    alert("Please write something");
+    alert("Please write something.");
     return;
   }
 
-  await addDoc(collection(db, "roomDiscussions"), {
-    room: currentUserData.room,
-    uid: currentUser.uid,
-    email: currentUser.email,
-    company: currentUserData.company || "",
-    role: currentUserData.role || "",
-    text,
-    createdAt: new Date()
-  });
+  const btn = document.getElementById("discussionBtn");
+  btn.disabled = true;
+  btn.innerText = "Posting...";
 
-  document.getElementById("discussionText").value = "";
+  try {
+    await addDoc(collection(db, "roomDiscussions"), {
+      room: currentUserData.room,
+      uid: currentUser.uid,
+      email: currentUser.email,
+      company: currentUserData.company || "",
+      role: currentUserData.role || "",
+      text,
+      createdAt: new Date()
+    });
+
+    document.getElementById("discussionText").value = "";
+
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+
+  btn.disabled = false;
+  btn.innerText = "Post Discussion";
 };
 
 function loadDiscussions(){
-  const q = query(collection(db, "roomDiscussions"), where("room", "==", currentUserData.room));
+  const q = query(
+    collection(db, "roomDiscussions"),
+    where("room", "==", currentUserData.room)
+  );
 
   onSnapshot(q, (snapshot) => {
     const container = document.getElementById("discussionList");
@@ -1044,7 +1135,10 @@ function loadDiscussions(){
 
 /* VERIFIED COMPANIES */
 function loadVerifiedCompanies(){
-  const q = query(collection(db, "companies"), where("room", "==", currentUserData.room));
+  const q = query(
+    collection(db, "companies"),
+    where("room", "==", currentUserData.room)
+  );
 
   onSnapshot(q, (snapshot) => {
     const container = document.getElementById("companiesList");
@@ -1055,7 +1149,9 @@ function loadVerifiedCompanies(){
     snapshot.forEach((docItem) => {
       const c = docItem.data();
 
-      if (!c.verified || c.status !== "approved" || c.suspended) return;
+      if (!c.verified || c.status !== "approved" || c.suspended) {
+        return;
+      }
 
       count++;
 
