@@ -384,7 +384,8 @@ import {
   collection,
   onSnapshot,
   doc,
-  updateDoc
+  updateDoc,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -402,6 +403,7 @@ const db = getFirestore(app);
 
 const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
 
+let currentAdmin = null;
 let allCompanies = [];
 let allProducts = [];
 let allOffers = [];
@@ -417,6 +419,8 @@ onAuthStateChanged(auth, (user) => {
     window.location.href = "dashboard.html";
     return;
   }
+
+  currentAdmin = user;
 
   loadCompanies();
   loadProducts();
@@ -441,6 +445,56 @@ function pretty(value){
   return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 }
 
+function getCompanyById(id){
+  return allCompanies.find((company) => company.id === id);
+}
+
+/* MAIL QUEUE PREPARATION */
+async function createMailQueueRecord(company, type){
+  if (!company || !company.email) {
+    return;
+  }
+
+  let subject = "";
+  let message = "";
+
+  if (type === "application_approved") {
+    subject = "Your A&A Global B2B Platform Application Has Been Approved";
+    message = "Your company application has been approved. You can now log in and access your dashboard and industry room.";
+  }
+
+  if (type === "application_rejected") {
+    subject = "Your A&A Global B2B Platform Application Has Been Rejected";
+    message = "Your company application has been rejected. Please contact the platform admin if you need more information.";
+  }
+
+  if (type === "account_suspended") {
+    subject = "Your A&A Global B2B Platform Account Has Been Suspended";
+    message = "Your account has been suspended by the platform admin. Please contact the platform admin for more information.";
+  }
+
+  if (type === "account_reactivated") {
+    subject = "Your A&A Global B2B Platform Account Has Been Reactivated";
+    message = "Your account has been reactivated. You can now log in and continue using the platform.";
+  }
+
+  await addDoc(collection(db, "mailQueue"), {
+    to: company.email,
+    subject: subject,
+    type: type,
+    status: "pending",
+    createdBy: currentAdmin ? currentAdmin.uid : "admin",
+    companyId: company.id,
+    companyEmail: company.email,
+    companyName: company.company || "",
+    role: company.role || "",
+    room: company.room || "",
+    country: company.country || "",
+    message: message,
+    createdAt: new Date()
+  });
+}
+
 /* COMPANIES */
 function loadCompanies(){
   onSnapshot(collection(db, "companies"), (snapshot) => {
@@ -449,17 +503,14 @@ function loadCompanies(){
     snapshot.forEach((docItem) => {
       const data = docItem.data();
 
-      // Hide platform admin account from company management
       if (data.email === ADMIN_EMAIL) {
         return;
       }
 
-      // Hide incomplete users who have not submitted a real company profile yet
       if (data.status === "incomplete") {
         return;
       }
 
-      // Hide empty company records
       if (!data.company) {
         return;
       }
@@ -517,7 +568,6 @@ window.renderCompanies = function(){
     `.toLowerCase();
 
     let matchesSearch = text.includes(search);
-
     let matchesFilter = true;
 
     if (filter === "pending") matchesFilter = c.status === "pending";
@@ -595,18 +645,30 @@ function createCompanyCard(c){
 }
 
 window.approveCompany = async function(id){
+  const company = getCompanyById(id);
+
   await updateDoc(doc(db, "companies", id), {
     status: "approved",
     suspended: false,
     updatedAt: new Date()
   });
+
+  await createMailQueueRecord(company, "application_approved");
+
+  alert("Company approved. Approval mail record was added to mailQueue.");
 };
 
 window.rejectCompany = async function(id){
+  const company = getCompanyById(id);
+
   await updateDoc(doc(db, "companies", id), {
     status: "rejected",
     updatedAt: new Date()
   });
+
+  await createMailQueueRecord(company, "application_rejected");
+
+  alert("Company rejected. Rejection mail record was added to mailQueue.");
 };
 
 window.makePremium = async function(id, value){
@@ -624,11 +686,21 @@ window.makeVerified = async function(id, value){
 };
 
 window.suspendCompany = async function(id, value){
+  const company = getCompanyById(id);
+
   await updateDoc(doc(db, "companies", id), {
     suspended: value,
     status: value ? "suspended" : "approved",
     updatedAt: new Date()
   });
+
+  if (value) {
+    await createMailQueueRecord(company, "account_suspended");
+    alert("Company suspended. Suspension mail record was added to mailQueue.");
+  } else {
+    await createMailQueueRecord(company, "account_reactivated");
+    alert("Company reactivated. Reactivation mail record was added to mailQueue.");
+  }
 };
 
 /* ROOM SUMMARY */
