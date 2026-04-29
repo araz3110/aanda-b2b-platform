@@ -3,60 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Complete Your Profile - A&A</title>
+
+<title>Complete Your Profile - A&A Global B2B Platform</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 :root{
   --gold:#C9A84C;
   --dark:#0A0A0A;
   --card:#111;
+  --line:#252525;
   --white:#F8F5EF;
   --muted:#8A8A8A;
+  --green:#4aa36f;
 }
 
 body{
-  background:var(--dark);
+  background:
+    radial-gradient(circle at top right,rgba(201,168,76,0.12),transparent 30%),
+    linear-gradient(120deg,#050505,#0A0A0A,#111);
   color:var(--white);
   font-family:'Montserrat',sans-serif;
   min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:20px;
+  padding:24px;
 }
 
-.box{
+.wrapper{
   width:100%;
-  max-width:520px;
-  background:rgba(17,17,17,0.95);
-  border:1px solid rgba(201,168,76,0.25);
-  padding:32px;
+  max-width:980px;
+  display:grid;
+  grid-template-columns:0.9fr 1.1fr;
+  gap:24px;
+  align-items:stretch;
+}
+
+.info-panel{
+  background:rgba(17,17,17,0.92);
+  border:1px solid rgba(201,168,76,0.22);
+  padding:30px;
 }
 
 .logo{
   font-family:'Cormorant Garamond',serif;
-  font-size:2rem;
-  margin-bottom:10px;
+  font-size:2.7rem;
+  margin-bottom:18px;
 }
 
 .logo span{
   color:var(--gold);
 }
 
-h2{
-  margin-bottom:8px;
-  font-weight:500;
+.info-panel h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.5rem;
+  font-weight:400;
+  line-height:1.1;
+  margin-bottom:14px;
 }
 
-p{
+.info-panel p{
   color:var(--muted);
   font-size:14px;
-  margin-bottom:22px;
+  line-height:1.8;
+  margin-bottom:18px;
+}
+
+.step{
+  border:1px solid rgba(201,168,76,0.18);
+  background:#0b0b0b;
+  padding:13px;
+  margin-top:10px;
+}
+
+.step strong{
+  color:var(--gold);
+  display:block;
+  margin-bottom:4px;
+  font-size:13px;
+}
+
+.step span{
+  color:var(--muted);
+  font-size:12px;
   line-height:1.5;
+}
+
+.form-box{
+  background:rgba(17,17,17,0.95);
+  border:1px solid rgba(201,168,76,0.25);
+  padding:32px;
+}
+
+.form-box h2{
+  font-size:24px;
+  font-weight:500;
+  margin-bottom:8px;
+}
+
+.form-box p{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:20px;
+  line-height:1.6;
+}
+
+.role-box{
+  background:#0b0b0b;
+  border:1px solid rgba(201,168,76,0.2);
+  padding:12px;
+  margin-bottom:18px;
+  color:#ddd;
+  font-size:13px;
+}
+
+.role-box strong{
+  color:var(--gold);
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 input, select, textarea{
@@ -69,73 +146,162 @@ input, select, textarea{
   font-family:'Montserrat',sans-serif;
 }
 
+input:focus, select:focus, textarea:focus{
+  outline:none;
+  border-color:var(--gold);
+}
+
 textarea{
-  min-height:90px;
+  min-height:105px;
   resize:vertical;
 }
 
 button{
   width:100%;
-  padding:13px;
+  padding:14px;
   background:var(--gold);
   border:none;
   color:#000;
   font-weight:600;
   cursor:pointer;
   margin-top:12px;
+  font-family:'Montserrat',sans-serif;
 }
 
 button:hover{
   opacity:0.9;
 }
 
+button:disabled{
+  opacity:0.55;
+  cursor:not-allowed;
+}
+
 .small{
   color:var(--muted);
   font-size:12px;
   margin-top:12px;
+  line-height:1.6;
+}
+
+.required{
+  color:var(--gold);
+}
+
+@media(max-width:900px){
+  .wrapper{
+    grid-template-columns:1fr;
+  }
+
+  .info-panel h1{
+    font-size:2.1rem;
+  }
+}
+
+@media(max-width:550px){
+  body{
+    padding:18px;
+  }
+
+  .form-box,
+  .info-panel{
+    padding:22px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .logo{
+    font-size:2.2rem;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <div class="logo">A<span>&</span>A</div>
+<div class="wrapper">
 
-  <h2>Complete Your Profile</h2>
-  <p>
-    Please complete your company profile. Your application will be reviewed before access is approved.
-  </p>
+  <div class="info-panel">
+    <div class="logo">A<span>&</span>A</div>
 
-  <input id="company" placeholder="Company Name">
-  <input id="country" placeholder="Country">
-  <input id="whatsapp" placeholder="WhatsApp / Phone Number">
-  <input id="website" placeholder="Website (Optional)">
+    <h1>Company Application Review</h1>
 
-  <select id="room">
-    <option value="">Select Industry Room</option>
-    <option value="rice">Rice</option>
-    <option value="wheat">Wheat</option>
-    <option value="oil">Oil</option>
-    <option value="sugar">Sugar</option>
-    <option value="coffee">Coffee</option>
-    <option value="pulses">Pulses</option>
-    <option value="textiles">Textiles</option>
-    <option value="machinery">Machinery</option>
-    <option value="packaging">Packaging</option>
-    <option value="chemicals">Chemicals</option>
-    <option value="metals">Metals</option>
-    <option value="agriculture">Agriculture</option>
-  </select>
+    <p>
+      Complete your company profile so the platform admin can review your access request.
+      Approved companies will be able to enter industry rooms, list products, post buyer requests, make offers and use private deal chats.
+    </p>
 
-  <textarea id="description" placeholder="Company Description"></textarea>
-  <input id="capacity" placeholder="Monthly Capacity / Trade Volume">
+    <div class="step">
+      <strong>Step 1 — Company Information</strong>
+      <span>Submit accurate company details, trade category and capacity information.</span>
+    </div>
 
-  <button onclick="saveProfile()">Submit Application</button>
+    <div class="step">
+      <strong>Step 2 — Admin Review</strong>
+      <span>Your application will be reviewed before full platform access is granted.</span>
+    </div>
 
-  <div class="small">
-    After submission, your account status will be set to pending until admin approval.
+    <div class="step">
+      <strong>Step 3 — Industry Room Access</strong>
+      <span>After approval, your company will access the selected industry room.</span>
+    </div>
   </div>
+
+  <div class="form-box">
+
+    <h2>Complete Your Profile</h2>
+
+    <p>
+      Fields marked with <span class="required">*</span> are required. Your application will be set to pending after submission.
+    </p>
+
+    <div class="role-box">
+      Registered role: <strong id="roleDisplay">Loading...</strong>
+    </div>
+
+    <input id="company" placeholder="Company Name *">
+
+    <div class="form-grid">
+      <input id="country" placeholder="Country *">
+      <input id="whatsapp" placeholder="WhatsApp / Phone Number *">
+    </div>
+
+    <input id="website" placeholder="Website (Optional)">
+
+    <select id="room">
+      <option value="">Select Industry Room *</option>
+      <option value="rice">Rice</option>
+      <option value="wheat">Wheat</option>
+      <option value="oil">Oil</option>
+      <option value="sugar">Sugar</option>
+      <option value="coffee">Coffee</option>
+      <option value="pulses">Pulses</option>
+      <option value="textiles">Textiles</option>
+      <option value="machinery">Machinery</option>
+      <option value="packaging">Packaging</option>
+      <option value="chemicals">Chemicals</option>
+      <option value="metals">Metals</option>
+      <option value="agriculture">Agriculture</option>
+      <option value="food">Food & Beverages</option>
+      <option value="construction">Construction Materials</option>
+      <option value="logistics">Logistics</option>
+      <option value="other">Other Trade Category</option>
+    </select>
+
+    <textarea id="description" placeholder="Company Description *"></textarea>
+
+    <input id="capacity" placeholder="Monthly Capacity / Trade Volume *">
+
+    <button id="submitBtn" onclick="saveProfile()">Submit Application</button>
+
+    <div class="small">
+      After submission, your account status will remain pending until admin approval. Please make sure all information is accurate before submitting.
+    </div>
+
+  </div>
+
 </div>
 
 <script type="module">
@@ -167,6 +333,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
+
 let currentUser = null;
 let currentRole = null;
 
@@ -178,23 +346,74 @@ onAuthStateChanged(auth, async (user) => {
 
   currentUser = user;
 
+  if (user.email === ADMIN_EMAIL) {
+    window.location.href = "admin.html";
+    return;
+  }
+
+  if (!user.emailVerified) {
+    alert("Please verify your email before completing your company profile.");
+    window.location.href = "index.html";
+    return;
+  }
+
   const companyRef = doc(db, "companies", user.uid);
   const companySnap = await getDoc(companyRef);
 
-  if (companySnap.exists()) {
-    const data = companySnap.data();
-    currentRole = data.role || null;
+  if (!companySnap.exists()) {
+    alert("Registration record was not found. Please register again from the home page.");
+    window.location.href = "index.html";
+    return;
   }
+
+  const data = companySnap.data();
+  currentRole = data.role || null;
 
   if (!currentRole) {
     alert("Role information was not found. Please register again from the home page.");
     window.location.href = "index.html";
+    return;
+  }
+
+  document.getElementById("roleDisplay").innerText = currentRole;
+
+  if (data.status === "pending") {
+    alert("Your application is already pending admin approval.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  if (data.status === "approved") {
+    window.location.href = "dashboard.html";
+    return;
+  }
+
+  if (data.status === "rejected") {
+    alert("Your application was rejected. Please contact the platform admin.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  if (data.suspended === true) {
+    alert("Your account is suspended. Please contact the platform admin.");
+    window.location.href = "index.html";
+    return;
+  }
+
+  if (data.company) {
+    document.getElementById("company").value = data.company || "";
+    document.getElementById("country").value = data.country || "";
+    document.getElementById("whatsapp").value = data.whatsapp || "";
+    document.getElementById("website").value = data.website || "";
+    document.getElementById("room").value = data.room || "";
+    document.getElementById("description").value = data.description || "";
+    document.getElementById("capacity").value = data.capacity || "";
   }
 });
 
 window.saveProfile = async function () {
   if (!currentUser) {
-    alert("Please login again");
+    alert("Please login again.");
     return;
   }
 
@@ -207,9 +426,13 @@ window.saveProfile = async function () {
   const capacity = document.getElementById("capacity").value.trim();
 
   if (!company || !country || !whatsapp || !room || !description || !capacity) {
-    alert("Please fill all required fields");
+    alert("Please fill all required fields.");
     return;
   }
+
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Submitting...";
 
   try {
     await setDoc(doc(db, "companies", currentUser.uid), {
@@ -229,10 +452,12 @@ window.saveProfile = async function () {
       updatedAt: new Date()
     }, { merge: true });
 
-    alert("Application submitted. Your account is pending approval.");
+    alert("Application submitted. Your account is pending admin approval.");
     window.location.href = "index.html";
 
   } catch (error) {
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit Application";
     alert("Error: " + error.message);
   }
 };
