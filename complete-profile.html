@@ -317,7 +317,9 @@ import {
   getFirestore,
   doc,
   getDoc,
-  setDoc
+  setDoc,
+  collection,
+  addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -451,6 +453,22 @@ window.saveProfile = async function () {
       suspended: false,
       updatedAt: new Date()
     }, { merge: true });
+
+    await addDoc(collection(db, "mailQueue"), {
+      to: ADMIN_EMAIL,
+      subject: "New Company Application Received",
+      type: "new_application",
+      status: "pending",
+      createdBy: currentUser.uid,
+      companyId: currentUser.uid,
+      companyEmail: currentUser.email,
+      companyName: company,
+      role: currentRole,
+      room: room,
+      country: country,
+      message: "A new company application has been submitted and is waiting for admin review.",
+      createdAt: new Date()
+    });
 
     alert("Application submitted. Your account is pending admin approval.");
     window.location.href = "index.html";
