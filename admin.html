@@ -46,9 +46,7 @@ header{
   font-size:2rem;
 }
 
-.logo span{
-  color:var(--gold);
-}
+.logo span{color:var(--gold);}
 
 .header-actions{
   display:flex;
@@ -72,9 +70,7 @@ button{
   font-family:'Montserrat',sans-serif;
 }
 
-button:hover{
-  opacity:0.9;
-}
+button:hover{opacity:0.9;}
 
 .btn-red{
   background:var(--red);
@@ -255,6 +251,10 @@ input, select{
   margin-top:4px;
 }
 
+.mail-card{
+  border-left:3px solid var(--gold);
+}
+
 @media(max-width:1000px){
   .grid{grid-template-columns:1fr 1fr;}
   .two-col{grid-template-columns:1fr;}
@@ -299,7 +299,7 @@ input, select{
   <div class="hero">
     <h1>Admin Control Center</h1>
     <p>
-      Review company applications, manage premium and verified access, monitor products, offers and industry rooms.
+      Review company applications, manage premium and verified access, monitor products, offers, mail queue records and industry rooms.
     </p>
   </div>
 
@@ -367,6 +367,11 @@ input, select{
     </div>
   </div>
 
+  <div class="section">
+    <h2>Mail Queue Overview</h2>
+    <div id="mailQueueList"></div>
+  </div>
+
 </div>
 
 <script type="module">
@@ -407,6 +412,7 @@ let currentAdmin = null;
 let allCompanies = [];
 let allProducts = [];
 let allOffers = [];
+let allMailQueue = [];
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -425,6 +431,7 @@ onAuthStateChanged(auth, (user) => {
   loadCompanies();
   loadProducts();
   loadOffers();
+  loadMailQueue();
 });
 
 function safe(value){
@@ -443,6 +450,24 @@ function safe(value){
 function pretty(value){
   if(!value) return "-";
   return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+}
+
+function formatDate(value){
+  if (!value) return "-";
+
+  try {
+    if (value.toDate) {
+      return value.toDate().toLocaleString();
+    }
+
+    if (value instanceof Date) {
+      return value.toLocaleString();
+    }
+
+    return String(value);
+  } catch (error) {
+    return "-";
+  }
 }
 
 function getCompanyById(id){
@@ -840,6 +865,60 @@ function renderOffers(){
         <div class="small">Offer Price: ${safe(o.price)}</div>
         <div class="small">Buyer: ${safe(o.buyerCompany)} • ${safe(o.buyerCountry)} • ${safe(o.buyerRole)}</div>
         <div class="small">Room: ${safe(o.room)}</div>
+      </div>
+    `;
+  });
+}
+
+/* MAIL QUEUE OVERVIEW */
+function loadMailQueue(){
+  onSnapshot(collection(db, "mailQueue"), (snapshot) => {
+    allMailQueue = [];
+
+    snapshot.forEach((docItem) => {
+      allMailQueue.push({
+        id: docItem.id,
+        ...docItem.data()
+      });
+    });
+
+    renderMailQueue();
+  });
+}
+
+function renderMailQueue(){
+  const container = document.getElementById("mailQueueList");
+  container.innerHTML = "";
+
+  if (allMailQueue.length === 0) {
+    container.innerHTML = `<div class="empty">No mail queue records yet.</div>`;
+    return;
+  }
+
+  const latest = allMailQueue.slice(-10).reverse();
+
+  latest.forEach((mail) => {
+    container.innerHTML += `
+      <div class="card mail-card">
+        <h3>${safe(mail.subject)}</h3>
+
+        <span class="badge">Status: ${safe(mail.status)}</span>
+        <span class="badge">Type: ${safe(mail.type)}</span>
+
+        <div class="row">
+          <div><span class="label">To:</span> ${safe(mail.to)}</div>
+          <div><span class="label">Company:</span> ${safe(mail.companyName)}</div>
+          <div><span class="label">Company Email:</span> ${safe(mail.companyEmail)}</div>
+          <div><span class="label">Role:</span> ${safe(mail.role)}</div>
+          <div><span class="label">Room:</span> ${safe(mail.room)}</div>
+          <div><span class="label">Country:</span> ${safe(mail.country)}</div>
+          <div><span class="label">Created At:</span> ${safe(formatDate(mail.createdAt))}</div>
+          <div><span class="label">Document ID:</span> ${safe(mail.id)}</div>
+        </div>
+
+        <div class="description">
+          ${safe(mail.message)}
+        </div>
       </div>
     `;
   });
