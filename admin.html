@@ -14,6 +14,7 @@
   --gold:#C9A84C;
   --dark:#0A0A0A;
   --card:#111;
+  --card2:#151515;
   --line:#252525;
   --white:#F8F5EF;
   --muted:#8A8A8A;
@@ -35,6 +36,9 @@ header{
   justify-content:space-between;
   align-items:center;
   background:#080808;
+  position:sticky;
+  top:0;
+  z-index:20;
 }
 
 .logo{
@@ -44,7 +48,14 @@ header{
 
 .logo span{color:var(--gold);}
 
+.header-actions{
+  display:flex;
+  gap:8px;
+}
+
 .wrapper{
+  max-width:1200px;
+  margin:auto;
   padding:28px;
 }
 
@@ -56,7 +67,10 @@ button{
   background:var(--gold);
   color:#000;
   font-weight:600;
+  font-family:'Montserrat',sans-serif;
 }
+
+button:hover{opacity:0.9;}
 
 .btn-red{
   background:var(--red);
@@ -73,11 +87,30 @@ button{
   color:white;
 }
 
+.hero{
+  background:linear-gradient(120deg,#111,#050505);
+  border:1px solid rgba(201,168,76,0.25);
+  padding:24px;
+  margin-bottom:22px;
+}
+
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:40px;
+  font-weight:400;
+  margin-bottom:8px;
+}
+
+.hero p{
+  color:var(--muted);
+  line-height:1.6;
+}
+
 .grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+  grid-template-columns:repeat(5,1fr);
   gap:14px;
-  margin-bottom:25px;
+  margin-bottom:24px;
 }
 
 .stat{
@@ -87,22 +120,38 @@ button{
 }
 
 .stat h3{
-  font-size:14px;
+  font-size:13px;
   color:var(--muted);
   margin-bottom:8px;
 }
 
 .stat strong{
-  font-size:28px;
+  font-size:26px;
   color:var(--gold);
 }
 
+.controls{
+  display:grid;
+  grid-template-columns:1.5fr 0.7fr;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+input, select{
+  width:100%;
+  padding:12px;
+  background:#000;
+  border:1px solid #222;
+  color:white;
+  font-family:'Montserrat',sans-serif;
+}
+
 .section{
-  margin-top:28px;
+  margin-top:30px;
 }
 
 .section h2{
-  font-size:20px;
+  font-size:22px;
   margin-bottom:14px;
   color:var(--gold);
 }
@@ -112,6 +161,10 @@ button{
   border:1px solid var(--line);
   padding:18px;
   margin-bottom:12px;
+}
+
+.card:hover{
+  border-color:rgba(201,168,76,0.45);
 }
 
 .card h3{
@@ -125,6 +178,7 @@ button{
   gap:8px;
   color:#ddd;
   font-size:14px;
+  margin-top:10px;
 }
 
 .label{
@@ -154,6 +208,7 @@ button{
   color:var(--muted);
   padding:15px;
   border:1px dashed #333;
+  background:#0d0d0d;
 }
 
 .description{
@@ -167,15 +222,59 @@ button{
   margin-top:12px;
 }
 
-@media(max-width:800px){
-  .grid{grid-template-columns:1fr 1fr;}
-  .row{grid-template-columns:1fr;}
+.two-col{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
 }
 
-@media(max-width:500px){
-  header{padding:18px;}
+.room-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+
+.room-card{
+  background:var(--card2);
+  border:1px solid var(--line);
+  padding:15px;
+}
+
+.room-card h3{
+  color:var(--gold);
+  margin-bottom:6px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:4px;
+}
+
+@media(max-width:1000px){
+  .grid{grid-template-columns:1fr 1fr;}
+  .two-col{grid-template-columns:1fr;}
+  .room-grid{grid-template-columns:1fr 1fr;}
+}
+
+@media(max-width:600px){
+  header{
+    padding:18px;
+    display:block;
+  }
+
+  .header-actions{
+    margin-top:12px;
+    display:flex;
+    flex-wrap:wrap;
+  }
+
   .wrapper{padding:18px;}
   .grid{grid-template-columns:1fr;}
+  .controls{grid-template-columns:1fr;}
+  .row{grid-template-columns:1fr;}
+  .room-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:32px;}
 }
 </style>
 </head>
@@ -184,12 +283,28 @@ button{
 
 <header>
   <div class="logo">A<span>&</span>A Admin</div>
-  <button onclick="logout()" class="btn-dark">Logout</button>
+
+  <div class="header-actions">
+    <button class="btn-dark" onclick="goDashboard()">Dashboard</button>
+    <button class="btn-dark" onclick="logout()">Logout</button>
+  </div>
 </header>
 
 <div class="wrapper">
 
+  <div class="hero">
+    <h1>Admin Control Center</h1>
+    <p>
+      Review company applications, manage premium and verified access, monitor products, offers and industry rooms.
+    </p>
+  </div>
+
   <div class="grid">
+    <div class="stat">
+      <h3>Total Companies</h3>
+      <strong id="totalCount">0</strong>
+    </div>
+
     <div class="stat">
       <h3>Pending</h3>
       <strong id="pendingCount">0</strong>
@@ -212,18 +327,42 @@ button{
   </div>
 
   <div class="section">
-    <h2>Pending Applications</h2>
-    <div id="pendingList"></div>
+    <h2>Company Management</h2>
+
+    <div class="controls">
+      <input id="companySearch" placeholder="Search company, email, country, room..." oninput="renderCompanies()">
+
+      <select id="statusFilter" onchange="renderCompanies()">
+        <option value="all">All Statuses</option>
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="suspended">Suspended</option>
+        <option value="premium">Premium</option>
+        <option value="verified">Verified</option>
+      </select>
+    </div>
+
+    <div id="companiesList"></div>
   </div>
 
   <div class="section">
-    <h2>Approved Companies</h2>
-    <div id="approvedList"></div>
+    <h2>Industry Room Summary</h2>
+    <div id="roomsSummary" class="room-grid"></div>
   </div>
 
-  <div class="section">
-    <h2>Rejected / Suspended Companies</h2>
-    <div id="rejectedList"></div>
+  <div class="two-col">
+
+    <div class="section">
+      <h2>Product Overview</h2>
+      <div id="productsList"></div>
+    </div>
+
+    <div class="section">
+      <h2>Offer Overview</h2>
+      <div id="offersList"></div>
+    </div>
+
   </div>
 
 </div>
@@ -259,8 +398,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ADMIN EMAIL */
 const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
+
+let allCompanies = [];
+let allProducts = [];
+let allOffers = [];
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -275,6 +417,8 @@ onAuthStateChanged(auth, (user) => {
   }
 
   loadCompanies();
+  loadProducts();
+  loadOffers();
 });
 
 function safe(value){
@@ -290,113 +434,141 @@ function safe(value){
     .replaceAll("'", "&#039;");
 }
 
+function pretty(value){
+  if(!value) return "-";
+  return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+}
+
+/* COMPANIES */
 function loadCompanies(){
-  const pendingList = document.getElementById("pendingList");
-  const approvedList = document.getElementById("approvedList");
-  const rejectedList = document.getElementById("rejectedList");
-
   onSnapshot(collection(db, "companies"), (snapshot) => {
-    pendingList.innerHTML = "";
-    approvedList.innerHTML = "";
-    rejectedList.innerHTML = "";
-
-    let pendingCount = 0;
-    let approvedCount = 0;
-    let premiumCount = 0;
-    let verifiedCount = 0;
+    allCompanies = [];
 
     snapshot.forEach((docItem) => {
-      const data = docItem.data();
-      const id = docItem.id;
-
-      if (data.premium) premiumCount++;
-      if (data.verified) verifiedCount++;
-
-      const card = createCompanyCard(id, data);
-
-      if (data.status === "pending") {
-        pendingCount++;
-        pendingList.innerHTML += card;
-      } 
-      else if (data.status === "approved") {
-        approvedCount++;
-        approvedList.innerHTML += card;
-      } 
-      else {
-        rejectedList.innerHTML += card;
-      }
+      allCompanies.push({
+        id: docItem.id,
+        ...docItem.data()
+      });
     });
 
-    document.getElementById("pendingCount").innerText = pendingCount;
-    document.getElementById("approvedCount").innerText = approvedCount;
-    document.getElementById("premiumCount").innerText = premiumCount;
-    document.getElementById("verifiedCount").innerText = verifiedCount;
-
-    if (!pendingList.innerHTML) {
-      pendingList.innerHTML = `<div class="empty">No pending applications.</div>`;
-    }
-
-    if (!approvedList.innerHTML) {
-      approvedList.innerHTML = `<div class="empty">No approved companies.</div>`;
-    }
-
-    if (!rejectedList.innerHTML) {
-      rejectedList.innerHTML = `<div class="empty">No rejected or suspended companies.</div>`;
-    }
+    updateCompanyStats();
+    renderCompanies();
+    renderRoomsSummary();
   });
 }
 
-function createCompanyCard(id, data){
+function updateCompanyStats(){
+  let total = allCompanies.length;
+  let pending = 0;
+  let approved = 0;
+  let premium = 0;
+  let verified = 0;
 
-  const premiumBadge = data.premium 
-    ? `<span class="badge">Premium</span>` 
-    : "";
+  allCompanies.forEach((c) => {
+    if (c.status === "pending") pending++;
+    if (c.status === "approved") approved++;
+    if (c.premium) premium++;
+    if (c.verified) verified++;
+  });
 
-  const verifiedBadge = data.verified 
-    ? `<span class="badge badge-green">Verified</span>` 
-    : "";
+  document.getElementById("totalCount").innerText = total;
+  document.getElementById("pendingCount").innerText = pending;
+  document.getElementById("approvedCount").innerText = approved;
+  document.getElementById("premiumCount").innerText = premium;
+  document.getElementById("verifiedCount").innerText = verified;
+}
 
-  const suspendedBadge = data.suspended 
-    ? `<span class="badge badge-red">Suspended</span>` 
-    : "";
+window.renderCompanies = function(){
+  const container = document.getElementById("companiesList");
+  const search = document.getElementById("companySearch").value.toLowerCase();
+  const filter = document.getElementById("statusFilter").value;
+
+  container.innerHTML = "";
+
+  let filtered = allCompanies.filter((c) => {
+    const text = `
+      ${c.company || ""}
+      ${c.email || ""}
+      ${c.country || ""}
+      ${c.role || ""}
+      ${c.room || ""}
+      ${c.status || ""}
+      ${c.whatsapp || ""}
+      ${c.description || ""}
+    `.toLowerCase();
+
+    let matchesSearch = text.includes(search);
+
+    let matchesFilter = true;
+
+    if (filter === "pending") matchesFilter = c.status === "pending";
+    if (filter === "approved") matchesFilter = c.status === "approved";
+    if (filter === "rejected") matchesFilter = c.status === "rejected";
+    if (filter === "suspended") matchesFilter = c.status === "suspended" || c.suspended === true;
+    if (filter === "premium") matchesFilter = c.premium === true;
+    if (filter === "verified") matchesFilter = c.verified === true;
+
+    return matchesSearch && matchesFilter;
+  });
+
+  filtered.sort((a,b) => {
+    const order = { pending: 1, approved: 2, rejected: 3, suspended: 4 };
+    return (order[a.status] || 9) - (order[b.status] || 9);
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty">No companies found.</div>`;
+    return;
+  }
+
+  filtered.forEach((c) => {
+    container.innerHTML += createCompanyCard(c);
+  });
+};
+
+function createCompanyCard(c){
+  const premiumBadge = c.premium ? `<span class="badge">Premium</span>` : "";
+  const verifiedBadge = c.verified ? `<span class="badge badge-green">Verified</span>` : "";
+  const suspendedBadge = c.suspended ? `<span class="badge badge-red">Suspended</span>` : "";
 
   return `
     <div class="card">
-      <h3>${safe(data.company)}</h3>
+      <h3>${safe(c.company)}</h3>
 
       ${premiumBadge}
       ${verifiedBadge}
       ${suspendedBadge}
+      <span class="badge">Status: ${safe(c.status)}</span>
 
       <div class="row">
-        <div><span class="label">Email:</span> ${safe(data.email)}</div>
-        <div><span class="label">Country:</span> ${safe(data.country)}</div>
-        <div><span class="label">Role:</span> ${safe(data.role)}</div>
-        <div><span class="label">Room:</span> ${safe(data.room)}</div>
-        <div><span class="label">WhatsApp:</span> ${safe(data.whatsapp)}</div>
-        <div><span class="label">Website:</span> ${safe(data.website)}</div>
-        <div><span class="label">Capacity:</span> ${safe(data.capacity)}</div>
-        <div><span class="label">Status:</span> ${safe(data.status)}</div>
+        <div><span class="label">Email:</span> ${safe(c.email)}</div>
+        <div><span class="label">Country:</span> ${safe(c.country)}</div>
+        <div><span class="label">Role:</span> ${safe(c.role)}</div>
+        <div><span class="label">Room:</span> ${safe(c.room)}</div>
+        <div><span class="label">WhatsApp:</span> ${safe(c.whatsapp)}</div>
+        <div><span class="label">Website:</span> ${safe(c.website)}</div>
+        <div><span class="label">Capacity:</span> ${safe(c.capacity)}</div>
+        <div><span class="label">Document ID:</span> ${safe(c.id)}</div>
       </div>
 
       <div class="description">
-        ${safe(data.description)}
+        ${safe(c.description)}
       </div>
 
       <div class="actions">
-        <button class="btn-green" onclick="approveCompany('${id}')">Approve</button>
-        <button class="btn-red" onclick="rejectCompany('${id}')">Reject</button>
+        <button class="btn-green" onclick="approveCompany('${c.id}')">Approve</button>
+        <button class="btn-red" onclick="rejectCompany('${c.id}')">Reject</button>
 
-        <button onclick="makePremium('${id}', ${data.premium ? "false" : "true"})">
-          ${data.premium ? "Remove Premium" : "Make Premium"}
+        <button onclick="makePremium('${c.id}', ${c.premium ? "false" : "true"})">
+          ${c.premium ? "Remove Premium" : "Make Premium"}
         </button>
 
-        <button onclick="makeVerified('${id}', ${data.verified ? "false" : "true"})">
-          ${data.verified ? "Remove Verified" : "Make Verified"}
+        <button onclick="makeVerified('${c.id}', ${c.verified ? "false" : "true"})">
+          ${c.verified ? "Remove Verified" : "Make Verified"}
         </button>
 
-        <button class="btn-dark" onclick="suspendCompany('${id}', ${data.suspended ? "false" : "true"})">
-          ${data.suspended ? "Unsuspend" : "Suspend"}
+        <button class="btn-dark" onclick="suspendCompany('${c.id}', ${c.suspended ? "false" : "true"})">
+          ${c.suspended ? "Unsuspend" : "Suspend"}
         </button>
       </div>
     </div>
@@ -438,6 +610,143 @@ window.suspendCompany = async function(id, value){
     status: value ? "suspended" : "approved",
     updatedAt: new Date()
   });
+};
+
+/* ROOM SUMMARY */
+function renderRoomsSummary(){
+  const container = document.getElementById("roomsSummary");
+  container.innerHTML = "";
+
+  const rooms = {};
+
+  allCompanies.forEach((c) => {
+    const room = c.room || "unknown";
+
+    if (!rooms[room]) {
+      rooms[room] = {
+        companies: 0,
+        approved: 0,
+        verified: 0,
+        premium: 0
+      };
+    }
+
+    rooms[room].companies++;
+
+    if (c.status === "approved") rooms[room].approved++;
+    if (c.verified) rooms[room].verified++;
+    if (c.premium) rooms[room].premium++;
+  });
+
+  const roomNames = Object.keys(rooms);
+
+  if (roomNames.length === 0) {
+    container.innerHTML = `<div class="empty">No room data yet.</div>`;
+    return;
+  }
+
+  roomNames.forEach((room) => {
+    const r = rooms[room];
+
+    container.innerHTML += `
+      <div class="room-card">
+        <h3>${pretty(room)} Room</h3>
+        <div class="small">Companies: ${r.companies}</div>
+        <div class="small">Approved: ${r.approved}</div>
+        <div class="small">Verified: ${r.verified}</div>
+        <div class="small">Premium: ${r.premium}</div>
+      </div>
+    `;
+  });
+}
+
+/* PRODUCTS */
+function loadProducts(){
+  onSnapshot(collection(db, "products"), (snapshot) => {
+    allProducts = [];
+
+    snapshot.forEach((docItem) => {
+      allProducts.push({
+        id: docItem.id,
+        ...docItem.data()
+      });
+    });
+
+    renderProducts();
+  });
+}
+
+function renderProducts(){
+  const container = document.getElementById("productsList");
+  container.innerHTML = "";
+
+  if (allProducts.length === 0) {
+    container.innerHTML = `<div class="empty">No products yet.</div>`;
+    return;
+  }
+
+  const latest = allProducts.slice(-6).reverse();
+
+  latest.forEach((p) => {
+    container.innerHTML += `
+      <div class="card">
+        <h3>${safe(p.name)}</h3>
+        ${p.ownerPremium ? `<span class="badge">Premium Supplier</span>` : ""}
+        ${p.ownerVerified ? `<span class="badge badge-green">Verified Supplier</span>` : ""}
+        <p>${safe(p.desc)}</p>
+        <div class="small">Supplier: ${safe(p.ownerCompany)} • ${safe(p.ownerCountry)}</div>
+        <div class="small">Room: ${safe(p.room)}</div>
+        <div class="small">Price: ${safe(p.price)}</div>
+        <div class="small">Quantity: ${safe(p.quantity)}</div>
+      </div>
+    `;
+  });
+}
+
+/* OFFERS */
+function loadOffers(){
+  onSnapshot(collection(db, "offers"), (snapshot) => {
+    allOffers = [];
+
+    snapshot.forEach((docItem) => {
+      allOffers.push({
+        id: docItem.id,
+        ...docItem.data()
+      });
+    });
+
+    renderOffers();
+  });
+}
+
+function renderOffers(){
+  const container = document.getElementById("offersList");
+  container.innerHTML = "";
+
+  if (allOffers.length === 0) {
+    container.innerHTML = `<div class="empty">No offers yet.</div>`;
+    return;
+  }
+
+  const latest = allOffers.slice(-6).reverse();
+
+  latest.forEach((o) => {
+    container.innerHTML += `
+      <div class="card">
+        <h3>${safe(o.productName)}</h3>
+        <span class="badge">Status: ${safe(o.status)}</span>
+        <p>${safe(o.note)}</p>
+        <div class="small">Offer Price: ${safe(o.price)}</div>
+        <div class="small">Buyer: ${safe(o.buyerCompany)} • ${safe(o.buyerCountry)} • ${safe(o.buyerRole)}</div>
+        <div class="small">Room: ${safe(o.room)}</div>
+      </div>
+    `;
+  });
+}
+
+/* NAVIGATION */
+window.goDashboard = function(){
+  window.location.href = "dashboard.html";
 };
 
 window.logout = function(){

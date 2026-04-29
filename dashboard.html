@@ -17,8 +17,8 @@
   --line:#252525;
   --white:#F8F5EF;
   --muted:#8A8A8A;
-  --red:#b84a4a;
   --green:#4aa36f;
+  --red:#b84a4a;
 }
 
 body{
@@ -33,7 +33,6 @@ body{
   min-height:100vh;
 }
 
-/* SIDEBAR */
 .sidebar{
   width:260px;
   background:#080808;
@@ -64,7 +63,6 @@ body{
   color:var(--gold);
 }
 
-/* MAIN */
 .main{
   flex:1;
   padding:30px;
@@ -74,43 +72,30 @@ body{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:25px;
+  margin-bottom:24px;
 }
 
 h1{
-  font-size:28px;
+  font-size:30px;
   font-weight:500;
 }
 
-.status-box{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:18px;
+.small{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+}
+
+.company-card{
+  background:linear-gradient(120deg,#111,#070707);
+  border:1px solid rgba(201,168,76,0.25);
+  padding:22px;
   margin-bottom:20px;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-  margin-bottom:25px;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:18px;
-}
-
-.card h3{
-  font-size:14px;
-  color:var(--muted);
+.company-card h2{
+  font-size:24px;
   margin-bottom:8px;
-}
-
-.card strong{
-  color:var(--gold);
-  font-size:22px;
 }
 
 .badge{
@@ -127,12 +112,59 @@ h1{
   color:var(--green);
 }
 
-.form-box{
+.badge-red{
+  border-color:var(--red);
+  color:var(--red);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:24px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--line);
+  padding:18px;
+}
+
+.stat h3{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:8px;
+}
+
+.stat strong{
+  color:var(--gold);
+  font-size:24px;
+}
+
+.panel-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.panel{
   background:var(--card);
   border:1px solid var(--line);
   padding:20px;
-  margin-bottom:25px;
-  display:none;
+  margin-bottom:20px;
+}
+
+.panel h2{
+  color:var(--gold);
+  margin-bottom:12px;
+  font-size:20px;
+}
+
+.panel p{
+  color:#bbb;
+  line-height:1.6;
+  font-size:14px;
 }
 
 input, textarea{
@@ -165,39 +197,65 @@ button{
   color:white;
 }
 
-.product{
+.btn-red{
+  background:var(--red);
+  color:white;
+}
+
+.btn-green{
+  background:var(--green);
+  color:white;
+}
+
+.card{
   background:var(--card);
   border:1px solid var(--line);
   padding:16px;
   margin-bottom:12px;
 }
 
-.product h3{
+.card h3{
   margin-bottom:8px;
 }
 
-.product p{
+.card p{
   color:#bbb;
+  line-height:1.5;
   margin-bottom:8px;
-}
-
-.small{
-  color:var(--muted);
-  font-size:13px;
 }
 
 .warning{
   background:#1b1510;
   border:1px solid rgba(201,168,76,0.35);
   padding:15px;
-  margin-bottom:20px;
+  margin-bottom:18px;
   color:#ddd;
 }
 
-@media(max-width:900px){
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+.section-title{
+  color:var(--gold);
+  margin:24px 0 14px;
+}
+
+.empty{
+  color:var(--muted);
+  border:1px dashed #333;
+  padding:15px;
+  background:#0d0d0d;
+}
+
+@media(max-width:950px){
   .container{display:block;}
-  .sidebar{width:100%;height:auto;}
+  .sidebar{width:100%;}
   .grid{grid-template-columns:1fr 1fr;}
+  .panel-grid{grid-template-columns:1fr;}
 }
 
 @media(max-width:550px){
@@ -215,7 +273,7 @@ button{
   <div class="sidebar">
     <div class="logo">A<span>&</span>A</div>
     <a onclick="goRoom()">Enter Industry Room</a>
-    <a onclick="goAdmin()">Admin Panel</a>
+    <a id="adminLink" onclick="goAdmin()" style="display:none;">Admin Panel</a>
     <a onclick="logout()">Logout</a>
   </div>
 
@@ -224,48 +282,86 @@ button{
     <div class="top">
       <div>
         <h1>Dashboard</h1>
-        <p class="small" id="userEmail">Loading...</p>
+        <div class="small" id="userEmail">Loading...</div>
       </div>
       <button onclick="goRoom()">Enter Room</button>
     </div>
 
     <div id="approvalWarning"></div>
 
-    <div class="status-box">
+    <div class="company-card">
       <h2 id="companyName">Company</h2>
       <div id="badges"></div>
       <p class="small" id="companyInfo"></p>
     </div>
 
     <div class="grid">
-      <div class="card">
+      <div class="stat">
         <h3>Role</h3>
         <strong id="roleBox">-</strong>
       </div>
-      <div class="card">
+
+      <div class="stat">
         <h3>Room</h3>
         <strong id="roomBox">-</strong>
       </div>
-      <div class="card">
-        <h3>Premium</h3>
-        <strong id="premiumBox">-</strong>
+
+      <div class="stat">
+        <h3>My Products</h3>
+        <strong id="productsCount">0</strong>
       </div>
-      <div class="card">
-        <h3>Verified</h3>
-        <strong id="verifiedBox">-</strong>
+
+      <div class="stat">
+        <h3>My Offers</h3>
+        <strong id="offersCount">0</strong>
       </div>
     </div>
 
-    <div id="producerPanel" class="form-box">
+    <div class="panel-grid">
+
+      <div class="panel">
+        <h2>Business Access</h2>
+        <p id="accessText">Loading access details...</p>
+      </div>
+
+      <div class="panel">
+        <h2>Account Value</h2>
+        <p>
+          Premium and verified companies receive stronger visibility inside industry rooms.
+          Keep your company profile and product listings updated to attract better trade offers.
+        </p>
+      </div>
+
+    </div>
+
+    <div id="producerPanel" class="panel" style="display:none;">
       <h2>Add Product</h2>
+
       <input id="name" placeholder="Product Name">
-      <textarea id="desc" placeholder="Product Description"></textarea>
+      <textarea id="desc" placeholder="Product Description, quality, origin, packaging..."></textarea>
       <input id="price" placeholder="Base Price / Request Price">
       <input id="quantity" placeholder="Available Quantity / Capacity">
+
       <button onclick="addProduct()">Add Product</button>
     </div>
 
-    <h2>My Products</h2>
+    <div id="buyerRequestPanel" class="panel" style="display:none;">
+      <h2>Post Buyer Request</h2>
+
+      <input id="requestTitle" placeholder="What are you looking for?">
+      <textarea id="requestDetails" placeholder="Details, target price, packaging, delivery terms..."></textarea>
+      <input id="requestQuantity" placeholder="Required Quantity">
+
+      <button onclick="addBuyerRequest()">Post Buyer Request</button>
+    </div>
+
+    <h2 class="section-title">Latest Buyer Requests in Your Room</h2>
+    <div id="requestsList"></div>
+
+    <h2 class="section-title">My Offers</h2>
+    <div id="offersList"></div>
+
+    <h2 class="section-title">My Products</h2>
     <div id="products"></div>
 
   </div>
@@ -290,7 +386,8 @@ import {
   addDoc,
   query,
   where,
-  onSnapshot
+  onSnapshot,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -310,6 +407,7 @@ const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
 
 let currentUser = null;
 let currentUserData = null;
+let myProductCount = 0;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -318,7 +416,12 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   currentUser = user;
+
   document.getElementById("userEmail").innerText = user.email;
+
+  if (user.email === ADMIN_EMAIL) {
+    document.getElementById("adminLink").style.display = "block";
+  }
 
   const companyRef = doc(db, "companies", user.uid);
   const companySnap = await getDoc(companyRef);
@@ -328,24 +431,64 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const data = companySnap.data();
-  currentUserData = data;
+  currentUserData = companySnap.data();
 
-  if (data.status === "incomplete") {
+  if (currentUserData.status === "incomplete") {
     window.location.href = "complete-profile.html";
     return;
   }
 
+  renderWarnings(currentUserData);
+  renderCompany(currentUserData);
+  renderAccessText(currentUserData);
+
+  if (
+    currentUserData.role === "producer" &&
+    currentUserData.status === "approved" &&
+    !currentUserData.suspended
+  ) {
+    document.getElementById("producerPanel").style.display = "block";
+  }
+
+  if (
+    currentUserData.role !== "producer" &&
+    currentUserData.status === "approved" &&
+    !currentUserData.suspended
+  ) {
+    document.getElementById("buyerRequestPanel").style.display = "block";
+  }
+
+  loadMyProducts();
+  loadRoomRequests();
+  loadMyOffers();
+});
+
+function safe(value){
+  if(value === undefined || value === null || value === ""){
+    return "-";
+  }
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function renderWarnings(data){
+  let html = "";
+
   if (data.status === "pending") {
-    document.getElementById("approvalWarning").innerHTML = `
+    html = `
       <div class="warning">
-        Your application is pending approval. You can view this page, but full access will be available after admin approval.
+        Your application is pending approval. Full access will be available after admin approval.
       </div>
     `;
   }
 
   if (data.status === "rejected") {
-    document.getElementById("approvalWarning").innerHTML = `
+    html = `
       <div class="warning">
         Your application was rejected. Please contact the platform admin.
       </div>
@@ -353,28 +496,20 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   if (data.suspended) {
-    document.getElementById("approvalWarning").innerHTML = `
+    html = `
       <div class="warning">
         Your account is suspended. Please contact the platform admin.
       </div>
     `;
   }
 
-  renderCompany(data);
-
-  if (data.role === "producer" && data.status === "approved" && !data.suspended) {
-    document.getElementById("producerPanel").style.display = "block";
-  }
-
-  loadMyProducts(user.uid);
-});
+  document.getElementById("approvalWarning").innerHTML = html;
+}
 
 function renderCompany(data){
   document.getElementById("companyName").innerText = data.company || "Company";
   document.getElementById("roleBox").innerText = data.role || "-";
   document.getElementById("roomBox").innerText = data.room || "-";
-  document.getElementById("premiumBox").innerText = data.premium ? "Active" : "Free";
-  document.getElementById("verifiedBox").innerText = data.verified ? "Verified" : "Not Verified";
 
   document.getElementById("companyInfo").innerText =
     `${data.country || "-"} • ${data.whatsapp || "-"} • ${data.capacity || "-"}`;
@@ -390,10 +525,32 @@ function renderCompany(data){
   }
 
   if (data.status) {
-    badges += `<span class="badge">Status: ${data.status}</span>`;
+    badges += `<span class="badge">Status: ${safe(data.status)}</span>`;
+  }
+
+  if (data.suspended) {
+    badges += `<span class="badge badge-red">Suspended</span>`;
   }
 
   document.getElementById("badges").innerHTML = badges;
+}
+
+function renderAccessText(data){
+  let text = "";
+
+  if (data.role === "producer") {
+    text = "As a producer, you can list products, showcase available capacity, receive offers from buyers and open private deal chats after accepting offers.";
+  } else if (data.role === "buyer") {
+    text = "As a buyer, you can browse verified suppliers, post buyer requests, make offers and continue negotiations through private deal chats.";
+  } else if (data.role === "exporter") {
+    text = "As an exporter, you can discover suppliers, compare offers, post trade requests and communicate with verified companies inside rooms.";
+  } else if (data.role === "importer") {
+    text = "As an importer, you can find producers, request prices, post demand notices and start private deal conversations with suppliers.";
+  } else {
+    text = "Your access depends on your company role and admin approval.";
+  }
+
+  document.getElementById("accessText").innerText = text;
 }
 
 window.addProduct = async function(){
@@ -409,6 +566,11 @@ window.addProduct = async function(){
 
   if (currentUserData.status !== "approved") {
     alert("Your account must be approved before adding products.");
+    return;
+  }
+
+  if (!currentUserData.premium && myProductCount >= 3) {
+    alert("Free accounts can add up to 3 products. Upgrade to Premium for more visibility and more listings.");
     return;
   }
 
@@ -445,33 +607,193 @@ window.addProduct = async function(){
   alert("Product added successfully");
 };
 
-function loadMyProducts(uid){
-  const q = query(collection(db, "products"), where("owner", "==", uid));
+function loadMyProducts(){
+  const q = query(
+    collection(db, "products"),
+    where("room", "==", currentUserData.room)
+  );
 
   onSnapshot(q, (snapshot) => {
     const container = document.getElementById("products");
     container.innerHTML = "";
 
-    if (snapshot.empty) {
-      container.innerHTML = `<div class="warning">No products yet.</div>`;
-      return;
-    }
+    let count = 0;
 
     snapshot.forEach((docItem) => {
       const p = docItem.data();
 
+      if (p.owner !== currentUser.uid) return;
+
+      count++;
+
       container.innerHTML += `
-        <div class="product">
-          <h3>${p.name || "-"}</h3>
-          <p>${p.desc || "-"}</p>
-          <div class="small">Price: ${p.price || "-"}</div>
-          <div class="small">Quantity: ${p.quantity || "-"}</div>
-          <div class="small">Room: ${p.room || "-"}</div>
+        <div class="card">
+          <h3>${safe(p.name)}</h3>
+          <p>${safe(p.desc)}</p>
+          <div class="small">Price: ${safe(p.price)}</div>
+          <div class="small">Quantity: ${safe(p.quantity)}</div>
+          <div class="small">Room: ${safe(p.room)}</div>
+        </div>
+      `;
+    });
+
+    myProductCount = count;
+    document.getElementById("productsCount").innerText = count;
+
+    if (count === 0) {
+      container.innerHTML = `<div class="empty">No products yet.</div>`;
+    }
+  });
+}
+
+window.addBuyerRequest = async function(){
+  if (!currentUser || !currentUserData) {
+    alert("Please login again");
+    return;
+  }
+
+  if (currentUserData.status !== "approved") {
+    alert("Your account must be approved before posting requests.");
+    return;
+  }
+
+  const title = document.getElementById("requestTitle").value.trim();
+  const details = document.getElementById("requestDetails").value.trim();
+  const quantity = document.getElementById("requestQuantity").value.trim();
+
+  if (!title || !details || !quantity) {
+    alert("Please fill all request fields");
+    return;
+  }
+
+  await addDoc(collection(db, "buyerRequests"), {
+    room: currentUserData.room,
+    requester: currentUser.uid,
+    requesterEmail: currentUser.email,
+    requesterCompany: currentUserData.company || "",
+    requesterCountry: currentUserData.country || "",
+    requesterRole: currentUserData.role || "",
+    title,
+    details,
+    quantity,
+    createdAt: new Date()
+  });
+
+  document.getElementById("requestTitle").value = "";
+  document.getElementById("requestDetails").value = "";
+  document.getElementById("requestQuantity").value = "";
+
+  alert("Buyer request posted");
+};
+
+function loadRoomRequests(){
+  const q = query(
+    collection(db, "buyerRequests"),
+    where("room", "==", currentUserData.room)
+  );
+
+  onSnapshot(q, (snapshot) => {
+    const container = document.getElementById("requestsList");
+    container.innerHTML = "";
+
+    if (snapshot.empty) {
+      container.innerHTML = `<div class="empty">No buyer requests in your room yet.</div>`;
+      return;
+    }
+
+    let shown = 0;
+
+    snapshot.forEach((docItem) => {
+      if (shown >= 5) return;
+
+      const r = docItem.data();
+      shown++;
+
+      container.innerHTML += `
+        <div class="card">
+          <h3>${safe(r.title)}</h3>
+          <p>${safe(r.details)}</p>
+          <div class="small">Quantity: ${safe(r.quantity)}</div>
+          <div class="small">Company: ${safe(r.requesterCompany)} • ${safe(r.requesterCountry)} • ${safe(r.requesterRole)}</div>
         </div>
       `;
     });
   });
 }
+
+function loadMyOffers(){
+  const q = query(
+    collection(db, "offers"),
+    where("room", "==", currentUserData.room)
+  );
+
+  onSnapshot(q, (snapshot) => {
+    const container = document.getElementById("offersList");
+    container.innerHTML = "";
+
+    let count = 0;
+
+    snapshot.forEach((docItem) => {
+      const offer = docItem.data();
+      const id = docItem.id;
+
+      const isOwner = offer.owner === currentUser.uid;
+      const isBuyer = offer.buyer === currentUser.uid;
+
+      if (!isOwner && !isBuyer) return;
+
+      count++;
+
+      let actions = "";
+
+      if (isOwner && offer.status === "pending") {
+        actions += `
+          <button class="btn-green" onclick="acceptOffer('${id}')">Accept</button>
+          <button class="btn-red" onclick="rejectOffer('${id}')">Reject</button>
+        `;
+      }
+
+      if (offer.status === "accepted") {
+        actions += `<button onclick="openChat('${id}')">Open Private Chat</button>`;
+      }
+
+      container.innerHTML += `
+        <div class="card">
+          <h3>${safe(offer.productName)}</h3>
+          <p>${safe(offer.note)}</p>
+          <div class="small">Offer Price: ${safe(offer.price)}</div>
+          <div class="small">Buyer: ${safe(offer.buyerCompany)} • ${safe(offer.buyerCountry)} • ${safe(offer.buyerRole)}</div>
+          <div class="small">Status: ${safe(offer.status)}</div>
+          <div class="actions">${actions}</div>
+        </div>
+      `;
+    });
+
+    document.getElementById("offersCount").innerText = count;
+
+    if (count === 0) {
+      container.innerHTML = `<div class="empty">No offers yet.</div>`;
+    }
+  });
+}
+
+window.acceptOffer = async function(id){
+  await updateDoc(doc(db, "offers", id), {
+    status: "accepted",
+    updatedAt: new Date()
+  });
+};
+
+window.rejectOffer = async function(id){
+  await updateDoc(doc(db, "offers", id), {
+    status: "rejected",
+    updatedAt: new Date()
+  });
+};
+
+window.openChat = function(offerId){
+  window.location.href = "chat.html?offerId=" + offerId;
+};
 
 window.goRoom = function(){
   if (!currentUserData) {
