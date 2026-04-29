@@ -192,11 +192,6 @@ button{
   margin-top:8px;
 }
 
-.btn-dark{
-  background:#222;
-  color:white;
-}
-
 .btn-red{
   background:var(--red);
   color:white;
@@ -416,11 +411,14 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   currentUser = user;
-
   document.getElementById("userEmail").innerText = user.email;
 
+  // IMPORTANT:
+  // Admin should not use company profile flow.
+  // Admin goes directly to admin panel.
   if (user.email === ADMIN_EMAIL) {
-    document.getElementById("adminLink").style.display = "block";
+    window.location.href = "admin.html";
+    return;
   }
 
   const companyRef = doc(db, "companies", user.uid);
@@ -815,13 +813,7 @@ window.goRoom = function(){
 };
 
 window.goAdmin = function(){
-  if (!currentUser) return;
-
-  if (currentUser.email === ADMIN_EMAIL) {
-    window.location.href = "admin.html";
-  } else {
-    alert("Admin access only.");
-  }
+  window.location.href = "admin.html";
 };
 
 window.logout = function(){
