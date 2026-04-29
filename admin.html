@@ -46,7 +46,9 @@ header{
   font-size:2rem;
 }
 
-.logo span{color:var(--gold);}
+.logo span{
+  color:var(--gold);
+}
 
 .header-actions{
   display:flex;
@@ -70,7 +72,9 @@ button{
   font-family:'Montserrat',sans-serif;
 }
 
-button:hover{opacity:0.9;}
+button:hover{
+  opacity:0.9;
+}
 
 .btn-red{
   background:var(--red);
@@ -352,7 +356,6 @@ input, select{
   </div>
 
   <div class="two-col">
-
     <div class="section">
       <h2>Product Overview</h2>
       <div id="productsList"></div>
@@ -362,7 +365,6 @@ input, select{
       <h2>Offer Overview</h2>
       <div id="offersList"></div>
     </div>
-
   </div>
 
 </div>
@@ -445,9 +447,26 @@ function loadCompanies(){
     allCompanies = [];
 
     snapshot.forEach((docItem) => {
+      const data = docItem.data();
+
+      // Hide platform admin account from company management
+      if (data.email === ADMIN_EMAIL) {
+        return;
+      }
+
+      // Hide incomplete users who have not submitted a real company profile yet
+      if (data.status === "incomplete") {
+        return;
+      }
+
+      // Hide empty company records
+      if (!data.company) {
+        return;
+      }
+
       allCompanies.push({
         id: docItem.id,
-        ...docItem.data()
+        ...data
       });
     });
 
@@ -620,7 +639,11 @@ function renderRoomsSummary(){
   const rooms = {};
 
   allCompanies.forEach((c) => {
-    const room = c.room || "unknown";
+    if (!c.room) {
+      return;
+    }
+
+    const room = c.room;
 
     if (!rooms[room]) {
       rooms[room] = {
@@ -691,9 +714,12 @@ function renderProducts(){
     container.innerHTML += `
       <div class="card">
         <h3>${safe(p.name)}</h3>
+
         ${p.ownerPremium ? `<span class="badge">Premium Supplier</span>` : ""}
         ${p.ownerVerified ? `<span class="badge badge-green">Verified Supplier</span>` : ""}
+
         <p>${safe(p.desc)}</p>
+
         <div class="small">Supplier: ${safe(p.ownerCompany)} • ${safe(p.ownerCountry)}</div>
         <div class="small">Room: ${safe(p.room)}</div>
         <div class="small">Price: ${safe(p.price)}</div>
@@ -734,8 +760,11 @@ function renderOffers(){
     container.innerHTML += `
       <div class="card">
         <h3>${safe(o.productName)}</h3>
+
         <span class="badge">Status: ${safe(o.status)}</span>
+
         <p>${safe(o.note)}</p>
+
         <div class="small">Offer Price: ${safe(o.price)}</div>
         <div class="small">Buyer: ${safe(o.buyerCompany)} • ${safe(o.buyerCountry)} • ${safe(o.buyerRole)}</div>
         <div class="small">Room: ${safe(o.room)}</div>
