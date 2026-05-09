@@ -3,18 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Complete Your Profile - A&A Global B2B Platform</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <style>
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
 }
-
 :root{
   --gold:#C9A84C;
   --dark:#0A0A0A;
@@ -24,7 +20,6 @@
   --muted:#8A8A8A;
   --green:#4aa36f;
 }
-
 body{
   background:
     radial-gradient(circle at top right,rgba(201,168,76,0.12),transparent 30%),
@@ -37,7 +32,6 @@ body{
   justify-content:center;
   padding:24px;
 }
-
 .wrapper{
   width:100%;
   max-width:980px;
@@ -46,23 +40,19 @@ body{
   gap:24px;
   align-items:stretch;
 }
-
 .info-panel{
   background:rgba(17,17,17,0.92);
   border:1px solid rgba(201,168,76,0.22);
   padding:30px;
 }
-
 .logo{
   font-family:'Cormorant Garamond',serif;
   font-size:2.7rem;
   margin-bottom:18px;
 }
-
 .logo span{
   color:var(--gold);
 }
-
 .info-panel h1{
   font-family:'Cormorant Garamond',serif;
   font-size:2.5rem;
@@ -70,53 +60,45 @@ body{
   line-height:1.1;
   margin-bottom:14px;
 }
-
 .info-panel p{
   color:var(--muted);
   font-size:14px;
   line-height:1.8;
   margin-bottom:18px;
 }
-
 .step{
   border:1px solid rgba(201,168,76,0.18);
   background:#0b0b0b;
   padding:13px;
   margin-top:10px;
 }
-
 .step strong{
   color:var(--gold);
   display:block;
   margin-bottom:4px;
   font-size:13px;
 }
-
 .step span{
   color:var(--muted);
   font-size:12px;
   line-height:1.5;
 }
-
 .form-box{
   background:rgba(17,17,17,0.95);
   border:1px solid rgba(201,168,76,0.25);
   padding:32px;
 }
-
 .form-box h2{
   font-size:24px;
   font-weight:500;
   margin-bottom:8px;
 }
-
 .form-box p{
   color:var(--muted);
   font-size:14px;
   margin-bottom:20px;
   line-height:1.6;
 }
-
 .role-box{
   background:#0b0b0b;
   border:1px solid rgba(201,168,76,0.2);
@@ -125,17 +107,14 @@ body{
   color:#ddd;
   font-size:13px;
 }
-
 .role-box strong{
   color:var(--gold);
 }
-
 .form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
-
 input, select, textarea{
   width:100%;
   padding:13px;
@@ -145,17 +124,14 @@ input, select, textarea{
   color:white;
   font-family:'Montserrat',sans-serif;
 }
-
 input:focus, select:focus, textarea:focus{
   outline:none;
   border-color:var(--gold);
 }
-
 textarea{
   min-height:105px;
   resize:vertical;
 }
-
 button{
   width:100%;
   padding:14px;
@@ -167,51 +143,41 @@ button{
   margin-top:12px;
   font-family:'Montserrat',sans-serif;
 }
-
 button:hover{
   opacity:0.9;
 }
-
 button:disabled{
   opacity:0.55;
   cursor:not-allowed;
 }
-
 .small{
   color:var(--muted);
   font-size:12px;
   margin-top:12px;
   line-height:1.6;
 }
-
 .required{
   color:var(--gold);
 }
-
 @media(max-width:900px){
   .wrapper{
     grid-template-columns:1fr;
   }
-
   .info-panel h1{
     font-size:2.1rem;
   }
 }
-
 @media(max-width:550px){
   body{
     padding:18px;
   }
-
   .form-box,
   .info-panel{
     padding:22px;
   }
-
   .form-grid{
     grid-template-columns:1fr;
   }
-
   .logo{
     font-size:2.2rem;
   }
@@ -250,7 +216,6 @@ button:disabled{
   </div>
 
   <div class="form-box">
-
     <h2>Complete Your Profile</h2>
 
     <p>
@@ -299,7 +264,6 @@ button:disabled{
     <div class="small">
       After submission, your account status will remain pending until admin approval. Please make sure all information is accurate before submitting.
     </div>
-
   </div>
 
 </div>
@@ -413,6 +377,132 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+function escapeHtml(value){
+  if(value === undefined || value === null || value === ""){
+    return "-";
+  }
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function buildApplicationEmailHtml(application){
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#0A0A0A;color:#F8F5EF;padding:24px;">
+      <div style="max-width:640px;margin:auto;background:#111;border:1px solid #C9A84C;padding:24px;">
+        <h1 style="color:#C9A84C;margin:0 0 12px;">New Company Application</h1>
+
+        <p style="color:#ddd;line-height:1.6;">
+          A new company application has been submitted and is waiting for admin review.
+        </p>
+
+        <table style="width:100%;border-collapse:collapse;margin-top:18px;color:#F8F5EF;">
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Company</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.company)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Email</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.email)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Role</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.role)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Room</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.room)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Country</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.country)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">WhatsApp</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.whatsapp)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Website</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.website)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Capacity</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.capacity)}</td>
+          </tr>
+        </table>
+
+        <h3 style="color:#C9A84C;margin-top:22px;">Company Description</h3>
+        <p style="color:#ddd;line-height:1.6;">
+          ${escapeHtml(application.description)}
+        </p>
+
+        <p style="color:#8A8A8A;font-size:12px;margin-top:24px;">
+          A&A Global B2B Platform — Admin Notification
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function buildApplicationEmailText(application){
+  return `
+New Company Application
+
+Company: ${application.company}
+Email: ${application.email}
+Role: ${application.role}
+Room: ${application.room}
+Country: ${application.country}
+WhatsApp: ${application.whatsapp}
+Website: ${application.website || "-"}
+Capacity: ${application.capacity}
+
+Description:
+${application.description}
+
+A&A Global B2B Platform
+  `;
+}
+
+async function createAdminApplicationNotification(application){
+  await addDoc(collection(db, "mailQueue"), {
+    to: ADMIN_EMAIL,
+    subject: "New Company Application Received",
+    type: "new_application",
+    status: "pending",
+    createdBy: currentUser.uid,
+    companyId: currentUser.uid,
+    companyEmail: currentUser.email,
+    companyName: application.company,
+    role: application.role,
+    room: application.room,
+    country: application.country,
+    message: "A new company application has been submitted and is waiting for admin review.",
+    createdAt: new Date()
+  });
+
+  await addDoc(collection(db, "mail"), {
+    to: ADMIN_EMAIL,
+    message: {
+      subject: "New Company Application Received - " + application.company,
+      html: buildApplicationEmailHtml(application),
+      text: buildApplicationEmailText(application)
+    },
+    type: "new_application",
+    companyId: currentUser.uid,
+    companyEmail: currentUser.email,
+    companyName: application.company,
+    role: application.role,
+    room: application.room,
+    country: application.country,
+    createdAt: new Date()
+  });
+}
+
 window.saveProfile = async function () {
   if (!currentUser) {
     alert("Please login again.");
@@ -436,6 +526,18 @@ window.saveProfile = async function () {
   submitBtn.disabled = true;
   submitBtn.innerText = "Submitting...";
 
+  const application = {
+    company,
+    email: currentUser.email,
+    role: currentRole,
+    country,
+    whatsapp,
+    website,
+    room,
+    description,
+    capacity
+  };
+
   try {
     await setDoc(doc(db, "companies", currentUser.uid), {
       email: currentUser.email,
@@ -454,21 +556,11 @@ window.saveProfile = async function () {
       updatedAt: new Date()
     }, { merge: true });
 
-    await addDoc(collection(db, "mailQueue"), {
-      to: ADMIN_EMAIL,
-      subject: "New Company Application Received",
-      type: "new_application",
-      status: "pending",
-      createdBy: currentUser.uid,
-      companyId: currentUser.uid,
-      companyEmail: currentUser.email,
-      companyName: company,
-      role: currentRole,
-      room: room,
-      country: country,
-      message: "A new company application has been submitted and is waiting for admin review.",
-      createdAt: new Date()
-    });
+    try {
+      await createAdminApplicationNotification(application);
+    } catch (mailError) {
+      console.warn("Application saved, but email notification could not be created:", mailError);
+    }
 
     alert("Application submitted. Your account is pending admin approval.");
     window.location.href = "index.html";
