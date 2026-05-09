@@ -4,12 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel - A&A Global B2B Platform</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-
 :root{
   --gold:#C9A84C;
   --dark:#0A0A0A;
@@ -21,14 +18,12 @@
   --red:#b84a4a;
   --green:#4aa36f;
 }
-
 body{
   background:var(--dark);
   color:var(--white);
   font-family:'Montserrat',sans-serif;
   min-height:100vh;
 }
-
 header{
   padding:22px 30px;
   border-bottom:1px solid var(--line);
@@ -40,25 +35,20 @@ header{
   top:0;
   z-index:20;
 }
-
 .logo{
   font-family:'Cormorant Garamond',serif;
   font-size:2rem;
 }
-
 .logo span{color:var(--gold);}
-
 .header-actions{
   display:flex;
   gap:8px;
 }
-
 .wrapper{
   max-width:1200px;
   margin:auto;
   padding:28px;
 }
-
 button{
   padding:9px 12px;
   border:none;
@@ -69,74 +59,61 @@ button{
   font-weight:600;
   font-family:'Montserrat',sans-serif;
 }
-
 button:hover{opacity:0.9;}
-
 .btn-red{
   background:var(--red);
   color:white;
 }
-
 .btn-green{
   background:var(--green);
   color:white;
 }
-
 .btn-dark{
   background:#222;
   color:white;
 }
-
 .hero{
   background:linear-gradient(120deg,#111,#050505);
   border:1px solid rgba(201,168,76,0.25);
   padding:24px;
   margin-bottom:22px;
 }
-
 .hero h1{
   font-family:'Cormorant Garamond',serif;
   font-size:40px;
   font-weight:400;
   margin-bottom:8px;
 }
-
 .hero p{
   color:var(--muted);
   line-height:1.6;
 }
-
 .grid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:14px;
   margin-bottom:24px;
 }
-
 .stat{
   background:var(--card);
   border:1px solid var(--line);
   padding:18px;
 }
-
 .stat h3{
   font-size:13px;
   color:var(--muted);
   margin-bottom:8px;
 }
-
 .stat strong{
   font-size:26px;
   color:var(--gold);
 }
-
 .controls{
   display:grid;
   grid-template-columns:1.5fr 0.7fr;
   gap:10px;
   margin-bottom:20px;
 }
-
 input, select{
   width:100%;
   padding:12px;
@@ -145,33 +122,27 @@ input, select{
   color:white;
   font-family:'Montserrat',sans-serif;
 }
-
 .section{
   margin-top:30px;
 }
-
 .section h2{
   font-size:22px;
   margin-bottom:14px;
   color:var(--gold);
 }
-
 .card{
   background:var(--card);
   border:1px solid var(--line);
   padding:18px;
   margin-bottom:12px;
 }
-
 .card:hover{
   border-color:rgba(201,168,76,0.45);
 }
-
 .card h3{
   margin-bottom:8px;
   color:white;
 }
-
 .row{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -180,11 +151,9 @@ input, select{
   font-size:14px;
   margin-top:10px;
 }
-
 .label{
   color:var(--muted);
 }
-
 .badge{
   display:inline-block;
   padding:4px 8px;
@@ -193,86 +162,71 @@ input, select{
   border:1px solid var(--gold);
   color:var(--gold);
 }
-
 .badge-red{
   border-color:var(--red);
   color:var(--red);
 }
-
 .badge-green{
   border-color:var(--green);
   color:var(--green);
 }
-
 .empty{
   color:var(--muted);
   padding:15px;
   border:1px dashed #333;
   background:#0d0d0d;
 }
-
 .description{
   margin-top:10px;
   color:#bbb;
   font-size:14px;
   line-height:1.5;
 }
-
 .actions{
   margin-top:12px;
 }
-
 .two-col{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:18px;
 }
-
 .room-grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:12px;
 }
-
 .room-card{
   background:var(--card2);
   border:1px solid var(--line);
   padding:15px;
 }
-
 .room-card h3{
   color:var(--gold);
   margin-bottom:6px;
 }
-
 .small{
   color:var(--muted);
   font-size:13px;
   margin-top:4px;
 }
-
 .mail-card{
   border-left:3px solid var(--gold);
 }
-
 @media(max-width:1000px){
   .grid{grid-template-columns:1fr 1fr;}
   .two-col{grid-template-columns:1fr;}
   .room-grid{grid-template-columns:1fr 1fr;}
 }
-
 @media(max-width:600px){
   header{
     padding:18px;
     display:block;
   }
-
   .header-actions{
     margin-top:12px;
     display:flex;
     flex-wrap:wrap;
   }
-
   .wrapper{padding:18px;}
   .grid{grid-template-columns:1fr;}
   .controls{grid-template-columns:1fr;}
@@ -287,7 +241,6 @@ input, select{
 
 <header>
   <div class="logo">A<span>&</span>A Admin</div>
-
   <div class="header-actions">
     <button class="btn-dark" onclick="goDashboard()">Dashboard</button>
     <button class="btn-dark" onclick="logout()">Logout</button>
@@ -308,22 +261,18 @@ input, select{
       <h3>Total Companies</h3>
       <strong id="totalCount">0</strong>
     </div>
-
     <div class="stat">
       <h3>Pending</h3>
       <strong id="pendingCount">0</strong>
     </div>
-
     <div class="stat">
       <h3>Approved</h3>
       <strong id="approvedCount">0</strong>
     </div>
-
     <div class="stat">
       <h3>Premium</h3>
       <strong id="premiumCount">0</strong>
     </div>
-
     <div class="stat">
       <h3>Verified</h3>
       <strong id="verifiedCount">0</strong>
@@ -335,7 +284,6 @@ input, select{
 
     <div class="controls">
       <input id="companySearch" placeholder="Search company, email, country, room..." oninput="renderCompanies()">
-
       <select id="statusFilter" onchange="renderCompanies()">
         <option value="all">All Statuses</option>
         <option value="pending">Pending</option>
@@ -447,6 +395,19 @@ function safe(value){
     .replaceAll("'", "&#039;");
 }
 
+function escapeHtml(value){
+  if(value === undefined || value === null || value === ""){
+    return "-";
+  }
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function pretty(value){
   if(!value) return "-";
   return String(value).charAt(0).toUpperCase() + String(value).slice(1);
@@ -474,38 +435,139 @@ function getCompanyById(id){
   return allCompanies.find((company) => company.id === id);
 }
 
-/* MAIL QUEUE PREPARATION */
-async function createMailQueueRecord(company, type){
+/* REAL EMAIL + MAIL QUEUE */
+function getMailContent(type){
+  if (type === "application_approved") {
+    return {
+      subject: "Your A&A Global B2B Platform Application Has Been Approved",
+      title: "Application Approved",
+      badge: "Approved",
+      badgeColor: "#4aa36f",
+      message: "Your company application has been approved. You can now log in and access your dashboard and selected industry room.",
+      note: "You can list products, post buyer requests, make offers and continue negotiations through private deal chats depending on your company role."
+    };
+  }
+
+  if (type === "application_rejected") {
+    return {
+      subject: "Your A&A Global B2B Platform Application Has Been Rejected",
+      title: "Application Rejected",
+      badge: "Rejected",
+      badgeColor: "#b84a4a",
+      message: "Your company application has been rejected.",
+      note: "If you believe this was a mistake or you need more information, please contact the platform admin."
+    };
+  }
+
+  if (type === "account_suspended") {
+    return {
+      subject: "Your A&A Global B2B Platform Account Has Been Suspended",
+      title: "Account Suspended",
+      badge: "Suspended",
+      badgeColor: "#b84a4a",
+      message: "Your account has been suspended by the platform admin.",
+      note: "You will not be able to access full platform features until your account is reactivated."
+    };
+  }
+
+  if (type === "account_reactivated") {
+    return {
+      subject: "Your A&A Global B2B Platform Account Has Been Reactivated",
+      title: "Account Reactivated",
+      badge: "Reactivated",
+      badgeColor: "#4aa36f",
+      message: "Your account has been reactivated. You can now log in and continue using the platform.",
+      note: "Please keep your company information accurate and continue using the platform responsibly."
+    };
+  }
+
+  return {
+    subject: "A&A Global B2B Platform Notification",
+    title: "Platform Notification",
+    badge: "Notification",
+    badgeColor: "#C9A84C",
+    message: "There is an update about your company account.",
+    note: "Please log in to your account for more details."
+  };
+}
+
+function buildStatusEmailHtml(company, content){
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#0A0A0A;color:#F8F5EF;padding:24px;">
+      <div style="max-width:640px;margin:auto;background:#111;border:1px solid #C9A84C;padding:24px;">
+        <h1 style="color:#C9A84C;margin:0 0 12px;">${escapeHtml(content.title)}</h1>
+
+        <span style="display:inline-block;border:1px solid ${content.badgeColor};color:${content.badgeColor};padding:6px 10px;font-size:12px;margin-bottom:18px;">
+          ${escapeHtml(content.badge)}
+        </span>
+
+        <p style="color:#ddd;line-height:1.6;">
+          ${escapeHtml(content.message)}
+        </p>
+
+        <table style="width:100%;border-collapse:collapse;margin-top:18px;color:#F8F5EF;">
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Company</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(company.company)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Email</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(company.email)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Role</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(company.role)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Room</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(company.room)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Country</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(company.country)}</td>
+          </tr>
+        </table>
+
+        <p style="color:#ddd;line-height:1.6;margin-top:20px;">
+          ${escapeHtml(content.note)}
+        </p>
+
+        <p style="color:#8A8A8A;font-size:12px;margin-top:24px;">
+          A&A Global B2B Platform
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function buildStatusEmailText(company, content){
+  return `
+${content.title}
+
+${content.message}
+
+Company: ${company.company || "-"}
+Email: ${company.email || "-"}
+Role: ${company.role || "-"}
+Room: ${company.room || "-"}
+Country: ${company.country || "-"}
+
+${content.note}
+
+A&A Global B2B Platform
+  `;
+}
+
+async function createMailRecords(company, type){
   if (!company || !company.email) {
     return;
   }
 
-  let subject = "";
-  let message = "";
-
-  if (type === "application_approved") {
-    subject = "Your A&A Global B2B Platform Application Has Been Approved";
-    message = "Your company application has been approved. You can now log in and access your dashboard and industry room.";
-  }
-
-  if (type === "application_rejected") {
-    subject = "Your A&A Global B2B Platform Application Has Been Rejected";
-    message = "Your company application has been rejected. Please contact the platform admin if you need more information.";
-  }
-
-  if (type === "account_suspended") {
-    subject = "Your A&A Global B2B Platform Account Has Been Suspended";
-    message = "Your account has been suspended by the platform admin. Please contact the platform admin for more information.";
-  }
-
-  if (type === "account_reactivated") {
-    subject = "Your A&A Global B2B Platform Account Has Been Reactivated";
-    message = "Your account has been reactivated. You can now log in and continue using the platform.";
-  }
+  const content = getMailContent(type);
 
   await addDoc(collection(db, "mailQueue"), {
     to: company.email,
-    subject: subject,
+    subject: content.subject,
     type: type,
     status: "pending",
     createdBy: currentAdmin ? currentAdmin.uid : "admin",
@@ -515,7 +577,24 @@ async function createMailQueueRecord(company, type){
     role: company.role || "",
     room: company.room || "",
     country: company.country || "",
-    message: message,
+    message: content.message,
+    createdAt: new Date()
+  });
+
+  await addDoc(collection(db, "mail"), {
+    to: company.email,
+    message: {
+      subject: content.subject,
+      html: buildStatusEmailHtml(company, content),
+      text: buildStatusEmailText(company, content)
+    },
+    type: type,
+    companyId: company.id,
+    companyEmail: company.email,
+    companyName: company.company || "",
+    role: company.role || "",
+    room: company.room || "",
+    country: company.country || "",
     createdAt: new Date()
   });
 }
@@ -678,9 +757,13 @@ window.approveCompany = async function(id){
     updatedAt: new Date()
   });
 
-  await createMailQueueRecord(company, "application_approved");
+  try {
+    await createMailRecords(company, "application_approved");
+  } catch (mailError) {
+    console.warn("Company approved, but email notification could not be created:", mailError);
+  }
 
-  alert("Company approved. Approval mail record was added to mailQueue.");
+  alert("Company approved. Approval email notification was created.");
 };
 
 window.rejectCompany = async function(id){
@@ -691,9 +774,13 @@ window.rejectCompany = async function(id){
     updatedAt: new Date()
   });
 
-  await createMailQueueRecord(company, "application_rejected");
+  try {
+    await createMailRecords(company, "application_rejected");
+  } catch (mailError) {
+    console.warn("Company rejected, but email notification could not be created:", mailError);
+  }
 
-  alert("Company rejected. Rejection mail record was added to mailQueue.");
+  alert("Company rejected. Rejection email notification was created.");
 };
 
 window.makePremium = async function(id, value){
@@ -719,12 +806,17 @@ window.suspendCompany = async function(id, value){
     updatedAt: new Date()
   });
 
-  if (value) {
-    await createMailQueueRecord(company, "account_suspended");
-    alert("Company suspended. Suspension mail record was added to mailQueue.");
-  } else {
-    await createMailQueueRecord(company, "account_reactivated");
-    alert("Company reactivated. Reactivation mail record was added to mailQueue.");
+  try {
+    if (value) {
+      await createMailRecords(company, "account_suspended");
+      alert("Company suspended. Suspension email notification was created.");
+    } else {
+      await createMailRecords(company, "account_reactivated");
+      alert("Company reactivated. Reactivation email notification was created.");
+    }
+  } catch (mailError) {
+    console.warn("Company status updated, but email notification could not be created:", mailError);
+    alert("Company status updated, but email notification could not be created.");
   }
 };
 
