@@ -3,17 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Dashboard - A&A Global B2B Platform</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
 :root{
   --gold:#C9A84C;
-  --dark:#0A0A0A;
+  --gold2:#E0C46A;
+  --dark:#050505;
+  --dark2:#0A0A0A;
   --card:#111;
   --card2:#151515;
   --line:#252525;
@@ -24,216 +29,234 @@
 }
 
 body{
-  background:var(--dark);
+  background:
+    radial-gradient(circle at top right,rgba(201,168,76,0.16),transparent 28%),
+    radial-gradient(circle at top left,rgba(201,168,76,0.08),transparent 24%),
+    linear-gradient(135deg,#030303,#0A0A0A,#111);
   color:var(--white);
   font-family:'Montserrat',sans-serif;
   min-height:100vh;
 }
 
-.container{
-  display:flex;
-  min-height:100vh;
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:0.18;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.08) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,0.08) 1px, transparent 1px);
+  background-size:80px 80px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,1),rgba(0,0,0,0.2));
 }
 
-.sidebar{
-  width:260px;
-  background:#080808;
-  border-right:1px solid var(--line);
-  padding:24px;
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(5,5,5,0.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(201,168,76,0.18);
+}
+
+.nav{
+  max-width:1380px;
+  margin:auto;
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
 }
 
 .logo{
   font-family:'Cormorant Garamond',serif;
-  font-size:2rem;
-  margin-bottom:30px;
+  font-size:2.25rem;
+  line-height:0.9;
+  color:var(--gold2);
+  letter-spacing:1px;
 }
 
-.logo span{
-  color:var(--gold);
-}
-
-.sidebar a{
+.logo small{
   display:block;
-  color:#aaa;
-  text-decoration:none;
-  padding:12px 0;
-  cursor:pointer;
-  border-bottom:1px solid #151515;
-}
-
-.sidebar a:hover{
-  color:var(--gold);
-}
-
-.main{
-  flex:1;
-  padding:30px;
-}
-
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:24px;
-}
-
-h1{
-  font-size:30px;
-  font-weight:500;
-}
-
-.small{
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  letter-spacing:1.6px;
   color:var(--muted);
+  margin-top:6px;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.nav-links a{
+  color:#bfbfbf;
+  text-decoration:none;
   font-size:13px;
-  margin-top:5px;
+  cursor:pointer;
+  transition:0.25s;
 }
 
-.company-card{
-  background:linear-gradient(120deg,#111,#070707);
-  border:1px solid rgba(201,168,76,0.25);
-  padding:22px;
-  margin-bottom:20px;
+.nav-links a:hover,
+.nav-links a.active{
+  color:var(--gold2);
 }
 
-.company-card h2{
-  font-size:24px;
-  margin-bottom:8px;
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-.badge{
-  display:inline-block;
-  padding:5px 8px;
-  margin:5px 5px 5px 0;
-  border:1px solid var(--gold);
-  color:var(--gold);
+.icon-btn{
+  width:38px;
+  height:38px;
+  border:1px solid rgba(201,168,76,0.18);
+  background:#0c0c0c;
+  color:var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  border-radius:50%;
+}
+
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px solid rgba(201,168,76,0.18);
+  padding:7px 10px;
+  background:#0c0c0c;
+  border-radius:999px;
+}
+
+.avatar{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#6d5420);
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
   font-size:12px;
 }
 
-.badge-green{
-  border-color:var(--green);
-  color:var(--green);
-}
-
-.badge-red{
-  border-color:var(--red);
-  color:var(--red);
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
-  margin-bottom:24px;
-}
-
-.stat{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:18px;
-}
-
-.stat h3{
+.user-meta{
+  font-size:11px;
   color:var(--muted);
-  font-size:13px;
-  margin-bottom:8px;
+  line-height:1.25;
 }
 
-.stat strong{
-  color:var(--gold);
-  font-size:24px;
+.user-meta strong{
+  color:var(--white);
+  font-size:12px;
 }
 
-.panel-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
+.page{
+  max-width:1380px;
+  margin:auto;
+  padding:34px 28px 44px;
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(201,168,76,0.28);
+  background:
+    linear-gradient(90deg,rgba(10,10,10,0.98),rgba(10,10,10,0.82)),
+    radial-gradient(circle at 78% 38%,rgba(201,168,76,0.2),transparent 32%);
+  padding:42px;
+  min-height:310px;
   margin-bottom:24px;
 }
 
-.panel{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:20px;
-  margin-bottom:20px;
-}
-
-.panel h2{
-  color:var(--gold);
-  margin-bottom:12px;
-  font-size:20px;
-}
-
-.panel p{
-  color:#bbb;
-  line-height:1.6;
-  font-size:14px;
-}
-
-input, textarea{
-  width:100%;
-  padding:12px;
-  margin:7px 0;
-  background:#000;
-  border:1px solid #222;
-  color:white;
-  font-family:'Montserrat',sans-serif;
-}
-
-input:focus, textarea:focus{
-  outline:none;
-  border-color:var(--gold);
-}
-
-textarea{
-  min-height:90px;
-  resize:vertical;
-}
-
-button{
-  padding:11px 14px;
-  background:var(--gold);
-  color:#000;
-  border:none;
-  cursor:pointer;
-  font-weight:600;
-  margin-top:8px;
-  font-family:'Montserrat',sans-serif;
-}
-
-button:hover{
+.hero::after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:0;
+  width:48%;
+  height:100%;
+  background:
+    radial-gradient(circle at 40% 50%,rgba(201,168,76,0.28),transparent 8%),
+    radial-gradient(circle at 62% 35%,rgba(201,168,76,0.22),transparent 7%),
+    radial-gradient(circle at 70% 62%,rgba(201,168,76,0.18),transparent 7%),
+    linear-gradient(135deg,transparent,rgba(201,168,76,0.04));
   opacity:0.9;
 }
 
-button:disabled{
-  opacity:0.55;
-  cursor:not-allowed;
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:680px;
 }
 
-.btn-red{
-  background:var(--red);
-  color:white;
+.eyebrow{
+  color:var(--gold2);
+  font-size:12px;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  margin-bottom:14px;
+  font-weight:600;
 }
 
-.btn-green{
-  background:var(--green);
-  color:white;
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:64px;
+  line-height:0.95;
+  font-weight:400;
+  margin-bottom:18px;
 }
 
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:16px;
-  margin-bottom:12px;
+.gold-line{
+  width:120px;
+  height:1px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  margin:18px 0;
 }
 
-.card h3{
-  margin-bottom:8px;
+.hero p{
+  color:#c7c7c7;
+  line-height:1.8;
+  font-size:15px;
+  max-width:590px;
 }
 
-.card p{
-  color:#bbb;
-  line-height:1.5;
-  margin-bottom:8px;
+.status-panel{
+  margin-top:24px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 10px;
+  border:1px solid rgba(201,168,76,0.6);
+  color:var(--gold2);
+  font-size:12px;
+  background:rgba(201,168,76,0.06);
+}
+
+.badge-green{
+  border-color:rgba(74,163,111,0.7);
+  color:#76d29b;
+  background:rgba(74,163,111,0.08);
+}
+
+.badge-red{
+  border-color:rgba(184,74,74,0.7);
+  color:#ff8f8f;
+  background:rgba(184,74,74,0.08);
 }
 
 .warning{
@@ -242,18 +265,173 @@ button:disabled{
   padding:15px;
   margin-bottom:18px;
   color:#ddd;
+  line-height:1.6;
 }
 
-.actions{
+.tabs{
   display:flex;
-  gap:8px;
+  gap:10px;
   flex-wrap:wrap;
-  margin-top:10px;
+  margin:22px 0 22px;
+  background:rgba(17,17,17,0.72);
+  border:1px solid rgba(201,168,76,0.15);
+  padding:10px;
 }
 
-.section-title{
-  color:var(--gold);
-  margin:24px 0 14px;
+.tab{
+  border:1px solid rgba(201,168,76,0.18);
+  background:#0d0d0d;
+  color:#ccc;
+  padding:13px 18px;
+  cursor:pointer;
+  font-family:'Montserrat',sans-serif;
+  font-weight:600;
+  transition:0.25s;
+}
+
+.tab:hover,
+.tab.active{
+  background:linear-gradient(135deg,var(--gold),#87672b);
+  color:#050505;
+}
+
+.rooms-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;
+}
+
+.room-card{
+  position:relative;
+  overflow:hidden;
+  min-height:260px;
+  background:
+    linear-gradient(180deg,rgba(21,21,21,0.96),rgba(8,8,8,0.98));
+  border:1px solid rgba(201,168,76,0.24);
+  padding:18px;
+  cursor:pointer;
+  transition:0.28s;
+}
+
+.room-card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(201,168,76,0.8);
+  box-shadow:0 22px 45px rgba(0,0,0,0.45), 0 0 28px rgba(201,168,76,0.12);
+}
+
+.room-card.approved{
+  border-color:rgba(74,163,111,0.55);
+}
+
+.room-card.pending{
+  border-color:rgba(201,168,76,0.5);
+}
+
+.room-visual{
+  height:100px;
+  border:1px solid rgba(201,168,76,0.12);
+  background:
+    radial-gradient(circle at 30% 30%,rgba(201,168,76,0.25),transparent 34%),
+    linear-gradient(135deg,#151515,#050505);
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:46px;
+}
+
+.room-icon{
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,0.55);
+  color:var(--gold2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(201,168,76,0.06);
+}
+
+.room-card h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;
+  font-weight:500;
+  color:var(--white);
+  margin-bottom:8px;
+}
+
+.room-card p{
+  color:#b8b8b8;
+  line-height:1.55;
+  font-size:13px;
+  min-height:42px;
+}
+
+.room-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.room-action{
+  color:var(--gold2);
+  font-size:12px;
+  font-weight:700;
+}
+
+.room-state{
+  font-size:11px;
+  color:var(--muted);
+}
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  border:1px solid rgba(201,168,76,0.18);
+  background:rgba(17,17,17,0.75);
+  margin-top:26px;
+}
+
+.metric{
+  padding:22px;
+  border-right:1px solid rgba(201,168,76,0.14);
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.metric:last-child{
+  border-right:none;
+}
+
+.metric-icon{
+  width:42px;
+  height:42px;
+  border:1px solid rgba(201,168,76,0.5);
+  color:var(--gold2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+}
+
+.metric span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:4px;
+}
+
+.metric strong{
+  color:var(--gold2);
+  font-family:'Cormorant Garamond',serif;
+  font-size:30px;
+  font-weight:500;
 }
 
 .empty{
@@ -263,121 +441,187 @@ button:disabled{
   background:#0d0d0d;
 }
 
-@media(max-width:950px){
-  .container{display:block;}
-  .sidebar{width:100%;}
-  .grid{grid-template-columns:1fr 1fr;}
-  .panel-grid{grid-template-columns:1fr;}
+button{
+  font-family:'Montserrat',sans-serif;
 }
 
-@media(max-width:550px){
-  .main{padding:18px;}
-  .grid{grid-template-columns:1fr;}
-  .top{display:block;}
+@media(max-width:1200px){
+  .rooms-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:850px){
+  .nav{
+    display:block;
+  }
+
+  .nav-links{
+    margin-top:16px;
+    overflow-x:auto;
+    padding-bottom:8px;
+  }
+
+  .nav-actions{
+    margin-top:14px;
+  }
+
+  .hero{
+    padding:30px;
+  }
+
+  .hero h1{
+    font-size:46px;
+  }
+
+  .rooms-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .metrics{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .metric{
+    border-bottom:1px solid rgba(201,168,76,0.14);
+  }
+}
+
+@media(max-width:560px){
+  .page{
+    padding:20px 16px 32px;
+  }
+
+  .hero{
+    padding:24px;
+  }
+
+  .hero h1{
+    font-size:38px;
+  }
+
+  .rooms-grid{
+    grid-template-columns:1fr;
+  }
+
+  .metrics{
+    grid-template-columns:1fr;
+  }
+
+  .metric{
+    border-right:none;
+  }
+
+  .tabs{
+    display:grid;
+    grid-template-columns:1fr;
+  }
+
+  .tab{
+    width:100%;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<header>
+  <div class="nav">
+    <div class="logo">
+      A&A
+      <small>GLOBAL B2B PLATFORM</small>
+    </div>
 
-  <div class="sidebar">
-    <div class="logo">A<span>&</span>A</div>
-    <a onclick="goRoom()">Enter Industry Room</a>
-    <a onclick="logout()">Logout</a>
+    <div class="nav-links">
+      <a class="active" onclick="goDashboard()">Dashboard</a>
+      <a onclick="scrollToRooms()">Rooms</a>
+      <a onclick="comingSoon('Connections')">Connections</a>
+      <a onclick="comingSoon('Messages')">Messages</a>
+      <a onclick="comingSoon('Market Insights')">Market Insights</a>
+      <a onclick="comingSoon('Events')">Events</a>
+    </div>
+
+    <div class="nav-actions">
+      <div class="icon-btn" onclick="comingSoon('Search')">⌕</div>
+      <div class="icon-btn" onclick="comingSoon('Notifications')">◌</div>
+      <div class="user-chip">
+        <div class="avatar" id="avatarText">AA</div>
+        <div class="user-meta">
+          <span>Welcome,</span><br>
+          <strong id="userName">Loading...</strong>
+        </div>
+      </div>
+      <div class="icon-btn" onclick="logout()">⎋</div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <div id="approvalWarning"></div>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">Welcome to A&A Global B2B Platform</div>
+
+      <h1>Explore Industry Rooms</h1>
+
+      <div class="gold-line"></div>
+
+      <p>
+        Discover specialized trade rooms, connect with verified businesses and access structured B2B opportunities across global industries.
+      </p>
+
+      <div class="status-panel" id="companyBadges"></div>
+    </div>
+  </section>
+
+  <div class="tabs" id="categoryTabs">
+    <button class="tab active" onclick="filterRooms('all', this)">All Rooms</button>
+    <button class="tab" onclick="filterRooms('food', this)">Food & Agriculture</button>
+    <button class="tab" onclick="filterRooms('industrial', this)">Industrial</button>
+    <button class="tab" onclick="filterRooms('consumer', this)">Consumer Goods</button>
+    <button class="tab" onclick="filterRooms('logistics', this)">Logistics</button>
   </div>
 
-  <div class="main">
+  <section id="roomsSection">
+    <div class="rooms-grid" id="roomsGrid"></div>
+  </section>
 
-    <div class="top">
+  <section class="metrics">
+    <div class="metric">
+      <div class="metric-icon">✓</div>
       <div>
-        <h1>Dashboard</h1>
-        <div class="small" id="userEmail">Loading...</div>
-      </div>
-
-      <button onclick="goRoom()">Enter Room</button>
-    </div>
-
-    <div id="approvalWarning"></div>
-
-    <div class="company-card">
-      <h2 id="companyName">Company</h2>
-      <div id="badges"></div>
-      <p class="small" id="companyInfo"></p>
-    </div>
-
-    <div class="grid">
-      <div class="stat">
-        <h3>Role</h3>
-        <strong id="roleBox">-</strong>
-      </div>
-
-      <div class="stat">
-        <h3>Room</h3>
-        <strong id="roomBox">-</strong>
-      </div>
-
-      <div class="stat">
-        <h3 id="activityTitle">My Activity</h3>
-        <strong id="activityCount">0</strong>
-      </div>
-
-      <div class="stat">
-        <h3>My Offers</h3>
-        <strong id="offersCount">0</strong>
+        <span>Verified Businesses</span>
+        <strong>25,000+</strong>
       </div>
     </div>
 
-    <div class="panel-grid">
-      <div class="panel">
-        <h2>Business Access</h2>
-        <p id="accessText">Loading access details...</p>
-      </div>
-
-      <div class="panel">
-        <h2>Account Value</h2>
-        <p>
-          Premium and verified companies receive stronger visibility inside industry rooms.
-          Keep your company profile, product listings and trade requests updated to attract stronger business opportunities.
-        </p>
+    <div class="metric">
+      <div class="metric-icon">◎</div>
+      <div>
+        <span>Countries</span>
+        <strong>120+</strong>
       </div>
     </div>
 
-    <div id="producerPanel" class="panel" style="display:none;">
-      <h2>Add Product Listing</h2>
-      <input id="name" placeholder="Product Name">
-      <textarea id="desc" placeholder="Product description, quality, origin, packaging, certification details..."></textarea>
-      <input id="price" placeholder="Base Price / Request Price">
-      <input id="quantity" placeholder="Available Quantity / Monthly Capacity">
-      <button id="addProductBtn" onclick="addProduct()">Add Product</button>
+    <div class="metric">
+      <div class="metric-icon">↔</div>
+      <div>
+        <span>Successful Transactions</span>
+        <strong>10,000+</strong>
+      </div>
     </div>
 
-    <div id="buyerRequestPanel" class="panel" style="display:none;">
-      <h2>Post Buyer Request</h2>
-      <input id="requestTitle" placeholder="What are you looking for?">
-      <textarea id="requestDetails" placeholder="Details, target price, quality, packaging, delivery terms..."></textarea>
-      <input id="requestQuantity" placeholder="Required Quantity">
-      <button id="addRequestBtn" onclick="addBuyerRequest()">Post Buyer Request</button>
+    <div class="metric">
+      <div class="metric-icon">◆</div>
+      <div>
+        <span>Trusted Platform</span>
+        <strong>Since 2026</strong>
+      </div>
     </div>
-
-    <h2 class="section-title">Latest Buyer Requests in Your Room</h2>
-    <div id="requestsList"></div>
-
-    <h2 class="section-title">My Offers</h2>
-    <div id="offersList"></div>
-
-    <div id="myProductsSection">
-      <h2 class="section-title">My Product Listings</h2>
-      <div id="products"></div>
-    </div>
-
-    <div id="myRequestsSection" style="display:none;">
-      <h2 class="section-title">My Buyer Requests</h2>
-      <div id="myRequestsList"></div>
-    </div>
-
-  </div>
+  </section>
 
 </div>
 
@@ -394,13 +638,7 @@ import {
 import {
   getFirestore,
   doc,
-  getDoc,
-  collection,
-  addDoc,
-  query,
-  where,
-  onSnapshot,
-  updateDoc
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -420,8 +658,106 @@ const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
 
 let currentUser = null;
 let currentUserData = null;
-let myProductCount = 0;
-let myRequestCount = 0;
+let activeCategory = "all";
+
+const rooms = [
+  {
+    id:"rice",
+    name:"Rice",
+    category:"food",
+    icon:"🌾",
+    description:"Global rice trading, sourcing, milling and distribution.",
+    application:"room-application.html?room=rice"
+  },
+  {
+    id:"machinery",
+    name:"Machinery",
+    category:"industrial",
+    icon:"⚙",
+    description:"Industrial machinery, spare parts and production equipment.",
+    application:"room-application.html?room=machinery"
+  },
+  {
+    id:"cosmetics",
+    name:"Cosmetics",
+    category:"consumer",
+    icon:"◈",
+    description:"Beauty, skincare, personal care and cosmetic products.",
+    application:"room-application.html?room=cosmetics"
+  },
+  {
+    id:"bulgur",
+    name:"Bulgur",
+    category:"food",
+    icon:"🌾",
+    description:"High-quality bulgur, grain products and regional suppliers.",
+    application:"room-application.html?room=bulgur"
+  },
+  {
+    id:"pulses",
+    name:"Pulses",
+    category:"food",
+    icon:"●",
+    description:"Beans, lentils, peas, chickpeas and pulse products.",
+    application:"room-application.html?room=pulses"
+  },
+  {
+    id:"canned-foods",
+    name:"Canned Foods",
+    category:"food",
+    icon:"▣",
+    description:"Canned fruits, vegetables, sauces and ready food products.",
+    application:"room-application.html?room=canned-foods"
+  },
+  {
+    id:"packaging",
+    name:"Packaging",
+    category:"industrial",
+    icon:"□",
+    description:"Packaging solutions, labels, boxes and industrial materials.",
+    application:"room-application.html?room=packaging"
+  },
+  {
+    id:"textiles",
+    name:"Textiles",
+    category:"consumer",
+    icon:"▥",
+    description:"Fabrics, garments, home textiles and textile suppliers.",
+    application:"room-application.html?room=textiles"
+  },
+  {
+    id:"oils",
+    name:"Oils",
+    category:"food",
+    icon:"滴",
+    description:"Vegetable oils, edible oils and bulk oil suppliers.",
+    application:"room-application.html?room=oils"
+  },
+  {
+    id:"logistics",
+    name:"Logistics",
+    category:"logistics",
+    icon:"✈",
+    description:"Freight, shipping, customs, warehousing and supply chain.",
+    application:"room-application.html?room=logistics"
+  },
+  {
+    id:"construction",
+    name:"Construction",
+    category:"industrial",
+    icon:"▦",
+    description:"Construction materials, building products and project supply.",
+    application:"room-application.html?room=construction"
+  },
+  {
+    id:"chemicals",
+    name:"Chemicals",
+    category:"industrial",
+    icon:"◌",
+    description:"Industrial chemicals, raw materials and production inputs.",
+    application:"room-application.html?room=chemicals"
+  }
+];
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -430,7 +766,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   currentUser = user;
-  document.getElementById("userEmail").innerText = user.email;
 
   if (user.email === ADMIN_EMAIL) {
     window.location.href = "admin.html";
@@ -452,30 +787,11 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  renderWarnings(currentUserData);
-  renderCompany(currentUserData);
-  renderAccessText(currentUserData);
-  renderRoleBasedPanels(currentUserData);
-
-  if (isActiveApproved(currentUserData)) {
-    loadRoomRequests();
-    loadMyOffers();
-
-    if (currentUserData.role === "producer") {
-      loadMyProducts();
-    } else {
-      loadMyBuyerRequests();
-    }
-  } else {
-    renderLockedState();
-  }
+  renderUserInfo();
+  renderWarnings();
+  renderCompanyBadges();
+  renderRooms();
 });
-
-function isActiveApproved(data){
-  return data &&
-    data.status === "approved" &&
-    data.suspended !== true;
-}
 
 function safe(value){
   if(value === undefined || value === null || value === ""){
@@ -490,26 +806,55 @@ function safe(value){
     .replaceAll("'", "&#039;");
 }
 
-function renderWarnings(data){
+function pretty(value){
+  if(!value) return "-";
+  return String(value)
+    .replaceAll("-", " ")
+    .replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function isActiveApproved(){
+  return currentUserData &&
+    currentUserData.status === "approved" &&
+    currentUserData.suspended !== true;
+}
+
+function renderUserInfo(){
+  const companyName = currentUserData.company || currentUser.email || "Member";
+  const shortName = companyName.split(" ")[0] || "Member";
+
+  document.getElementById("userName").innerText = shortName;
+
+  const initials = companyName
+    .split(" ")
+    .map(word => word.charAt(0))
+    .join("")
+    .slice(0,2)
+    .toUpperCase();
+
+  document.getElementById("avatarText").innerText = initials || "AA";
+}
+
+function renderWarnings(){
   let html = "";
 
-  if (data.status === "pending") {
+  if (currentUserData.status === "pending") {
     html = `
       <div class="warning">
-        Your application is pending approval. Full access will be available after admin approval.
+        Your company application is pending admin approval. You can explore available rooms, but full access will be available after approval.
       </div>
     `;
   }
 
-  if (data.status === "rejected") {
+  if (currentUserData.status === "rejected") {
     html = `
       <div class="warning">
-        Your application was rejected. Please contact the platform admin.
+        Your company application was rejected. Please contact the platform admin for more information.
       </div>
     `;
   }
 
-  if (data.suspended) {
+  if (currentUserData.suspended) {
     html = `
       <div class="warning">
         Your account is suspended. Please contact the platform admin.
@@ -520,420 +865,160 @@ function renderWarnings(data){
   document.getElementById("approvalWarning").innerHTML = html;
 }
 
-function renderCompany(data){
-  document.getElementById("companyName").innerText = data.company || "Company";
-  document.getElementById("roleBox").innerText = data.role || "-";
-  document.getElementById("roomBox").innerText = data.room || "-";
-
-  document.getElementById("companyInfo").innerText =
-    `${data.country || "-"} • ${data.whatsapp || "-"} • ${data.capacity || "-"}`;
-
+function renderCompanyBadges(){
   let badges = "";
 
-  if (data.premium) {
-    badges += `<span class="badge">Premium</span>`;
+  badges += `<span class="badge">Company: ${safe(currentUserData.company)}</span>`;
+  badges += `<span class="badge">Role: ${safe(currentUserData.role)}</span>`;
+  badges += `<span class="badge">Country: ${safe(currentUserData.country)}</span>`;
+
+  if (currentUserData.room) {
+    badges += `<span class="badge">Approved Room: ${safe(pretty(currentUserData.room))}</span>`;
   }
 
-  if (data.verified) {
+  if (currentUserData.status) {
+    badges += `<span class="badge">Status: ${safe(currentUserData.status)}</span>`;
+  }
+
+  if (currentUserData.premium) {
+    badges += `<span class="badge">Premium Member</span>`;
+  }
+
+  if (currentUserData.verified) {
     badges += `<span class="badge badge-green">Verified Company</span>`;
   }
 
-  if (data.status) {
-    badges += `<span class="badge">Status: ${safe(data.status)}</span>`;
-  }
-
-  if (data.suspended) {
+  if (currentUserData.suspended) {
     badges += `<span class="badge badge-red">Suspended</span>`;
   }
 
-  document.getElementById("badges").innerHTML = badges;
+  document.getElementById("companyBadges").innerHTML = badges;
 }
 
-function renderAccessText(data){
-  let text = "";
+window.filterRooms = function(category, button){
+  activeCategory = category;
 
-  if (data.role === "producer") {
-    text = "As a producer, you can list products, showcase available capacity, receive offers from buyers and open private deal chats after accepting offers.";
-  } else if (data.role === "buyer") {
-    text = "As a buyer, you can browse verified suppliers, post buyer requests, make offers and continue negotiations through private deal chats.";
-  } else if (data.role === "exporter") {
-    text = "As an exporter, you can discover suppliers, compare offers, post trade requests and communicate with verified companies inside rooms.";
-  } else if (data.role === "importer") {
-    text = "As an importer, you can find producers, request prices, post demand notices and start private deal conversations with suppliers.";
-  } else {
-    text = "Your access depends on your company role and admin approval.";
-  }
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+  button.classList.add("active");
 
-  document.getElementById("accessText").innerText = text;
-}
-
-function renderRoleBasedPanels(data){
-  document.getElementById("producerPanel").style.display = "none";
-  document.getElementById("buyerRequestPanel").style.display = "none";
-  document.getElementById("myProductsSection").style.display = "none";
-  document.getElementById("myRequestsSection").style.display = "none";
-
-  if (data.role === "producer") {
-    document.getElementById("activityTitle").innerText = "My Products";
-    document.getElementById("myProductsSection").style.display = "block";
-
-    if (isActiveApproved(data)) {
-      document.getElementById("producerPanel").style.display = "block";
-    }
-  } else {
-    document.getElementById("activityTitle").innerText = "My Requests";
-    document.getElementById("myRequestsSection").style.display = "block";
-
-    if (isActiveApproved(data)) {
-      document.getElementById("buyerRequestPanel").style.display = "block";
-    }
-  }
-}
-
-function renderLockedState(){
-  document.getElementById("requestsList").innerHTML =
-    `<div class="empty">Room data will be available after approval.</div>`;
-
-  document.getElementById("offersList").innerHTML =
-    `<div class="empty">Offers will be available after approval.</div>`;
-
-  document.getElementById("products").innerHTML =
-    `<div class="empty">Product listings will be available after approval.</div>`;
-
-  document.getElementById("myRequestsList").innerHTML =
-    `<div class="empty">Buyer requests will be available after approval.</div>`;
-
-  document.getElementById("activityCount").innerText = "0";
-  document.getElementById("offersCount").innerText = "0";
-}
-
-/* ADD PRODUCT */
-window.addProduct = async function(){
-  if (!currentUser || !currentUserData) {
-    alert("Please login again.");
-    return;
-  }
-
-  if (currentUserData.role !== "producer") {
-    alert("Only producers can add products.");
-    return;
-  }
-
-  if (!isActiveApproved(currentUserData)) {
-    alert("Your account must be approved before adding products.");
-    return;
-  }
-
-  if (!currentUserData.premium && myProductCount >= 3) {
-    alert("Free accounts can add up to 3 products. Upgrade to Premium for more visibility and more listings.");
-    return;
-  }
-
-  const name = document.getElementById("name").value.trim();
-  const desc = document.getElementById("desc").value.trim();
-  const price = document.getElementById("price").value.trim();
-  const quantity = document.getElementById("quantity").value.trim();
-
-  if (!name || !desc || !price || !quantity) {
-    alert("Please fill all product fields.");
-    return;
-  }
-
-  const btn = document.getElementById("addProductBtn");
-  btn.disabled = true;
-  btn.innerText = "Adding...";
-
-  try {
-    await addDoc(collection(db, "products"), {
-      owner: currentUser.uid,
-      ownerEmail: currentUser.email,
-      ownerCompany: currentUserData.company || "",
-      ownerCountry: currentUserData.country || "",
-      ownerPremium: currentUserData.premium || false,
-      ownerVerified: currentUserData.verified || false,
-      room: currentUserData.room,
-      name,
-      desc,
-      price,
-      quantity,
-      createdAt: new Date()
-    });
-
-    document.getElementById("name").value = "";
-    document.getElementById("desc").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("quantity").value = "";
-
-    alert("Product added successfully.");
-
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-
-  btn.disabled = false;
-  btn.innerText = "Add Product";
+  renderRooms();
 };
 
-function loadMyProducts(){
-  const q = query(
-    collection(db, "products"),
-    where("room", "==", currentUserData.room)
-  );
+function getRoomAccessState(room){
+  if (!currentUserData) {
+    return "locked";
+  }
 
-  onSnapshot(q, (snapshot) => {
-    const container = document.getElementById("products");
-    container.innerHTML = "";
+  if (!isActiveApproved()) {
+    return "locked";
+  }
 
-    let count = 0;
+  if (currentUserData.room === room.id) {
+    return "approved";
+  }
 
-    snapshot.forEach((docItem) => {
-      const p = docItem.data();
+  return "apply";
+}
 
-      if (p.owner !== currentUser.uid) {
-        return;
-      }
+function renderRooms(){
+  const container = document.getElementById("roomsGrid");
+  container.innerHTML = "";
 
-      count++;
+  const filtered = rooms.filter(room => {
+    if (activeCategory === "all") {
+      return true;
+    }
 
-      container.innerHTML += `
-        <div class="card">
-          <h3>${safe(p.name)}</h3>
-          <p>${safe(p.desc)}</p>
-          <div class="small">Price: ${safe(p.price)}</div>
-          <div class="small">Quantity: ${safe(p.quantity)}</div>
-          <div class="small">Room: ${safe(p.room)}</div>
+    return room.category === activeCategory;
+  });
+
+  filtered.forEach(room => {
+    const state = getRoomAccessState(room);
+
+    let actionText = "Apply for Access";
+    let stateText = pretty(room.category);
+    let cardClass = "";
+
+    if (state === "approved") {
+      actionText = "Enter Room";
+      stateText = "Approved Access";
+      cardClass = "approved";
+    }
+
+    if (state === "locked") {
+      actionText = "View Room";
+      stateText = "Approval Required";
+    }
+
+    container.innerHTML += `
+      <div class="room-card ${cardClass}" onclick="openRoom('${room.id}')">
+        <div class="room-visual">
+          <div class="room-icon">${room.icon}</div>
         </div>
-      `;
-    });
 
-    myProductCount = count;
-    document.getElementById("activityCount").innerText = count;
+        <h3>${safe(room.name)}</h3>
 
-    if (count === 0) {
-      container.innerHTML = `<div class="empty">No product listings yet.</div>`;
-    }
-  });
-}
+        <p>${safe(room.description)}</p>
 
-/* BUYER REQUESTS */
-window.addBuyerRequest = async function(){
-  if (!currentUser || !currentUserData) {
-    alert("Please login again.");
-    return;
-  }
-
-  if (!isActiveApproved(currentUserData)) {
-    alert("Your account must be approved before posting requests.");
-    return;
-  }
-
-  const title = document.getElementById("requestTitle").value.trim();
-  const details = document.getElementById("requestDetails").value.trim();
-  const quantity = document.getElementById("requestQuantity").value.trim();
-
-  if (!title || !details || !quantity) {
-    alert("Please fill all request fields.");
-    return;
-  }
-
-  const btn = document.getElementById("addRequestBtn");
-  btn.disabled = true;
-  btn.innerText = "Posting...";
-
-  try {
-    await addDoc(collection(db, "buyerRequests"), {
-      room: currentUserData.room,
-      requester: currentUser.uid,
-      requesterEmail: currentUser.email,
-      requesterCompany: currentUserData.company || "",
-      requesterCountry: currentUserData.country || "",
-      requesterRole: currentUserData.role || "",
-      title,
-      details,
-      quantity,
-      createdAt: new Date()
-    });
-
-    document.getElementById("requestTitle").value = "";
-    document.getElementById("requestDetails").value = "";
-    document.getElementById("requestQuantity").value = "";
-
-    alert("Buyer request posted successfully.");
-
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-
-  btn.disabled = false;
-  btn.innerText = "Post Buyer Request";
-};
-
-function loadRoomRequests(){
-  const q = query(
-    collection(db, "buyerRequests"),
-    where("room", "==", currentUserData.room)
-  );
-
-  onSnapshot(q, (snapshot) => {
-    const container = document.getElementById("requestsList");
-    container.innerHTML = "";
-
-    if (snapshot.empty) {
-      container.innerHTML = `<div class="empty">No buyer requests in your room yet.</div>`;
-      return;
-    }
-
-    let shown = 0;
-
-    snapshot.forEach((docItem) => {
-      if (shown >= 5) {
-        return;
-      }
-
-      const r = docItem.data();
-      shown++;
-
-      container.innerHTML += `
-        <div class="card">
-          <h3>${safe(r.title)}</h3>
-          <p>${safe(r.details)}</p>
-          <div class="small">Quantity: ${safe(r.quantity)}</div>
-          <div class="small">Company: ${safe(r.requesterCompany)} • ${safe(r.requesterCountry)} • ${safe(r.requesterRole)}</div>
+        <div class="room-footer">
+          <span class="room-action">${actionText} →</span>
+          <span class="room-state">${stateText}</span>
         </div>
-      `;
-    });
+      </div>
+    `;
   });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty">No rooms found in this category.</div>`;
+  }
 }
 
-function loadMyBuyerRequests(){
-  const q = query(
-    collection(db, "buyerRequests"),
-    where("room", "==", currentUserData.room)
-  );
-
-  onSnapshot(q, (snapshot) => {
-    const container = document.getElementById("myRequestsList");
-    container.innerHTML = "";
-
-    let count = 0;
-
-    snapshot.forEach((docItem) => {
-      const r = docItem.data();
-
-      if (r.requester !== currentUser.uid) {
-        return;
-      }
-
-      count++;
-
-      container.innerHTML += `
-        <div class="card">
-          <h3>${safe(r.title)}</h3>
-          <p>${safe(r.details)}</p>
-          <div class="small">Quantity: ${safe(r.quantity)}</div>
-          <div class="small">Room: ${safe(r.room)}</div>
-        </div>
-      `;
-    });
-
-    myRequestCount = count;
-    document.getElementById("activityCount").innerText = count;
-
-    if (count === 0) {
-      container.innerHTML = `<div class="empty">No buyer requests posted yet.</div>`;
-    }
-  });
-}
-
-/* OFFERS */
-function loadMyOffers(){
-  const q = query(
-    collection(db, "offers"),
-    where("room", "==", currentUserData.room)
-  );
-
-  onSnapshot(q, (snapshot) => {
-    const container = document.getElementById("offersList");
-    container.innerHTML = "";
-
-    let count = 0;
-
-    snapshot.forEach((docItem) => {
-      const offer = docItem.data();
-      const id = docItem.id;
-
-      const isOwner = offer.owner === currentUser.uid;
-      const isBuyer = offer.buyer === currentUser.uid;
-
-      if (!isOwner && !isBuyer) {
-        return;
-      }
-
-      count++;
-
-      let actions = "";
-
-      if (isOwner && offer.status === "pending") {
-        actions += `
-          <button class="btn-green" onclick="acceptOffer('${id}')">Accept</button>
-          <button class="btn-red" onclick="rejectOffer('${id}')">Reject</button>
-        `;
-      }
-
-      if (offer.status === "accepted") {
-        actions += `<button onclick="openChat('${id}')">Open Private Chat</button>`;
-      }
-
-      container.innerHTML += `
-        <div class="card">
-          <h3>${safe(offer.productName)}</h3>
-          <p>${safe(offer.note)}</p>
-          <div class="small">Offer Price: ${safe(offer.price)}</div>
-          <div class="small">Buyer: ${safe(offer.buyerCompany)} • ${safe(offer.buyerCountry)} • ${safe(offer.buyerRole)}</div>
-          <div class="small">Status: ${safe(offer.status)}</div>
-          <div class="actions">${actions}</div>
-        </div>
-      `;
-    });
-
-    document.getElementById("offersCount").innerText = count;
-
-    if (count === 0) {
-      container.innerHTML = `<div class="empty">No offers yet.</div>`;
-    }
-  });
-}
-
-window.acceptOffer = async function(id){
-  await updateDoc(doc(db, "offers", id), {
-    status: "accepted",
-    updatedAt: new Date()
-  });
-};
-
-window.rejectOffer = async function(id){
-  await updateDoc(doc(db, "offers", id), {
-    status: "rejected",
-    updatedAt: new Date()
-  });
-};
-
-window.openChat = function(offerId){
-  window.location.href = "chat.html?offerId=" + offerId;
-};
-
-window.goRoom = function(){
+window.openRoom = function(roomId){
   if (!currentUserData) {
     alert("Profile is loading. Please wait.");
     return;
   }
 
-  if (!isActiveApproved(currentUserData)) {
-    alert("Your account must be approved before entering the room.");
+  if (currentUserData.suspended) {
+    alert("Your account is suspended. Please contact the platform admin.");
     return;
   }
 
-  window.location.href = "room.html";
+  if (currentUserData.status === "pending") {
+    alert("Your company application is pending admin approval. Room access will be available after approval.");
+    return;
+  }
+
+  if (currentUserData.status === "rejected") {
+    alert("Your company application was rejected. Please contact the platform admin.");
+    return;
+  }
+
+  if (currentUserData.status !== "approved") {
+    alert("Your account must be approved before accessing rooms.");
+    return;
+  }
+
+  if (currentUserData.room === roomId) {
+    window.location.href = "room.html?room=" + encodeURIComponent(roomId);
+    return;
+  }
+
+  window.location.href = "room-application.html?room=" + encodeURIComponent(roomId);
+};
+
+window.scrollToRooms = function(){
+  document.getElementById("roomsSection").scrollIntoView({
+    behavior:"smooth"
+  });
+};
+
+window.goDashboard = function(){
+  window.location.href = "dashboard.html";
+};
+
+window.comingSoon = function(name){
+  alert(name + " will be available in the next platform phase.");
 };
 
 window.logout = function(){
