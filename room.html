@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Industry Room - A&A Global B2B Platform</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 *{
@@ -17,8 +16,8 @@
 
 :root{
   --gold:#C9A84C;
-  --dark:#0A0A0A;
-  --dark2:#070707;
+  --gold2:#E0C46A;
+  --dark:#050505;
   --card:#111;
   --card2:#151515;
   --line:#252525;
@@ -29,61 +28,426 @@
 }
 
 body{
-  background:var(--dark);
+  background:
+    radial-gradient(circle at top right,rgba(201,168,76,0.14),transparent 28%),
+    radial-gradient(circle at top left,rgba(201,168,76,0.07),transparent 24%),
+    linear-gradient(135deg,#030303,#0A0A0A,#111);
   color:var(--white);
   font-family:'Montserrat',sans-serif;
   min-height:100vh;
 }
 
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:0.14;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.08) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,0.08) 1px, transparent 1px);
+  background-size:80px 80px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,1),rgba(0,0,0,0.12));
+}
+
 header{
-  padding:20px 32px;
-  border-bottom:1px solid var(--line);
-  background:#080808;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
   position:sticky;
   top:0;
-  z-index:20;
+  z-index:50;
+  background:rgba(5,5,5,0.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(201,168,76,0.18);
+}
+
+.nav{
+  max-width:1380px;
+  margin:auto;
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
 }
 
 .logo{
   font-family:'Cormorant Garamond',serif;
-  font-size:2rem;
-  letter-spacing:0.5px;
+  font-size:2.25rem;
+  line-height:0.9;
+  color:var(--gold2);
+  letter-spacing:1px;
 }
 
-.logo span{
-  color:var(--gold);
+.logo small{
+  display:block;
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  letter-spacing:1.6px;
+  color:var(--muted);
+  margin-top:6px;
 }
 
-.header-actions{
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.nav-links a{
+  color:#bfbfbf;
+  text-decoration:none;
+  font-size:13px;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  color:var(--gold2);
+}
+
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+  border:1px solid rgba(201,168,76,0.18);
+  background:#0c0c0c;
+  color:var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  border-radius:50%;
+}
+
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px solid rgba(201,168,76,0.18);
+  padding:7px 10px;
+  background:#0c0c0c;
+  border-radius:999px;
+}
+
+.avatar{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#6d5420);
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:12px;
+}
+
+.user-meta{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.25;
+}
+
+.user-meta strong{
+  color:var(--white);
+  font-size:12px;
+}
+
+.page{
+  max-width:1380px;
+  margin:auto;
+  padding:34px 28px 44px;
+}
+
+.breadcrumb{
   display:flex;
   gap:8px;
   align-items:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:22px;
 }
 
-.wrapper{
-  max-width:1180px;
-  margin:auto;
-  padding:28px;
+.breadcrumb span{
+  color:var(--gold2);
 }
 
-button{
-  padding:10px 14px;
-  background:var(--gold);
-  color:#000;
-  border:none;
+.room-hero{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(201,168,76,0.28);
+  background:
+    linear-gradient(90deg,rgba(10,10,10,0.98),rgba(10,10,10,0.82)),
+    radial-gradient(circle at 78% 38%,rgba(201,168,76,0.2),transparent 32%);
+  padding:36px;
+  margin-bottom:22px;
+}
+
+.room-hero-inner{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.room-icon{
+  width:92px;
+  height:92px;
+  min-width:92px;
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,0.6);
+  background:rgba(201,168,76,0.06);
+  color:var(--gold2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+}
+
+.room-hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:58px;
+  line-height:0.95;
+  font-weight:400;
+  margin-bottom:12px;
+}
+
+.room-hero p{
+  color:#c7c7c7;
+  line-height:1.75;
+  max-width:760px;
+  font-size:15px;
+}
+
+.hero-badges{
+  margin-top:18px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 9px;
+  border:1px solid rgba(201,168,76,0.6);
+  color:var(--gold2);
+  font-size:12px;
+  background:rgba(201,168,76,0.05);
+}
+
+.badge-green{
+  border-color:rgba(74,163,111,0.7);
+  color:#76d29b;
+  background:rgba(74,163,111,0.08);
+}
+
+.badge-red{
+  border-color:rgba(184,74,74,0.7);
+  color:#ff8f8f;
+  background:rgba(184,74,74,0.08);
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border:1px solid rgba(201,168,76,0.18);
+  background:rgba(17,17,17,0.75);
+  margin-bottom:24px;
+}
+
+.stat{
+  padding:22px;
+  border-right:1px solid rgba(201,168,76,0.14);
+}
+
+.stat:last-child{
+  border-right:none;
+}
+
+.stat span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:6px;
+}
+
+.stat strong{
+  color:var(--gold2);
+  font-family:'Cormorant Garamond',serif;
+  font-size:34px;
+  font-weight:500;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:1.1fr 0.9fr;
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.panel{
+  background:rgba(17,17,17,0.86);
+  border:1px solid rgba(201,168,76,0.2);
+  padding:22px;
+}
+
+.panel h3{
+  color:var(--gold2);
+  font-size:18px;
+  margin-bottom:10px;
+}
+
+.panel p{
+  color:#bdbdbd;
+  font-size:14px;
+  line-height:1.7;
+}
+
+.tabs{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  background:rgba(17,17,17,0.72);
+  border:1px solid rgba(201,168,76,0.15);
+  padding:10px;
+  margin-bottom:22px;
+}
+
+.tabs button{
+  border:1px solid rgba(201,168,76,0.18);
+  background:#0d0d0d;
+  color:#ccc;
+  padding:13px 16px;
   cursor:pointer;
+  font-family:'Montserrat',sans-serif;
   font-weight:600;
+  transition:0.25s;
+}
+
+.tabs button:hover,
+.tabs button.active{
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:#050505;
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+.card{
+  background:rgba(17,17,17,0.92);
+  border:1px solid rgba(201,168,76,0.18);
+  padding:20px;
+  margin-bottom:14px;
+}
+
+.card:hover{
+  border-color:rgba(201,168,76,0.55);
+}
+
+.card h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;
+  font-weight:500;
+  margin-bottom:8px;
+}
+
+.card p{
+  color:#bbb;
+  line-height:1.6;
+  margin-bottom:10px;
+  font-size:14px;
+}
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  gap:14px;
+  align-items:flex-start;
+  margin-bottom:10px;
+}
+
+.meta{
+  color:var(--muted);
+  font-size:13px;
+  margin:5px 0;
+}
+
+.meta strong{
+  color:#ddd;
+  font-weight:500;
+}
+
+.section-title{
+  margin-bottom:14px;
+  color:var(--gold2);
+  font-size:22px;
+}
+
+.form-card{
+  border-left:3px solid var(--gold);
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  padding:13px;
+  margin:7px 0;
+  background:#050505;
+  border:1px solid #2a2a2a;
+  color:var(--white);
   font-family:'Montserrat',sans-serif;
 }
 
-button:hover{
-  opacity:0.9;
+input:focus,
+textarea:focus,
+select:focus{
+  outline:none;
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(201,168,76,0.08);
 }
 
-button:disabled{
+textarea{
+  min-height:95px;
+  resize:vertical;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+button{
+  font-family:'Montserrat',sans-serif;
+}
+
+.btn{
+  padding:11px 14px;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:#000;
+  border:none;
+  cursor:pointer;
+  font-weight:700;
+  margin-top:8px;
+}
+
+.btn:hover{
+  opacity:0.92;
+}
+
+.btn:disabled{
   opacity:0.55;
   cursor:not-allowed;
 }
@@ -103,211 +467,16 @@ button:disabled{
   color:white;
 }
 
-.room-hero{
-  background:
-    linear-gradient(120deg,rgba(17,17,17,0.96),rgba(5,5,5,0.96)),
-    radial-gradient(circle at top right,rgba(201,168,76,0.18),transparent 35%);
-  border:1px solid rgba(201,168,76,0.28);
-  padding:28px;
-  margin-bottom:18px;
-}
-
-.room-hero-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:20px;
-}
-
-.room-hero h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:44px;
-  font-weight:400;
-  margin-bottom:8px;
-}
-
-.room-hero p{
-  color:var(--muted);
-  line-height:1.6;
-  max-width:720px;
-}
-
-.hero-badges{
-  margin-top:14px;
-}
-
-.badge{
-  display:inline-block;
-  padding:5px 8px;
-  border:1px solid var(--gold);
-  color:var(--gold);
-  font-size:12px;
-  margin:5px 5px 0 0;
-}
-
-.badge-green{
-  border-color:var(--green);
-  color:var(--green);
-}
-
-.badge-red{
-  border-color:var(--red);
-  color:var(--red);
-}
-
-.room-stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin:18px 0 22px;
-}
-
-.stat{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:16px;
-}
-
-.stat span{
-  display:block;
-  color:var(--muted);
-  font-size:13px;
-  margin-bottom:6px;
-}
-
-.stat strong{
-  color:var(--gold);
-  font-size:24px;
-}
-
-.quick-grid{
-  display:grid;
-  grid-template-columns:1.2fr 0.8fr;
-  gap:14px;
-  margin-bottom:22px;
-}
-
-.panel{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:18px;
-}
-
-.panel h3{
-  margin-bottom:8px;
-  font-size:18px;
-}
-
-.panel p{
-  color:var(--muted);
-  font-size:14px;
-  line-height:1.6;
-}
-
-.tabs{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-bottom:22px;
-}
-
-.tabs button{
-  background:#111;
-  color:#ccc;
-  border:1px solid var(--line);
-  padding:11px 14px;
-}
-
-.tabs button.active{
-  background:var(--gold);
-  color:#000;
-}
-
-.section{
-  display:none;
-}
-
-.section.active{
-  display:block;
-}
-
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  padding:18px;
-  margin-bottom:14px;
-}
-
-.card:hover{
-  border-color:rgba(201,168,76,0.45);
-}
-
-.card-header{
-  display:flex;
-  justify-content:space-between;
-  gap:14px;
-  align-items:flex-start;
-  margin-bottom:10px;
-}
-
-.card h3{
-  margin-bottom:6px;
-  font-size:20px;
-}
-
-.card p{
-  color:#bbb;
-  line-height:1.55;
-  margin-bottom:10px;
-}
-
-.meta{
-  color:var(--muted);
-  font-size:13px;
-  margin:4px 0;
-}
-
-.meta strong{
-  color:#ddd;
-  font-weight:500;
-}
-
-input, textarea, select{
-  width:100%;
-  padding:12px;
-  margin:7px 0;
-  background:#000;
-  border:1px solid #222;
-  color:white;
-  font-family:'Montserrat',sans-serif;
-}
-
-input:focus, textarea:focus, select:focus{
-  outline:none;
-  border-color:var(--gold);
-}
-
-textarea{
-  min-height:90px;
-  resize:vertical;
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
 .search-box{
-  background:var(--card);
-  border:1px solid var(--line);
+  background:rgba(17,17,17,0.86);
+  border:1px solid rgba(201,168,76,0.16);
   padding:14px;
   margin-bottom:14px;
 }
 
 .offer-box{
   margin-top:14px;
-  border-top:1px solid #222;
+  border-top:1px solid rgba(255,255,255,0.08);
   background:#0d0d0d;
   padding:14px;
 }
@@ -326,12 +495,6 @@ textarea{
   margin-top:12px;
 }
 
-.small{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:6px;
-}
-
 .supplier-line{
   display:flex;
   gap:8px;
@@ -340,23 +503,81 @@ textarea{
   margin-bottom:8px;
 }
 
-.section-title{
-  margin-bottom:14px;
-  color:var(--gold);
-  font-size:22px;
+.two-column-layout{
+  display:grid;
+  grid-template-columns:1fr 360px;
+  gap:18px;
+  align-items:start;
 }
 
-@media(max-width:900px){
-  .room-hero-top{
-    display:block;
-  }
+.side-panel{
+  background:rgba(17,17,17,0.86);
+  border:1px solid rgba(201,168,76,0.18);
+  padding:20px;
+  position:sticky;
+  top:96px;
+}
 
+.side-panel h3{
+  color:var(--gold2);
+  margin-bottom:10px;
+}
+
+.side-panel p{
+  color:#bbb;
+  line-height:1.7;
+  font-size:13px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:6px;
+}
+
+@media(max-width:1000px){
   .quick-grid{
     grid-template-columns:1fr;
   }
 
-  .room-stats{
+  .two-column-layout{
+    grid-template-columns:1fr;
+  }
+
+  .side-panel{
+    position:static;
+  }
+}
+
+@media(max-width:850px){
+  .nav{
+    display:block;
+  }
+
+  .nav-links{
+    margin-top:16px;
+    overflow-x:auto;
+    padding-bottom:8px;
+  }
+
+  .nav-actions{
+    margin-top:14px;
+  }
+
+  .room-hero-inner{
+    align-items:flex-start;
+  }
+
+  .room-hero h1{
+    font-size:44px;
+  }
+
+  .stats{
     grid-template-columns:1fr 1fr;
+  }
+
+  .stat{
+    border-bottom:1px solid rgba(201,168,76,0.14);
   }
 
   .form-grid{
@@ -364,31 +585,37 @@ textarea{
   }
 }
 
-@media(max-width:600px){
-  header{
-    padding:16px;
-    align-items:flex-start;
-    gap:12px;
-  }
-
-  .header-actions{
-    flex-direction:column;
-    align-items:stretch;
-  }
-
-  .wrapper{
-    padding:18px;
+@media(max-width:560px){
+  .page{
+    padding:20px 16px 32px;
   }
 
   .room-hero{
-    padding:20px;
+    padding:24px;
+  }
+
+  .room-hero-inner{
+    display:block;
+  }
+
+  .room-icon{
+    margin-bottom:18px;
   }
 
   .room-hero h1{
-    font-size:34px;
+    font-size:38px;
   }
 
-  .room-stats{
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .stat{
+    border-right:none;
+  }
+
+  .tabs{
+    display:grid;
     grid-template-columns:1fr;
   }
 
@@ -406,27 +633,55 @@ textarea{
 <body>
 
 <header>
-  <div class="logo">A<span>&</span>A Room</div>
+  <div class="nav">
+    <div class="logo">
+      A&A
+      <small>GLOBAL B2B PLATFORM</small>
+    </div>
 
-  <div class="header-actions">
-    <button class="btn-dark" onclick="goDashboard()">Dashboard</button>
-    <button class="btn-dark" onclick="logout()">Logout</button>
+    <div class="nav-links">
+      <a onclick="goDashboard()">Dashboard</a>
+      <a class="active" onclick="goDashboard()">Rooms</a>
+      <a onclick="comingSoon('Connections')">Connections</a>
+      <a onclick="comingSoon('Messages')">Messages</a>
+      <a onclick="comingSoon('Market Insights')">Market Insights</a>
+      <a onclick="comingSoon('Events')">Events</a>
+    </div>
+
+    <div class="nav-actions">
+      <div class="icon-btn" onclick="comingSoon('Search')">⌕</div>
+      <div class="icon-btn" onclick="comingSoon('Notifications')">◌</div>
+      <div class="user-chip">
+        <div class="avatar" id="avatarText">AA</div>
+        <div class="user-meta">
+          <span>Inside Room,</span><br>
+          <strong id="userName">Loading...</strong>
+        </div>
+      </div>
+      <div class="icon-btn" onclick="logout()">⎋</div>
+    </div>
   </div>
 </header>
 
-<div class="wrapper">
+<div class="page">
 
-  <div class="room-hero">
-    <div class="room-hero-top">
+  <div class="breadcrumb">
+    <span>Dashboard</span> / Rooms / <span id="breadcrumbRoom">Industry Room</span>
+  </div>
+
+  <section class="room-hero">
+    <div class="room-hero-inner">
+      <div class="room-icon" id="roomIcon">◆</div>
+
       <div>
         <h1 id="roomTitle">Industry Room</h1>
         <p id="roomSubtitle">Loading room...</p>
         <div class="hero-badges" id="userBadges"></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="room-stats">
+  <section class="stats">
     <div class="stat">
       <span>Products</span>
       <strong id="statProducts">0</strong>
@@ -446,12 +701,12 @@ textarea{
       <span>Verified Companies</span>
       <strong id="statCompanies">0</strong>
     </div>
-  </div>
+  </section>
 
   <div class="quick-grid">
     <div class="panel">
       <h3>Room Purpose</h3>
-      <p>
+      <p id="roomPurpose">
         This room is designed for verified companies to share products, post buyer requests,
         create offers and start private deal conversations inside a controlled B2B network.
       </p>
@@ -471,65 +726,88 @@ textarea{
     <button onclick="showTab('companies', this)">Verified Companies</button>
   </div>
 
-  <!-- PRODUCTS -->
-  <div id="products" class="section active">
-    <div id="producerPanel" class="card" style="display:none;">
-      <h2 class="section-title">Add Product Listing</h2>
+  <div class="two-column-layout">
+    <main>
 
-      <input id="productName" placeholder="Product Name">
-      <textarea id="productDesc" placeholder="Product Description, quality, origin, packaging..."></textarea>
+      <div id="products" class="section active">
+        <div id="producerPanel" class="card form-card" style="display:none;">
+          <h2 class="section-title">Add Product Listing</h2>
 
-      <div class="form-grid">
-        <input id="productPrice" placeholder="Base Price / Request Price">
-        <input id="productQuantity" placeholder="Available Quantity / Capacity">
+          <input id="productName" placeholder="Product Name">
+
+          <textarea id="productDesc" placeholder="Product description, quality, origin, packaging, certification details..."></textarea>
+
+          <div class="form-grid">
+            <input id="productPrice" placeholder="Base Price / Request Price">
+            <input id="productQuantity" placeholder="Available Quantity / Capacity">
+          </div>
+
+          <button class="btn" id="addProductBtn" onclick="addProduct()">Add Product</button>
+        </div>
+
+        <div class="search-box">
+          <input id="productSearch" placeholder="Search products, suppliers, countries..." oninput="renderProducts()">
+        </div>
+
+        <div id="productsList"></div>
       </div>
 
-      <button id="addProductBtn" onclick="addProduct()">Add Product</button>
-    </div>
+      <div id="requests" class="section">
+        <div id="requestFormCard" class="card form-card" style="display:none;">
+          <h2 class="section-title">Post Buyer Request</h2>
 
-    <div class="search-box">
-      <input id="productSearch" placeholder="Search products, suppliers, countries..." oninput="renderProducts()">
-    </div>
+          <input id="requestTitle" placeholder="What are you looking for?">
 
-    <div id="productsList"></div>
-  </div>
+          <textarea id="requestDetails" placeholder="Details, target price, quality, packaging, delivery terms..."></textarea>
 
-  <!-- BUYER REQUESTS -->
-  <div id="requests" class="section">
-    <div id="requestFormCard" class="card" style="display:none;">
-      <h2 class="section-title">Post Buyer Request</h2>
+          <input id="requestQuantity" placeholder="Required Quantity">
 
-      <input id="requestTitle" placeholder="What are you looking for?">
-      <textarea id="requestDetails" placeholder="Details, target price, quality, packaging, delivery terms..."></textarea>
-      <input id="requestQuantity" placeholder="Required Quantity">
+          <button class="btn" id="addRequestBtn" onclick="addBuyerRequest()">Post Request</button>
+        </div>
 
-      <button id="addRequestBtn" onclick="addBuyerRequest()">Post Request</button>
-    </div>
+        <div id="requestsList"></div>
+      </div>
 
-    <div id="requestsList"></div>
-  </div>
+      <div id="offers" class="section">
+        <h2 class="section-title">My Room Offers</h2>
+        <div id="offersList"></div>
+      </div>
 
-  <!-- OFFERS -->
-  <div id="offers" class="section">
-    <h2 class="section-title">My Room Offers</h2>
-    <div id="offersList"></div>
-  </div>
+      <div id="discussions" class="section">
+        <div class="card form-card">
+          <h2 class="section-title">Room Discussion</h2>
 
-  <!-- DISCUSSIONS -->
-  <div id="discussions" class="section">
-    <div class="card">
-      <h2 class="section-title">Room Discussion</h2>
-      <textarea id="discussionText" placeholder="Share market information, stock updates, shipping notes or business questions..."></textarea>
-      <button id="discussionBtn" onclick="addDiscussion()">Post Discussion</button>
-    </div>
+          <textarea id="discussionText" placeholder="Share market information, stock updates, shipping notes or business questions..."></textarea>
 
-    <div id="discussionList"></div>
-  </div>
+          <button class="btn" id="discussionBtn" onclick="addDiscussion()">Post Discussion</button>
+        </div>
 
-  <!-- VERIFIED COMPANIES -->
-  <div id="companies" class="section">
-    <h2 class="section-title">Verified Companies in This Room</h2>
-    <div id="companiesList"></div>
+        <div id="discussionList"></div>
+      </div>
+
+      <div id="companies" class="section">
+        <h2 class="section-title">Verified Companies in This Room</h2>
+        <div id="companiesList"></div>
+      </div>
+
+    </main>
+
+    <aside class="side-panel">
+      <h3 id="sideTitle">Room Intelligence</h3>
+      <p id="sideText">
+        Use this room to discover verified companies, compare products, publish buyer requests and turn offers into private deal conversations.
+      </p>
+
+      <br>
+
+      <div class="badge" id="sideCategory">Category</div>
+
+      <br><br>
+
+      <p class="small">
+        Admin can monitor room activity from the Admin Control Center. Premium visibility and special room authority can be added later.
+      </p>
+    </aside>
   </div>
 
 </div>
@@ -573,9 +851,127 @@ const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
 
 let currentUser = null;
 let currentUserData = null;
+let selectedRoomId = null;
+let selectedRoom = null;
+let isAdminUser = false;
+
 let allProducts = [];
 let productCache = {};
 let myProductCount = 0;
+
+const rooms = {
+  "rice":{
+    id:"rice",
+    name:"Rice Room",
+    shortName:"Rice",
+    category:"Food & Agriculture",
+    icon:"🌾",
+    subtitle:"Connect with verified rice producers, mills, exporters, importers and buyers.",
+    purpose:"The Rice Room is designed for companies involved in rice production, milling, packaging, export, import, wholesale and distribution."
+  },
+  "machinery":{
+    id:"machinery",
+    name:"Machinery Room",
+    shortName:"Machinery",
+    category:"Industrial",
+    icon:"⚙",
+    subtitle:"Connect with machinery suppliers, spare part producers, manufacturers and industrial buyers.",
+    purpose:"The Machinery Room brings together industrial equipment suppliers, manufacturers, spare part producers and companies seeking production solutions."
+  },
+  "cosmetics":{
+    id:"cosmetics",
+    name:"Cosmetics Room",
+    shortName:"Cosmetics",
+    category:"Consumer Goods",
+    icon:"◈",
+    subtitle:"Connect with beauty, skincare, personal care and cosmetic product suppliers.",
+    purpose:"The Cosmetics Room is built for beauty, skincare, personal care, private label and distribution opportunities."
+  },
+  "bulgur":{
+    id:"bulgur",
+    name:"Bulgur Room",
+    shortName:"Bulgur",
+    category:"Food & Agriculture",
+    icon:"🌾",
+    subtitle:"Connect with bulgur producers, grain processors, exporters and wholesale buyers.",
+    purpose:"The Bulgur Room focuses on bulgur, grains, staple foods and related wholesale trade opportunities."
+  },
+  "pulses":{
+    id:"pulses",
+    name:"Pulses Room",
+    shortName:"Pulses",
+    category:"Food & Agriculture",
+    icon:"●",
+    subtitle:"Connect with suppliers and buyers of beans, lentils, chickpeas, peas and pulses.",
+    purpose:"The Pulses Room supports trade in beans, lentils, chickpeas, peas and other pulse products."
+  },
+  "canned-foods":{
+    id:"canned-foods",
+    name:"Canned Foods Room",
+    shortName:"Canned Foods",
+    category:"Food & Agriculture",
+    icon:"▣",
+    subtitle:"Connect with canned food producers, importers, exporters and wholesale buyers.",
+    purpose:"The Canned Foods Room focuses on canned fruits, vegetables, sauces and ready food products."
+  },
+  "packaging":{
+    id:"packaging",
+    name:"Packaging Room",
+    shortName:"Packaging",
+    category:"Industrial",
+    icon:"□",
+    subtitle:"Connect with packaging producers, label suppliers, box manufacturers and buyers.",
+    purpose:"The Packaging Room supports B2B opportunities for packaging materials, labels, boxes and industrial packaging solutions."
+  },
+  "textiles":{
+    id:"textiles",
+    name:"Textiles Room",
+    shortName:"Textiles",
+    category:"Consumer Goods",
+    icon:"▥",
+    subtitle:"Connect with fabric suppliers, garment producers, home textile brands and buyers.",
+    purpose:"The Textiles Room supports companies in fabrics, garments, home textiles and apparel-related trade."
+  },
+  "oils":{
+    id:"oils",
+    name:"Oils Room",
+    shortName:"Oils",
+    category:"Food & Agriculture",
+    icon:"◍",
+    subtitle:"Connect with edible oil suppliers, bulk oil buyers and food industry companies.",
+    purpose:"The Oils Room focuses on vegetable oils, edible oils, bulk oils and food industry supply opportunities."
+  },
+  "logistics":{
+    id:"logistics",
+    name:"Logistics Room",
+    shortName:"Logistics",
+    category:"Logistics",
+    icon:"✈",
+    subtitle:"Connect with freight forwarders, shipping providers and supply chain companies.",
+    purpose:"The Logistics Room supports international trade by connecting companies with freight, customs, warehousing and shipping partners."
+  },
+  "construction":{
+    id:"construction",
+    name:"Construction Room",
+    shortName:"Construction",
+    category:"Industrial",
+    icon:"▦",
+    subtitle:"Connect with construction material suppliers, project companies and buyers.",
+    purpose:"The Construction Room focuses on construction materials, building products and project supply opportunities."
+  },
+  "chemicals":{
+    id:"chemicals",
+    name:"Chemicals Room",
+    shortName:"Chemicals",
+    category:"Industrial",
+    icon:"◌",
+    subtitle:"Connect with industrial chemical suppliers, raw material producers and buyers.",
+    purpose:"The Chemicals Room supports B2B opportunities in industrial chemicals, raw materials and production inputs."
+  }
+};
+
+const params = new URLSearchParams(window.location.search);
+selectedRoomId = params.get("room");
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -583,12 +979,33 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  if (user.email === ADMIN_EMAIL) {
-    window.location.href = "admin.html";
+  currentUser = user;
+  isAdminUser = user.email === ADMIN_EMAIL;
+
+  if (isAdminUser) {
+    selectedRoomId = selectedRoomId || "rice";
+    selectedRoom = rooms[selectedRoomId] || rooms["rice"];
+
+    currentUserData = {
+      company:"A&A Admin",
+      role:"admin",
+      country:"Admin",
+      room:selectedRoom.id,
+      status:"approved",
+      suspended:false,
+      premium:true,
+      verified:true
+    };
+
+    renderRoomHeader();
+    renderRoleBasedAccess();
+    loadProducts();
+    loadBuyerRequests();
+    loadOffers();
+    loadDiscussions();
+    loadVerifiedCompanies();
     return;
   }
-
-  currentUser = user;
 
   const companySnap = await getDoc(doc(db, "companies", user.uid));
 
@@ -605,9 +1022,18 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
+  selectedRoomId = selectedRoomId || currentUserData.room;
+
+  if (selectedRoomId !== currentUserData.room) {
+    alert("You do not have approved access to this room.");
+    window.location.href = "dashboard.html";
+    return;
+  }
+
+  selectedRoom = rooms[selectedRoomId] || rooms[currentUserData.room] || rooms["rice"];
+
   renderRoomHeader();
   renderRoleBasedAccess();
-
   loadProducts();
   loadBuyerRequests();
   loadOffers();
@@ -628,24 +1054,39 @@ function safe(value){
     .replaceAll("'", "&#039;");
 }
 
-function prettyRoom(room){
-  if(!room) return "Industry";
-  return room.charAt(0).toUpperCase() + room.slice(1);
-}
-
 function renderRoomHeader(){
-  const roomName = prettyRoom(currentUserData.room);
+  document.getElementById("breadcrumbRoom").innerText = selectedRoom.name;
+  document.getElementById("roomIcon").innerText = selectedRoom.icon;
+  document.getElementById("roomTitle").innerText = selectedRoom.name;
+  document.getElementById("roomSubtitle").innerText = selectedRoom.subtitle;
+  document.getElementById("roomPurpose").innerText = selectedRoom.purpose;
+  document.getElementById("sideTitle").innerText = selectedRoom.shortName + " Room Intelligence";
+  document.getElementById("sideCategory").innerText = selectedRoom.category;
 
-  document.getElementById("roomTitle").innerText = roomName + " Room";
+  const companyName = currentUserData.company || currentUser.email || "Member";
+  const shortName = companyName.split(" ")[0] || "Member";
 
-  document.getElementById("roomSubtitle").innerText =
-    "Connect with verified producers, buyers, exporters and importers in the " + roomName + " industry.";
+  document.getElementById("userName").innerText = shortName;
+
+  const initials = companyName
+    .split(" ")
+    .map(word => word.charAt(0))
+    .join("")
+    .slice(0,2)
+    .toUpperCase();
+
+  document.getElementById("avatarText").innerText = initials || "AA";
 
   let badges = `
     <span class="badge">Role: ${safe(currentUserData.role)}</span>
     <span class="badge">Company: ${safe(currentUserData.company)}</span>
     <span class="badge">Country: ${safe(currentUserData.country)}</span>
+    <span class="badge">Room: ${safe(selectedRoom.shortName)}</span>
   `;
+
+  if (isAdminUser) {
+    badges += `<span class="badge badge-green">Admin Room View</span>`;
+  }
 
   if (currentUserData.premium) {
     badges += `<span class="badge">Premium Member</span>`;
@@ -659,7 +1100,9 @@ function renderRoomHeader(){
 
   let accessText = "";
 
-  if (currentUserData.role === "producer") {
+  if (isAdminUser) {
+    accessText = "Admin view is active. You can monitor this room and manage access from the Admin Control Center.";
+  } else if (currentUserData.role === "producer") {
     accessText = "You can add product listings, receive offers and start private deal chats after accepting offers.";
   } else {
     accessText = "You can browse products, post buyer requests, make offers and start private deal chats after accepted offers.";
@@ -671,6 +1114,10 @@ function renderRoomHeader(){
 function renderRoleBasedAccess(){
   document.getElementById("producerPanel").style.display = "none";
   document.getElementById("requestFormCard").style.display = "none";
+
+  if (isAdminUser) {
+    return;
+  }
 
   if (currentUserData.role === "producer") {
     document.getElementById("producerPanel").style.display = "block";
@@ -687,8 +1134,13 @@ window.showTab = function(tabId, button){
   button.classList.add("active");
 };
 
-/* ADD PRODUCT */
+/* PRODUCTS */
 window.addProduct = async function(){
+  if (isAdminUser) {
+    alert("Admin view is for monitoring. Product listings should be created by companies.");
+    return;
+  }
+
   if (currentUserData.role !== "producer") {
     alert("Only producers can add products.");
     return;
@@ -721,7 +1173,7 @@ window.addProduct = async function(){
       ownerCountry: currentUserData.country || "",
       ownerPremium: currentUserData.premium || false,
       ownerVerified: currentUserData.verified || false,
-      room: currentUserData.room,
+      room: selectedRoom.id,
       name,
       desc,
       price,
@@ -735,7 +1187,6 @@ window.addProduct = async function(){
     document.getElementById("productQuantity").value = "";
 
     alert("Product added successfully.");
-
   } catch (error) {
     alert("Error: " + error.message);
   }
@@ -744,11 +1195,10 @@ window.addProduct = async function(){
   btn.innerText = "Add Product";
 };
 
-/* LOAD PRODUCTS */
 function loadProducts(){
   const q = query(
     collection(db, "products"),
-    where("room", "==", currentUserData.room)
+    where("room", "==", selectedRoom.id)
   );
 
   onSnapshot(q, (snapshot) => {
@@ -774,10 +1224,8 @@ function loadProducts(){
       const bp = b.ownerPremium ? 1 : 0;
       const av = a.ownerVerified ? 1 : 0;
       const bv = b.ownerVerified ? 1 : 0;
-
       const aScore = ap + av;
       const bScore = bp + bv;
-
       return bScore - aScore;
     });
 
@@ -824,13 +1272,15 @@ window.renderProducts = function(){
 
     let offerArea = "";
 
-    if (!isOwner) {
+    if (isAdminUser) {
+      offerArea = `<div class="small">Admin monitoring view.</div>`;
+    } else if (!isOwner) {
       offerArea = `
         <div class="offer-box">
           <strong>Start a deal with this supplier</strong>
           <input id="offer-${p.id}" placeholder="Your offer price / target price">
           <textarea id="offerNote-${p.id}" placeholder="Offer note, delivery terms, quantity..."></textarea>
-          <button onclick="sendOffer('${p.id}')">Make Offer</button>
+          <button class="btn" onclick="sendOffer('${p.id}')">Make Offer</button>
         </div>
       `;
     } else {
@@ -860,8 +1310,13 @@ window.renderProducts = function(){
   });
 };
 
-/* SEND OFFER */
+/* OFFERS */
 window.sendOffer = async function(productId){
+  if (isAdminUser) {
+    alert("Admin cannot create offers from monitoring view.");
+    return;
+  }
+
   const product = productCache[productId];
 
   if (!product) {
@@ -891,7 +1346,7 @@ window.sendOffer = async function(productId){
     buyerCompany: currentUserData.company || "",
     buyerCountry: currentUserData.country || "",
     buyerRole: currentUserData.role || "",
-    room: currentUserData.room,
+    room: selectedRoom.id,
     price,
     note,
     status: "pending",
@@ -904,92 +1359,10 @@ window.sendOffer = async function(productId){
   alert("Offer sent successfully.");
 };
 
-/* BUYER REQUESTS */
-window.addBuyerRequest = async function(){
-  if (currentUserData.role === "producer") {
-    alert("Producer accounts cannot post buyer requests.");
-    return;
-  }
-
-  const title = document.getElementById("requestTitle").value.trim();
-  const details = document.getElementById("requestDetails").value.trim();
-  const quantity = document.getElementById("requestQuantity").value.trim();
-
-  if (!title || !details || !quantity) {
-    alert("Please fill all request fields.");
-    return;
-  }
-
-  const btn = document.getElementById("addRequestBtn");
-  btn.disabled = true;
-  btn.innerText = "Posting...";
-
-  try {
-    await addDoc(collection(db, "buyerRequests"), {
-      room: currentUserData.room,
-      requester: currentUser.uid,
-      requesterEmail: currentUser.email,
-      requesterCompany: currentUserData.company || "",
-      requesterCountry: currentUserData.country || "",
-      requesterRole: currentUserData.role || "",
-      title,
-      details,
-      quantity,
-      createdAt: new Date()
-    });
-
-    document.getElementById("requestTitle").value = "";
-    document.getElementById("requestDetails").value = "";
-    document.getElementById("requestQuantity").value = "";
-
-    alert("Buyer request posted successfully.");
-
-  } catch (error) {
-    alert("Error: " + error.message);
-  }
-
-  btn.disabled = false;
-  btn.innerText = "Post Request";
-};
-
-function loadBuyerRequests(){
-  const q = query(
-    collection(db, "buyerRequests"),
-    where("room", "==", currentUserData.room)
-  );
-
-  onSnapshot(q, (snapshot) => {
-    const container = document.getElementById("requestsList");
-    container.innerHTML = "";
-
-    document.getElementById("statRequests").innerText = snapshot.size;
-
-    if (snapshot.empty) {
-      container.innerHTML = `<div class="empty">No buyer requests yet.</div>`;
-      return;
-    }
-
-    snapshot.forEach((docItem) => {
-      const r = docItem.data();
-
-      container.innerHTML += `
-        <div class="card">
-          <h3>${safe(r.title)}</h3>
-          <p>${safe(r.details)}</p>
-
-          <div class="meta"><strong>Quantity:</strong> ${safe(r.quantity)}</div>
-          <div class="meta"><strong>Company:</strong> ${safe(r.requesterCompany)} • ${safe(r.requesterCountry)} • ${safe(r.requesterRole)}</div>
-        </div>
-      `;
-    });
-  });
-}
-
-/* OFFERS */
 function loadOffers(){
   const q = query(
     collection(db, "offers"),
-    where("room", "==", currentUserData.room)
+    where("room", "==", selectedRoom.id)
   );
 
   onSnapshot(q, (snapshot) => {
@@ -1012,7 +1385,7 @@ function loadOffers(){
       const isOwner = offer.owner === currentUser.uid;
       const isBuyer = offer.buyer === currentUser.uid;
 
-      if (!isOwner && !isBuyer) {
+      if (!isAdminUser && !isOwner && !isBuyer) {
         return;
       }
 
@@ -1020,22 +1393,23 @@ function loadOffers(){
 
       let actions = "";
 
-      if (isOwner && offer.status === "pending") {
+      if (!isAdminUser && isOwner && offer.status === "pending") {
         actions += `
-          <button class="btn-green" onclick="acceptOffer('${id}')">Accept</button>
-          <button class="btn-red" onclick="rejectOffer('${id}')">Reject</button>
+          <button class="btn btn-green" onclick="acceptOffer('${id}')">Accept</button>
+          <button class="btn btn-red" onclick="rejectOffer('${id}')">Reject</button>
         `;
       }
 
-      if (offer.status === "accepted") {
+      if (!isAdminUser && offer.status === "accepted") {
         actions += `
-          <button onclick="openChat('${id}')">Open Private Chat</button>
+          <button class="btn" onclick="openChat('${id}')">Open Private Chat</button>
         `;
       }
 
       container.innerHTML += `
         <div class="card">
           <h3>${safe(offer.productName)}</h3>
+
           <p>${safe(offer.note)}</p>
 
           <div class="meta"><strong>Offer Price:</strong> ${safe(offer.price)}</div>
@@ -1071,8 +1445,99 @@ window.openChat = function(offerId){
   window.location.href = "chat.html?offerId=" + offerId;
 };
 
+/* BUYER REQUESTS */
+window.addBuyerRequest = async function(){
+  if (isAdminUser) {
+    alert("Admin cannot post buyer requests from monitoring view.");
+    return;
+  }
+
+  if (currentUserData.role === "producer") {
+    alert("Producer accounts cannot post buyer requests.");
+    return;
+  }
+
+  const title = document.getElementById("requestTitle").value.trim();
+  const details = document.getElementById("requestDetails").value.trim();
+  const quantity = document.getElementById("requestQuantity").value.trim();
+
+  if (!title || !details || !quantity) {
+    alert("Please fill all request fields.");
+    return;
+  }
+
+  const btn = document.getElementById("addRequestBtn");
+  btn.disabled = true;
+  btn.innerText = "Posting...";
+
+  try {
+    await addDoc(collection(db, "buyerRequests"), {
+      room: selectedRoom.id,
+      requester: currentUser.uid,
+      requesterEmail: currentUser.email,
+      requesterCompany: currentUserData.company || "",
+      requesterCountry: currentUserData.country || "",
+      requesterRole: currentUserData.role || "",
+      title,
+      details,
+      quantity,
+      createdAt: new Date()
+    });
+
+    document.getElementById("requestTitle").value = "";
+    document.getElementById("requestDetails").value = "";
+    document.getElementById("requestQuantity").value = "";
+
+    alert("Buyer request posted successfully.");
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+
+  btn.disabled = false;
+  btn.innerText = "Post Request";
+};
+
+function loadBuyerRequests(){
+  const q = query(
+    collection(db, "buyerRequests"),
+    where("room", "==", selectedRoom.id)
+  );
+
+  onSnapshot(q, (snapshot) => {
+    const container = document.getElementById("requestsList");
+    container.innerHTML = "";
+
+    document.getElementById("statRequests").innerText = snapshot.size;
+
+    if (snapshot.empty) {
+      container.innerHTML = `<div class="empty">No buyer requests yet.</div>`;
+      return;
+    }
+
+    snapshot.forEach((docItem) => {
+      const r = docItem.data();
+
+      container.innerHTML += `
+        <div class="card">
+          <h3>${safe(r.title)}</h3>
+
+          <p>${safe(r.details)}</p>
+
+          <div class="meta"><strong>Quantity:</strong> ${safe(r.quantity)}</div>
+          <div class="meta"><strong>Company:</strong> ${safe(r.requesterCompany)} • ${safe(r.requesterCountry)} • ${safe(r.requesterRole)}</div>
+        </div>
+      `;
+    });
+  });
+}
+
 /* DISCUSSIONS */
 window.addDiscussion = async function(){
+  if (isAdminUser) {
+    alert("Admin monitoring view does not post room discussions.");
+    return;
+  }
+
   const text = document.getElementById("discussionText").value.trim();
 
   if (!text) {
@@ -1086,7 +1551,7 @@ window.addDiscussion = async function(){
 
   try {
     await addDoc(collection(db, "roomDiscussions"), {
-      room: currentUserData.room,
+      room: selectedRoom.id,
       uid: currentUser.uid,
       email: currentUser.email,
       company: currentUserData.company || "",
@@ -1096,7 +1561,6 @@ window.addDiscussion = async function(){
     });
 
     document.getElementById("discussionText").value = "";
-
   } catch (error) {
     alert("Error: " + error.message);
   }
@@ -1108,7 +1572,7 @@ window.addDiscussion = async function(){
 function loadDiscussions(){
   const q = query(
     collection(db, "roomDiscussions"),
-    where("room", "==", currentUserData.room)
+    where("room", "==", selectedRoom.id)
   );
 
   onSnapshot(q, (snapshot) => {
@@ -1137,7 +1601,7 @@ function loadDiscussions(){
 function loadVerifiedCompanies(){
   const q = query(
     collection(db, "companies"),
-    where("room", "==", currentUserData.room)
+    where("room", "==", selectedRoom.id)
   );
 
   onSnapshot(q, (snapshot) => {
@@ -1181,7 +1645,16 @@ function loadVerifiedCompanies(){
 
 /* NAVIGATION */
 window.goDashboard = function(){
+  if (isAdminUser) {
+    window.location.href = "admin.html";
+    return;
+  }
+
   window.location.href = "dashboard.html";
+};
+
+window.comingSoon = function(name){
+  alert(name + " will be available in the next platform phase.");
 };
 
 window.logout = function(){
