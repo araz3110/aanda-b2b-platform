@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room Application - A&A Global B2B Platform</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --gold:#C9A84C;
+  --gold2:#E0C46A;
+  --dark:#050505;
+  --dark2:#0A0A0A;
+  --card:#111;
+  --card2:#151515;
+  --line:#252525;
+  --white:#F8F5EF;
+  --muted:#8A8A8A;
+  --green:#4aa36f;
+  --red:#b84a4a;
+}
+
+body{
+  background:
+    radial-gradient(circle at top right,rgba(201,168,76,0.16),transparent 28%),
+    radial-gradient(circle at top left,rgba(201,168,76,0.08),transparent 24%),
+    linear-gradient(135deg,#030303,#0A0A0A,#111);
+  color:var(--white);
+  font-family:'Montserrat',sans-serif;
+  min-height:100vh;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:0.16;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.08) 1px, transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,0.08) 1px, transparent 1px);
+  background-size:80px 80px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,1),rgba(0,0,0,0.15));
+}
+
+header{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(5,5,5,0.88);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(201,168,76,0.18);
+}
+
+.nav{
+  max-width:1380px;
+  margin:auto;
+  padding:18px 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.25rem;
+  line-height:0.9;
+  color:var(--gold2);
+  letter-spacing:1px;
+}
+
+.logo small{
+  display:block;
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  letter-spacing:1.6px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.nav-links a{
+  color:#bfbfbf;
+  text-decoration:none;
+  font-size:13px;
+  cursor:pointer;
+  transition:0.25s;
+}
+
+.nav-links a:hover,
+.nav-links a.active{
+  color:var(--gold2);
+}
+
+.nav-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+  border:1px solid rgba(201,168,76,0.18);
+  background:#0c0c0c;
+  color:var(--white);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  border-radius:50%;
+}
+
+.user-chip{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border:1px solid rgba(201,168,76,0.18);
+  padding:7px 10px;
+  background:#0c0c0c;
+  border-radius:999px;
+}
+
+.avatar{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#6d5420);
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:12px;
+}
+
+.user-meta{
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.25;
+}
+
+.user-meta strong{
+  color:var(--white);
+  font-size:12px;
+}
+
+.page{
+  max-width:1380px;
+  margin:auto;
+  padding:34px 28px 44px;
+}
+
+.breadcrumb{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:24px;
+}
+
+.breadcrumb span{
+  color:var(--gold2);
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(201,168,76,0.28);
+  background:
+    linear-gradient(90deg,rgba(10,10,10,0.98),rgba(10,10,10,0.82)),
+    radial-gradient(circle at 78% 38%,rgba(201,168,76,0.2),transparent 32%);
+  padding:34px;
+  margin-bottom:22px;
+}
+
+.hero-inner{
+  display:flex;
+  align-items:center;
+  gap:22px;
+}
+
+.room-mark{
+  width:88px;
+  height:88px;
+  min-width:88px;
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,0.6);
+  background:rgba(201,168,76,0.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  color:var(--gold2);
+}
+
+.hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:52px;
+  line-height:1;
+  font-weight:400;
+  margin-bottom:12px;
+}
+
+.hero p{
+  color:#c7c7c7;
+  line-height:1.7;
+  max-width:720px;
+  font-size:15px;
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:1fr 360px;
+  gap:22px;
+  align-items:start;
+}
+
+.form-panel,
+.side-panel{
+  background:rgba(17,17,17,0.88);
+  border:1px solid rgba(201,168,76,0.24);
+  padding:24px;
+}
+
+.form-section{
+  padding-bottom:22px;
+  margin-bottom:22px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.form-section:last-child{
+  border-bottom:none;
+  margin-bottom:0;
+  padding-bottom:0;
+}
+
+.form-section h2{
+  color:var(--gold2);
+  font-size:18px;
+  margin-bottom:14px;
+  font-weight:600;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+label{
+  display:block;
+  color:#d6d6d6;
+  font-size:13px;
+  margin-bottom:7px;
+}
+
+.required{
+  color:var(--gold2);
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:13px;
+  background:#050505;
+  border:1px solid #2a2a2a;
+  color:var(--white);
+  font-family:'Montserrat',sans-serif;
+  margin-bottom:12px;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  outline:none;
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(201,168,76,0.08);
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+.help{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:-6px;
+  margin-bottom:12px;
+  line-height:1.5;
+}
+
+.readonly-note{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:14px;
+  line-height:1.6;
+  background:#0b0b0b;
+  border:1px solid rgba(201,168,76,0.14);
+  padding:12px;
+}
+
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:#050505;
+  font-weight:700;
+  cursor:pointer;
+  font-family:'Montserrat',sans-serif;
+  margin-top:10px;
+}
+
+.btn:hover{
+  opacity:0.92;
+}
+
+.btn:disabled{
+  opacity:0.55;
+  cursor:not-allowed;
+}
+
+.btn-dark{
+  background:#222;
+  color:white;
+}
+
+.side-panel{
+  position:sticky;
+  top:96px;
+}
+
+.side-title{
+  color:var(--gold2);
+  font-size:13px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+.selected-room{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  padding-bottom:18px;
+  margin-bottom:18px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.selected-icon{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,0.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--gold2);
+  font-size:28px;
+}
+
+.selected-room h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;
+  font-weight:500;
+  margin-bottom:5px;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 8px;
+  border:1px solid rgba(201,168,76,0.55);
+  color:var(--gold2);
+  font-size:11px;
+}
+
+.side-block{
+  padding-bottom:18px;
+  margin-bottom:18px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.side-block:last-child{
+  border-bottom:none;
+  margin-bottom:0;
+  padding-bottom:0;
+}
+
+.side-block h4{
+  color:var(--gold2);
+  font-size:13px;
+  margin-bottom:10px;
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+}
+
+.side-block p{
+  color:#c6c6c6;
+  line-height:1.7;
+  font-size:13px;
+}
+
+.benefit{
+  display:flex;
+  gap:10px;
+  color:#c6c6c6;
+  font-size:13px;
+  line-height:1.5;
+  margin-bottom:10px;
+}
+
+.check{
+  color:var(--gold2);
+}
+
+.steps{
+  display:grid;
+  gap:12px;
+}
+
+.step{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.step-number{
+  width:28px;
+  height:28px;
+  min-width:28px;
+  border-radius:50%;
+  background:var(--gold2);
+  color:#050505;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:13px;
+}
+
+.step strong{
+  display:block;
+  color:#fff;
+  font-size:13px;
+  margin-bottom:3px;
+}
+
+.step span{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.4;
+}
+
+.notice{
+  padding:14px;
+  border:1px solid rgba(201,168,76,0.35);
+  background:#1b1510;
+  color:#ddd;
+  line-height:1.6;
+  margin-bottom:18px;
+}
+
+.notice-green{
+  border-color:rgba(74,163,111,0.5);
+  background:rgba(74,163,111,0.08);
+}
+
+.notice-red{
+  border-color:rgba(184,74,74,0.5);
+  background:rgba(184,74,74,0.08);
+}
+
+.small-secure{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:12px;
+  line-height:1.5;
+  text-align:center;
+}
+
+@media(max-width:1000px){
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .side-panel{
+    position:static;
+  }
+}
+
+@media(max-width:820px){
+  .nav{
+    display:block;
+  }
+
+  .nav-links{
+    margin-top:16px;
+    overflow-x:auto;
+    padding-bottom:8px;
+  }
+
+  .nav-actions{
+    margin-top:14px;
+  }
+
+  .hero-inner{
+    align-items:flex-start;
+  }
+
+  .hero h1{
+    font-size:42px;
+  }
+
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:560px){
+  .page{
+    padding:20px 16px 32px;
+  }
+
+  .hero{
+    padding:24px;
+  }
+
+  .hero-inner{
+    display:block;
+  }
+
+  .room-mark{
+    margin-bottom:18px;
+  }
+
+  .hero h1{
+    font-size:36px;
+  }
+
+  .form-panel,
+  .side-panel{
+    padding:18px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">
+      A&A
+      <small>GLOBAL B2B PLATFORM</small>
+    </div>
+
+    <div class="nav-links">
+      <a onclick="goDashboard()">Dashboard</a>
+      <a class="active" onclick="goDashboard()">Rooms</a>
+      <a onclick="comingSoon('Connections')">Connections</a>
+      <a onclick="comingSoon('Messages')">Messages</a>
+      <a onclick="comingSoon('Market Insights')">Market Insights</a>
+      <a onclick="comingSoon('Events')">Events</a>
+    </div>
+
+    <div class="nav-actions">
+      <div class="icon-btn" onclick="comingSoon('Search')">⌕</div>
+      <div class="icon-btn" onclick="comingSoon('Notifications')">◌</div>
+      <div class="user-chip">
+        <div class="avatar" id="avatarText">AA</div>
+        <div class="user-meta">
+          <span>Welcome,</span><br>
+          <strong id="userName">Loading...</strong>
+        </div>
+      </div>
+      <div class="icon-btn" onclick="logout()">⎋</div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <div class="breadcrumb">
+    <span>Dashboard</span> / Rooms / <span id="breadcrumbRoom">Room Application</span>
+  </div>
+
+  <div id="pageNotice"></div>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="room-mark" id="heroIcon">◆</div>
+      <div>
+        <h1 id="pageTitle">Room Application</h1>
+        <p id="pageSubtitle">Loading selected room information...</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+
+    <main class="form-panel">
+      <div class="readonly-note">
+        Your company information is connected to your registered A&A profile. Please submit accurate room-specific details for admin review.
+      </div>
+
+      <form id="applicationForm">
+
+        <section class="form-section">
+          <h2>1. Company Information</h2>
+
+          <div class="form-grid">
+            <div>
+              <label>Company Name <span class="required">*</span></label>
+              <input id="companyName" placeholder="Enter your company name">
+            </div>
+
+            <div>
+              <label>Registration Number</label>
+              <input id="registrationNumber" placeholder="Enter registration number">
+            </div>
+
+            <div>
+              <label>Company Website</label>
+              <input id="companyWebsite" placeholder="https://www.yourcompany.com">
+            </div>
+
+            <div>
+              <label>Year Established</label>
+              <input id="yearEstablished" placeholder="e.g. 2018">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>2. Trade Role</h2>
+
+          <label>Your Primary Role <span class="required">*</span></label>
+          <select id="tradeRole">
+            <option value="">Select your primary role</option>
+            <option value="producer">Producer</option>
+            <option value="buyer">Buyer</option>
+            <option value="exporter">Exporter</option>
+            <option value="importer">Importer</option>
+            <option value="distributor">Distributor</option>
+            <option value="wholesaler">Wholesaler</option>
+            <option value="manufacturer">Manufacturer</option>
+            <option value="supplier">Supplier</option>
+          </select>
+        </section>
+
+        <section class="form-section">
+          <h2>3. Country & Markets</h2>
+
+          <div class="form-grid">
+            <div>
+              <label>Country of Operation <span class="required">*</span></label>
+              <input id="country" placeholder="Enter country">
+            </div>
+
+            <div>
+              <label>Main Export / Import Countries</label>
+              <input id="markets" placeholder="e.g. Germany, UAE, Iraq, France">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>4. Capacity & Certifications</h2>
+
+          <div class="form-grid">
+            <div>
+              <label>Annual Capacity / Volume <span class="required">*</span></label>
+              <input id="capacity" placeholder="Enter annual capacity">
+            </div>
+
+            <div>
+              <label>Capacity Unit</label>
+              <select id="capacityUnit">
+                <option value="">Select unit</option>
+                <option value="MT">MT</option>
+                <option value="Tons">Tons</option>
+                <option value="Containers">Containers</option>
+                <option value="Units">Units</option>
+                <option value="Pallets">Pallets</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Certifications</label>
+              <input id="certifications" placeholder="e.g. ISO, HACCP, BRC, Halal, Organic">
+            </div>
+
+            <div>
+              <label>Monthly Trade Volume</label>
+              <input id="monthlyVolume" placeholder="e.g. 50 tons per month">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>5. Product Focus</h2>
+
+          <div class="form-grid">
+            <div>
+              <label>Main Product Focus <span class="required">*</span></label>
+              <input id="productFocus" placeholder="Enter your main products">
+            </div>
+
+            <div>
+              <label>Product Varieties / Details</label>
+              <input id="productDetails" placeholder="Enter product varieties or details">
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>6. Short Company Description</h2>
+
+          <label>Tell us more about your company <span class="required">*</span></label>
+          <textarea id="companyDescription" maxlength="1000" placeholder="Highlight your company, products, markets, capacity and strengths..."></textarea>
+          <div class="help" id="charCount">0 / 1000</div>
+        </section>
+
+        <button type="submit" class="btn" id="submitBtn">Submit Application</button>
+        <button type="button" class="btn btn-dark" onclick="goDashboard()">Back to Rooms</button>
+
+      </form>
+    </main>
+
+    <aside class="side-panel">
+      <div class="side-title">Selected Room</div>
+
+      <div class="selected-room">
+        <div class="selected-icon" id="sideIcon">◆</div>
+        <div>
+          <h3 id="sideRoomName">Room</h3>
+          <span class="badge" id="sideCategory">Category</span>
+        </div>
+      </div>
+
+      <div class="side-block">
+        <h4>About This Room</h4>
+        <p id="sideAbout">Loading room information...</p>
+      </div>
+
+      <div class="side-block">
+        <h4>Key Benefits</h4>
+
+        <div class="benefit"><span class="check">✓</span><span>Connect with verified companies inside a focused trade category.</span></div>
+        <div class="benefit"><span class="check">✓</span><span>Access relevant products, buyer requests and business opportunities.</span></div>
+        <div class="benefit"><span class="check">✓</span><span>Build long-term B2B relationships through structured room access.</span></div>
+        <div class="benefit"><span class="check">✓</span><span>Increase company visibility with verified and premium badges.</span></div>
+      </div>
+
+      <div class="side-block">
+        <h4>Application Steps</h4>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <strong>Submit Application</strong>
+              <span>Provide your company and room-specific details.</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <strong>Admin Review</strong>
+              <span>The platform admin reviews your room access request.</span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <strong>Approval & Access</strong>
+              <span>Once approved, you can enter the selected room.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="small-secure">
+        Your information is secure and will only be used for platform access review.
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCj1JKJIk9CvIIgwowusAMfDdDi5L9NY4k",
+  authDomain: "aanda-web.firebaseapp.com",
+  projectId: "aanda-web",
+  storageBucket: "aanda-web.firebasestorage.app",
+  messagingSenderId: "454700153826",
+  appId: "1:454700153826:web:793107ea88e01d6eee97bb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const ADMIN_EMAIL = "aanda.b2bplatform@gmail.com";
+
+let currentUser = null;
+let currentUserData = null;
+let selectedRoom = null;
+let existingPendingApplication = false;
+
+const rooms = {
+  "rice":{
+    id:"rice",
+    name:"Rice Room",
+    category:"Food & Agriculture",
+    icon:"🌾",
+    about:"The Rice Room connects rice producers, mills, exporters, importers, distributors and buyers to create trusted B2B partnerships.",
+    subtitle:"Join the global network of rice industry professionals, suppliers, buyers and distributors."
+  },
+  "machinery":{
+    id:"machinery",
+    name:"Machinery Room",
+    category:"Industrial",
+    icon:"⚙",
+    about:"The Machinery Room connects industrial machinery suppliers, spare part producers, manufacturers, buyers and project companies.",
+    subtitle:"Join a focused B2B network for machinery, equipment and industrial supply opportunities."
+  },
+  "cosmetics":{
+    id:"cosmetics",
+    name:"Cosmetics Room",
+    category:"Consumer Goods",
+    icon:"◈",
+    about:"The Cosmetics Room connects skincare, beauty, personal care producers, distributors, private label companies and buyers.",
+    subtitle:"Build trusted trade relationships in beauty, skincare and personal care products."
+  },
+  "bulgur":{
+    id:"bulgur",
+    name:"Bulgur Room",
+    category:"Food & Agriculture",
+    icon:"🌾",
+    about:"The Bulgur Room connects grain processors, bulgur producers, exporters, importers and wholesale food buyers.",
+    subtitle:"Discover global opportunities for bulgur and grain-based food trade."
+  },
+  "pulses":{
+    id:"pulses",
+    name:"Pulses Room",
+    category:"Food & Agriculture",
+    icon:"●",
+    about:"The Pulses Room connects suppliers and buyers of beans, lentils, chickpeas, peas and related pulse products.",
+    subtitle:"Access focused trade opportunities for pulses and staple food products."
+  },
+  "canned-foods":{
+    id:"canned-foods",
+    name:"Canned Foods Room",
+    category:"Food & Agriculture",
+    icon:"▣",
+    about:"The Canned Foods Room connects producers and buyers of canned vegetables, fruits, sauces and ready food products.",
+    subtitle:"Join a room designed for canned goods, ready foods and long shelf-life products."
+  },
+  "packaging":{
+    id:"packaging",
+    name:"Packaging Room",
+    category:"Industrial",
+    icon:"□",
+    about:"The Packaging Room connects packaging producers, label suppliers, box manufacturers and companies needing packaging solutions.",
+    subtitle:"Find packaging partners, material suppliers and B2B production opportunities."
+  },
+  "textiles":{
+    id:"textiles",
+    name:"Textiles Room",
+    category:"Consumer Goods",
+    icon:"▥",
+    about:"The Textiles Room connects fabric suppliers, garment producers, home textile brands, buyers and distributors.",
+    subtitle:"Join a professional room for textile, fabric and apparel trade."
+  },
+  "oils":{
+    id:"oils",
+    name:"Oils Room",
+    category:"Food & Agriculture",
+    icon:"◍",
+    about:"The Oils Room connects suppliers and buyers of vegetable oils, edible oils, bulk oils and related food industry products.",
+    subtitle:"Access focused trade opportunities for edible and vegetable oils."
+  },
+  "logistics":{
+    id:"logistics",
+    name:"Logistics Room",
+    category:"Logistics",
+    icon:"✈",
+    about:"The Logistics Room connects freight forwarders, shipping providers, customs partners and supply chain service companies.",
+    subtitle:"Build logistics partnerships for international trade and supply chain operations."
+  },
+  "construction":{
+    id:"construction",
+    name:"Construction Room",
+    category:"Industrial",
+    icon:"▦",
+    about:"The Construction Room connects building material suppliers, producers, project companies and buyers.",
+    subtitle:"Join a focused room for construction materials and project supply."
+  },
+  "chemicals":{
+    id:"chemicals",
+    name:"Chemicals Room",
+    category:"Industrial",
+    icon:"◌",
+    about:"The Chemicals Room connects suppliers and buyers of industrial chemicals, raw materials and production inputs.",
+    subtitle:"Access structured B2B opportunities in industrial chemical supply."
+  }
+};
+
+const params = new URLSearchParams(window.location.search);
+const roomId = params.get("room") || "rice";
+
+selectedRoom = rooms[roomId];
+
+if (!selectedRoom) {
+  selectedRoom = rooms["rice"];
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  currentUser = user;
+
+  if (user.email === ADMIN_EMAIL) {
+    window.location.href = "admin.html";
+    return;
+  }
+
+  const companyRef = doc(db, "companies", user.uid);
+  const companySnap = await getDoc(companyRef);
+
+  if (!companySnap.exists()) {
+    window.location.href = "complete-profile.html";
+    return;
+  }
+
+  currentUserData = companySnap.data();
+
+  if (currentUserData.status === "incomplete") {
+    window.location.href = "complete-profile.html";
+    return;
+  }
+
+  renderPage();
+  fillCompanyData();
+  await checkExistingApplication();
+  renderNotice();
+});
+
+function safe(value){
+  if(value === undefined || value === null || value === ""){
+    return "-";
+  }
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeHtml(value){
+  return safe(value);
+}
+
+function renderPage(){
+  document.getElementById("breadcrumbRoom").innerText = selectedRoom.name;
+  document.getElementById("heroIcon").innerText = selectedRoom.icon;
+  document.getElementById("pageTitle").innerText = selectedRoom.name + " Application";
+  document.getElementById("pageSubtitle").innerText = selectedRoom.subtitle;
+
+  document.getElementById("sideIcon").innerText = selectedRoom.icon;
+  document.getElementById("sideRoomName").innerText = selectedRoom.name;
+  document.getElementById("sideCategory").innerText = selectedRoom.category;
+  document.getElementById("sideAbout").innerText = selectedRoom.about;
+
+  const companyName = currentUserData.company || currentUser.email || "Member";
+  const shortName = companyName.split(" ")[0] || "Member";
+  document.getElementById("userName").innerText = shortName;
+
+  const initials = companyName
+    .split(" ")
+    .map(word => word.charAt(0))
+    .join("")
+    .slice(0,2)
+    .toUpperCase();
+
+  document.getElementById("avatarText").innerText = initials || "AA";
+
+  const description = document.getElementById("companyDescription");
+  description.addEventListener("input", () => {
+    document.getElementById("charCount").innerText = description.value.length + " / 1000";
+  });
+
+  document.getElementById("applicationForm").addEventListener("submit", submitApplication);
+}
+
+function fillCompanyData(){
+  document.getElementById("companyName").value = currentUserData.company || "";
+  document.getElementById("companyWebsite").value = currentUserData.website || "";
+  document.getElementById("tradeRole").value = currentUserData.role || "";
+  document.getElementById("country").value = currentUserData.country || "";
+  document.getElementById("capacity").value = currentUserData.capacity || "";
+  document.getElementById("monthlyVolume").value = currentUserData.capacity || "";
+  document.getElementById("companyDescription").value = currentUserData.description || "";
+  document.getElementById("charCount").innerText = (currentUserData.description || "").length + " / 1000";
+}
+
+async function checkExistingApplication(){
+  try {
+    const q = query(
+      collection(db, "roomApplications"),
+      where("userId", "==", currentUser.uid)
+    );
+
+    const snap = await getDocs(q);
+
+    snap.forEach((docItem) => {
+      const data = docItem.data();
+
+      if (data.roomId === selectedRoom.id && data.status === "pending") {
+        existingPendingApplication = true;
+      }
+    });
+  } catch (error) {
+    console.warn("Could not check existing room applications:", error);
+  }
+}
+
+function renderNotice(){
+  const noticeBox = document.getElementById("pageNotice");
+
+  if (currentUserData.suspended) {
+    noticeBox.innerHTML = `
+      <div class="notice notice-red">
+        Your account is suspended. You cannot apply for additional room access until your account is reactivated.
+      </div>
+    `;
+    document.getElementById("submitBtn").disabled = true;
+    return;
+  }
+
+  if (currentUserData.status === "pending") {
+    noticeBox.innerHTML = `
+      <div class="notice">
+        Your company application is still pending. You can submit a room access request after your main company profile is approved.
+      </div>
+    `;
+    document.getElementById("submitBtn").disabled = true;
+    return;
+  }
+
+  if (currentUserData.status === "rejected") {
+    noticeBox.innerHTML = `
+      <div class="notice notice-red">
+        Your company application was rejected. Please contact the platform admin before applying for room access.
+      </div>
+    `;
+    document.getElementById("submitBtn").disabled = true;
+    return;
+  }
+
+  if (currentUserData.room === selectedRoom.id) {
+    noticeBox.innerHTML = `
+      <div class="notice notice-green">
+        Your company already has approved access to this room.
+        <br><br>
+        <button class="btn" onclick="enterApprovedRoom()">Enter Approved Room</button>
+      </div>
+    `;
+    document.getElementById("submitBtn").disabled = true;
+    return;
+  }
+
+  if (existingPendingApplication) {
+    noticeBox.innerHTML = `
+      <div class="notice">
+        You already have a pending application for this room. The platform admin will review your request.
+      </div>
+    `;
+    document.getElementById("submitBtn").disabled = true;
+    return;
+  }
+
+  noticeBox.innerHTML = "";
+}
+
+function buildAdminEmailHtml(application){
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#0A0A0A;color:#F8F5EF;padding:24px;">
+      <div style="max-width:680px;margin:auto;background:#111;border:1px solid #C9A84C;padding:24px;">
+        <h1 style="color:#C9A84C;margin:0 0 12px;">New Room Access Application</h1>
+
+        <p style="color:#ddd;line-height:1.6;">
+          A company has submitted a new room access application for admin review.
+        </p>
+
+        <table style="width:100%;border-collapse:collapse;margin-top:18px;color:#F8F5EF;">
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Selected Room</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.roomName)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Category</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.category)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Company</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.companyName)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Email</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.companyEmail)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Trade Role</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.tradeRole)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Country</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.country)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Capacity</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.capacity)} ${escapeHtml(application.capacityUnit)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Product Focus</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.productFocus)}</td>
+          </tr>
+        </table>
+
+        <h3 style="color:#C9A84C;margin-top:22px;">Company Description</h3>
+        <p style="color:#ddd;line-height:1.6;">
+          ${escapeHtml(application.companyDescription)}
+        </p>
+
+        <p style="color:#8A8A8A;font-size:12px;margin-top:24px;">
+          A&A Global B2B Platform — Room Application Notification
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function buildAdminEmailText(application){
+  return `
+New Room Access Application
+
+Selected Room: ${application.roomName}
+Category: ${application.category}
+Company: ${application.companyName}
+Email: ${application.companyEmail}
+Trade Role: ${application.tradeRole}
+Country: ${application.country}
+Capacity: ${application.capacity} ${application.capacityUnit}
+Product Focus: ${application.productFocus}
+
+Company Description:
+${application.companyDescription}
+
+A&A Global B2B Platform
+  `;
+}
+
+async function createAdminNotification(application){
+  await addDoc(collection(db, "mailQueue"), {
+    to: ADMIN_EMAIL,
+    subject: "New Room Access Application - " + application.roomName,
+    type: "room_application",
+    status: "pending",
+    createdBy: currentUser.uid,
+    companyId: currentUser.uid,
+    companyEmail: currentUser.email,
+    companyName: application.companyName,
+    role: application.tradeRole,
+    room: application.roomId,
+    country: application.country,
+    message: "A new room access application has been submitted and is waiting for admin review.",
+    createdAt: new Date()
+  });
+
+  await addDoc(collection(db, "mail"), {
+    to: ADMIN_EMAIL,
+    message: {
+      subject: "New Room Access Application - " + application.roomName,
+      html: buildAdminEmailHtml(application),
+      text: buildAdminEmailText(application)
+    },
+    type: "room_application",
+    companyId: currentUser.uid,
+    companyEmail: currentUser.email,
+    companyName: application.companyName,
+    room: application.roomId,
+    country: application.country,
+    createdAt: new Date()
+  });
+}
+
+async function submitApplication(event){
+  event.preventDefault();
+
+  if (!currentUser || !currentUserData) {
+    alert("Please login again.");
+    return;
+  }
+
+  if (currentUserData.status !== "approved" || currentUserData.suspended) {
+    alert("Your company profile must be approved before applying for room access.");
+    return;
+  }
+
+  if (existingPendingApplication) {
+    alert("You already have a pending application for this room.");
+    return;
+  }
+
+  const companyName = document.getElementById("companyName").value.trim();
+  const registrationNumber = document.getElementById("registrationNumber").value.trim();
+  const companyWebsite = document.getElementById("companyWebsite").value.trim();
+  const yearEstablished = document.getElementById("yearEstablished").value.trim();
+  const tradeRole = document.getElementById("tradeRole").value;
+  const country = document.getElementById("country").value.trim();
+  const markets = document.getElementById("markets").value.trim();
+  const capacity = document.getElementById("capacity").value.trim();
+  const capacityUnit = document.getElementById("capacityUnit").value;
+  const certifications = document.getElementById("certifications").value.trim();
+  const monthlyVolume = document.getElementById("monthlyVolume").value.trim();
+  const productFocus = document.getElementById("productFocus").value.trim();
+  const productDetails = document.getElementById("productDetails").value.trim();
+  const companyDescription = document.getElementById("companyDescription").value.trim();
+
+  if (!companyName || !tradeRole || !country || !capacity || !productFocus || !companyDescription) {
+    alert("Please fill all required fields.");
+    return;
+  }
+
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Submitting...";
+
+  const application = {
+    userId: currentUser.uid,
+    companyEmail: currentUser.email,
+    companyName,
+    registrationNumber,
+    companyWebsite,
+    yearEstablished,
+    tradeRole,
+    country,
+    markets,
+    capacity,
+    capacityUnit,
+    certifications,
+    monthlyVolume,
+    productFocus,
+    productDetails,
+    companyDescription,
+    roomId: selectedRoom.id,
+    roomName: selectedRoom.name,
+    category: selectedRoom.category,
+    status: "pending",
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+
+  try {
+    await addDoc(collection(db, "roomApplications"), application);
+
+    try {
+      await createAdminNotification(application);
+    } catch (mailError) {
+      console.warn("Room application saved, but email notification could not be created:", mailError);
+    }
+
+    alert("Your room application has been submitted for admin review.");
+    window.location.href = "dashboard.html";
+
+  } catch (error) {
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit Application";
+    alert("Error: " + error.message);
+  }
+}
+
+window.enterApprovedRoom = function(){
+  window.location.href = "room.html?room=" + encodeURIComponent(selectedRoom.id);
+};
+
+window.goDashboard = function(){
+  window.location.href = "dashboard.html";
+};
+
+window.comingSoon = function(name){
+  alert(name + " will be available in the next platform phase.");
+};
+
+window.logout = function(){
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  });
+};
+
+</script>
+
+</body>
+</html>
