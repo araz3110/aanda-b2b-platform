@@ -90,7 +90,7 @@ button:hover{opacity:0.9;}
 }
 .grid{
   display:grid;
-  grid-template-columns:repeat(5,1fr);
+  grid-template-columns:repeat(6,1fr);
   gap:14px;
   margin-bottom:24px;
 }
@@ -212,8 +212,19 @@ input, select{
 .mail-card{
   border-left:3px solid var(--gold);
 }
+.room-application-card{
+  border-left:3px solid var(--green);
+}
+.pending-card{
+  border-left:3px solid var(--gold);
+}
+.rejected-card{
+  border-left:3px solid var(--red);
+}
+@media(max-width:1100px){
+  .grid{grid-template-columns:1fr 1fr 1fr;}
+}
 @media(max-width:1000px){
-  .grid{grid-template-columns:1fr 1fr;}
   .two-col{grid-template-columns:1fr;}
   .room-grid{grid-template-columns:1fr 1fr;}
 }
@@ -236,7 +247,6 @@ input, select{
 }
 </style>
 </head>
-
 <body>
 
 <header>
@@ -252,7 +262,7 @@ input, select{
   <div class="hero">
     <h1>Admin Control Center</h1>
     <p>
-      Review company applications, manage premium and verified access, monitor products, offers, mail queue records and industry rooms.
+      Review company applications, manage premium and verified access, approve room access requests, monitor products, offers and mail records.
     </p>
   </div>
 
@@ -262,12 +272,16 @@ input, select{
       <strong id="totalCount">0</strong>
     </div>
     <div class="stat">
-      <h3>Pending</h3>
+      <h3>Pending Companies</h3>
       <strong id="pendingCount">0</strong>
     </div>
     <div class="stat">
       <h3>Approved</h3>
       <strong id="approvedCount">0</strong>
+    </div>
+    <div class="stat">
+      <h3>Room Applications</h3>
+      <strong id="roomAppCount">0</strong>
     </div>
     <div class="stat">
       <h3>Premium</h3>
@@ -280,8 +294,12 @@ input, select{
   </div>
 
   <div class="section">
-    <h2>Company Management</h2>
+    <h2>Room Applications</h2>
+    <div id="roomApplicationsList"></div>
+  </div>
 
+  <div class="section">
+    <h2>Company Management</h2>
     <div class="controls">
       <input id="companySearch" placeholder="Search company, email, country, room..." oninput="renderCompanies()">
       <select id="statusFilter" onchange="renderCompanies()">
@@ -294,7 +312,6 @@ input, select{
         <option value="verified">Verified</option>
       </select>
     </div>
-
     <div id="companiesList"></div>
   </div>
 
@@ -361,6 +378,7 @@ let allCompanies = [];
 let allProducts = [];
 let allOffers = [];
 let allMailQueue = [];
+let allRoomApplications = [];
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -377,6 +395,7 @@ onAuthStateChanged(auth, (user) => {
   currentAdmin = user;
 
   loadCompanies();
+  loadRoomApplications();
   loadProducts();
   loadOffers();
   loadMailQueue();
@@ -396,21 +415,15 @@ function safe(value){
 }
 
 function escapeHtml(value){
-  if(value === undefined || value === null || value === ""){
-    return "-";
-  }
-
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  return safe(value);
 }
 
 function pretty(value){
   if(!value) return "-";
-  return String(value).charAt(0).toUpperCase() + String(value).slice(1);
+
+  return String(value)
+    .replaceAll("-", " ")
+    .replace(/\b\w/g, char => char.toUpperCase());
 }
 
 function formatDate(value){
@@ -433,6 +446,10 @@ function formatDate(value){
 
 function getCompanyById(id){
   return allCompanies.find((company) => company.id === id);
+}
+
+function getRoomApplicationById(id){
+  return allRoomApplications.find((application) => application.id === id);
 }
 
 /* REAL EMAIL + MAIL QUEUE */
@@ -599,6 +616,142 @@ async function createMailRecords(company, type){
   });
 }
 
+/* ROOM APPLICATION MAILS */
+function getRoomApplicationMailContent(type, application){
+  if (type === "room_application_approved") {
+    return {
+      subject: "Your " + application.roomName + " Access Has Been Approved",
+      title: "Room Access Approved",
+      badge: "Approved",
+      badgeColor: "#4aa36f",
+      message: "Your room access application has been approved. You can now enter " + application.roomName + " from your dashboard.",
+      note: "You can now access relevant products, buyer requests, offers and business opportunities inside this room."
+    };
+  }
+
+  if (type === "room_application_rejected") {
+    return {
+      subject: "Your " + application.roomName + " Access Application Has Been Rejected",
+      title: "Room Access Rejected",
+      badge: "Rejected",
+      badgeColor: "#b84a4a",
+      message: "Your room access application has been rejected by the platform admin.",
+      note: "If you believe this was a mistake, please contact the platform admin and provide additional company details."
+    };
+  }
+
+  return {
+    subject: "A&A Global B2B Platform Room Notification",
+    title: "Room Notification",
+    badge: "Notification",
+    badgeColor: "#C9A84C",
+    message: "There is an update about your room access application.",
+    note: "Please log in to your dashboard for more details."
+  };
+}
+
+function buildRoomApplicationEmailHtml(application, content){
+  return `
+    <div style="font-family:Arial,Helvetica,sans-serif;background:#0A0A0A;color:#F8F5EF;padding:24px;">
+      <div style="max-width:640px;margin:auto;background:#111;border:1px solid #C9A84C;padding:24px;">
+        <h1 style="color:#C9A84C;margin:0 0 12px;">${escapeHtml(content.title)}</h1>
+
+        <span style="display:inline-block;border:1px solid ${content.badgeColor};color:${content.badgeColor};padding:6px 10px;font-size:12px;margin-bottom:18px;">
+          ${escapeHtml(content.badge)}
+        </span>
+
+        <p style="color:#ddd;line-height:1.6;">
+          ${escapeHtml(content.message)}
+        </p>
+
+        <table style="width:100%;border-collapse:collapse;margin-top:18px;color:#F8F5EF;">
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Selected Room</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.roomName)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Category</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.category)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Company</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.companyName)}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px;border-bottom:1px solid #252525;color:#8A8A8A;">Email</td>
+            <td style="padding:8px;border-bottom:1px solid #252525;">${escapeHtml(application.companyEmail)}</td>
+          </tr>
+        </table>
+
+        <p style="color:#ddd;line-height:1.6;margin-top:20px;">
+          ${escapeHtml(content.note)}
+        </p>
+
+        <p style="color:#8A8A8A;font-size:12px;margin-top:24px;">
+          A&A Global B2B Platform
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function buildRoomApplicationEmailText(application, content){
+  return `
+${content.title}
+
+${content.message}
+
+Selected Room: ${application.roomName || "-"}
+Category: ${application.category || "-"}
+Company: ${application.companyName || "-"}
+Email: ${application.companyEmail || "-"}
+
+${content.note}
+
+A&A Global B2B Platform
+  `;
+}
+
+async function createRoomApplicationMailRecords(application, type){
+  if (!application || !application.companyEmail) {
+    return;
+  }
+
+  const content = getRoomApplicationMailContent(type, application);
+
+  await addDoc(collection(db, "mailQueue"), {
+    to: application.companyEmail,
+    subject: content.subject,
+    type: type,
+    status: "pending",
+    createdBy: currentAdmin ? currentAdmin.uid : "admin",
+    companyId: application.userId,
+    companyEmail: application.companyEmail,
+    companyName: application.companyName || "",
+    role: application.tradeRole || "",
+    room: application.roomId || "",
+    country: application.country || "",
+    message: content.message,
+    createdAt: new Date()
+  });
+
+  await addDoc(collection(db, "mail"), {
+    to: application.companyEmail,
+    message: {
+      subject: content.subject,
+      html: buildRoomApplicationEmailHtml(application, content),
+      text: buildRoomApplicationEmailText(application, content)
+    },
+    type: type,
+    companyId: application.userId,
+    companyEmail: application.companyEmail,
+    companyName: application.companyName || "",
+    room: application.roomId || "",
+    country: application.country || "",
+    createdAt: new Date()
+  });
+}
+
 /* COMPANIES */
 function loadCompanies(){
   onSnapshot(collection(db, "companies"), (snapshot) => {
@@ -651,6 +804,158 @@ function updateCompanyStats(){
   document.getElementById("premiumCount").innerText = premium;
   document.getElementById("verifiedCount").innerText = verified;
 }
+
+/* ROOM APPLICATIONS */
+function loadRoomApplications(){
+  onSnapshot(collection(db, "roomApplications"), (snapshot) => {
+    allRoomApplications = [];
+
+    snapshot.forEach((docItem) => {
+      allRoomApplications.push({
+        id: docItem.id,
+        ...docItem.data()
+      });
+    });
+
+    renderRoomApplications();
+    updateRoomApplicationStats();
+  });
+}
+
+function updateRoomApplicationStats(){
+  const pending = allRoomApplications.filter(app => app.status === "pending").length;
+  document.getElementById("roomAppCount").innerText = pending;
+}
+
+function renderRoomApplications(){
+  const container = document.getElementById("roomApplicationsList");
+  container.innerHTML = "";
+
+  if (allRoomApplications.length === 0) {
+    container.innerHTML = `<div class="empty">No room applications yet.</div>`;
+    return;
+  }
+
+  const sorted = [...allRoomApplications].sort((a,b) => {
+    const order = { pending: 1, approved: 2, rejected: 3 };
+    return (order[a.status] || 9) - (order[b.status] || 9);
+  });
+
+  sorted.forEach((application) => {
+    container.innerHTML += createRoomApplicationCard(application);
+  });
+}
+
+function createRoomApplicationCard(application){
+  let cardClass = "room-application-card";
+  let actions = "";
+
+  if (application.status === "pending") {
+    cardClass = "pending-card";
+    actions = `
+      <button class="btn-green" onclick="approveRoomApplication('${application.id}')">Approve Room Access</button>
+      <button class="btn-red" onclick="rejectRoomApplication('${application.id}')">Reject Room Access</button>
+    `;
+  }
+
+  if (application.status === "rejected") {
+    cardClass = "rejected-card";
+  }
+
+  return `
+    <div class="card ${cardClass}">
+      <h3>${safe(application.roomName)} — ${safe(application.companyName)}</h3>
+
+      <span class="badge">Status: ${safe(application.status)}</span>
+      <span class="badge">Category: ${safe(application.category)}</span>
+      <span class="badge">Room ID: ${safe(application.roomId)}</span>
+
+      <div class="row">
+        <div><span class="label">Company Email:</span> ${safe(application.companyEmail)}</div>
+        <div><span class="label">Company:</span> ${safe(application.companyName)}</div>
+        <div><span class="label">Trade Role:</span> ${safe(application.tradeRole)}</div>
+        <div><span class="label">Country:</span> ${safe(application.country)}</div>
+        <div><span class="label">Markets:</span> ${safe(application.markets)}</div>
+        <div><span class="label">Capacity:</span> ${safe(application.capacity)} ${safe(application.capacityUnit)}</div>
+        <div><span class="label">Monthly Volume:</span> ${safe(application.monthlyVolume)}</div>
+        <div><span class="label">Product Focus:</span> ${safe(application.productFocus)}</div>
+        <div><span class="label">Certifications:</span> ${safe(application.certifications)}</div>
+        <div><span class="label">Created At:</span> ${safe(formatDate(application.createdAt))}</div>
+        <div><span class="label">Document ID:</span> ${safe(application.id)}</div>
+        <div><span class="label">User ID:</span> ${safe(application.userId)}</div>
+      </div>
+
+      <div class="description">
+        <strong>Product Details:</strong><br>
+        ${safe(application.productDetails)}
+      </div>
+
+      <div class="description">
+        <strong>Company Description:</strong><br>
+        ${safe(application.companyDescription)}
+      </div>
+
+      <div class="actions">
+        ${actions}
+      </div>
+    </div>
+  `;
+}
+
+window.approveRoomApplication = async function(id){
+  const application = getRoomApplicationById(id);
+
+  if (!application) {
+    alert("Room application was not found.");
+    return;
+  }
+
+  await updateDoc(doc(db, "roomApplications", id), {
+    status: "approved",
+    approvedAt: new Date(),
+    approvedBy: currentAdmin ? currentAdmin.uid : "admin",
+    updatedAt: new Date()
+  });
+
+  await updateDoc(doc(db, "companies", application.userId), {
+    room: application.roomId,
+    roomName: application.roomName,
+    roomCategory: application.category,
+    updatedAt: new Date()
+  });
+
+  try {
+    await createRoomApplicationMailRecords(application, "room_application_approved");
+  } catch (mailError) {
+    console.warn("Room access approved, but email notification could not be created:", mailError);
+  }
+
+  alert("Room access approved. User can now enter this room.");
+};
+
+window.rejectRoomApplication = async function(id){
+  const application = getRoomApplicationById(id);
+
+  if (!application) {
+    alert("Room application was not found.");
+    return;
+  }
+
+  await updateDoc(doc(db, "roomApplications", id), {
+    status: "rejected",
+    rejectedAt: new Date(),
+    rejectedBy: currentAdmin ? currentAdmin.uid : "admin",
+    updatedAt: new Date()
+  });
+
+  try {
+    await createRoomApplicationMailRecords(application, "room_application_rejected");
+  } catch (mailError) {
+    console.warn("Room access rejected, but email notification could not be created:", mailError);
+  }
+
+  alert("Room access rejected.");
+};
 
 window.renderCompanies = function(){
   const container = document.getElementById("companiesList");
@@ -1028,6 +1333,5 @@ window.logout = function(){
 };
 
 </script>
-
 </body>
 </html>
